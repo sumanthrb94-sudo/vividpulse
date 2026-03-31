@@ -1,11 +1,24 @@
 /*!
  * CRM Kanban Logic — Vivid Pulse
- * Full drag-and-drop pipeline with localStorage persistence
+ * Protected by Firebase Auth (GCP).
+ * Lead data is persisted to Cloud Firestore (per-user collection).
  */
 import '/src/style.css';
+import { requireAuth, logout } from '/src/auth.js';
+import { db } from '/src/firebase.js';
+import {
+  collection,
+  doc,
+  setDoc,
+  deleteDoc,
+  onSnapshot,
+  writeBatch,
+  query,
+  orderBy,
+} from 'firebase/firestore';
 
 // ============================
-// SEED DATA
+// SEED DATA (used only on first sign-in when collection is empty)
 // ============================
 const SEED_LEADS = [
   { id: 'l1', name: 'Ankit Verma',    company: 'GrowFast Inc',    value: 75000,  stage: 'new',       date: '2026-03-28' },
@@ -21,12 +34,68 @@ const SEED_LEADS = [
 // ============================
 // STATE
 // ============================
-let leads = JSON.parse(localStorage.getItem('vp_crm_leads') || 'null') || SEED_LEADS;
-let dragCard = null;
-let dragLeadId = null;
+let leads       = [];
+let currentUser = null;
+let leadsColRef = null;
+let dragLeadId  = null;
 
-function save() {
-  localStorage.setItem('vp_crm_leads', JSON.stringify(leads));
+// ============================
+// AUTH GUARD — resolves with the authenticated user or redirects to /login
+// ============================
+requireAuth('/login').then((user) => {
+  currentUser = user;
+  leadsColRef = collection(db, 'users', user.uid, 'leads');
+
+  // Show user email + logout button in navbar
+  const emailEl  = document.getElementById('user-email');
+  const logoutBtn = document.getElementById('logout-btn');
+  if (emailEl) {
+    emailEl.textContent = user.email || user.displayName || 'Signed in';
+    emailEl.style.display = '';
+  }
+  if (logoutBtn) {
+    logoutBtn.style.display = '';
+    logoutBtn.addEventListener('click', () =>
+      logout().then(() => { window.location.href = '/login'; })
+    );
+  }
+
+  // Subscribe to real-time Firestore updates
+  const q = query(leadsColRef, orderBy('date', 'desc'));
+  onSnapshot(q, async (snapshot) => {
+    if (snapshot.empty && leads.length === 0) {
+      // First sign-in: seed the collection
+      await seedLeads();
+      return;
+    }
+    leads = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderBoard();
+    updateStats();
+  });
+
+  initDragDrop();
+  initModal();
+});
+
+// ============================
+// FIRESTORE HELPERS
+// ============================
+async function seedLeads() {
+  const batch = writeBatch(db);
+  SEED_LEADS.forEach(lead => {
+    const ref = doc(leadsColRef, lead.id);
+    batch.set(ref, { name: lead.name, company: lead.company, value: lead.value, stage: lead.stage, date: lead.date });
+  });
+  await batch.commit();
+}
+
+async function saveLead(lead) {
+  const { id, ...data } = lead;
+  await setDoc(doc(leadsColRef, id), data);
+}
+
+async function removeLead(id) {
+  await deleteDoc(doc(leadsColRef, id));
 }
 
 // ============================
@@ -50,19 +119,18 @@ function renderBoard() {
     const col = document.getElementById('col-' + stage);
     if (!col) return;
 
-    // Remove old cards (keep header)
     col.querySelectorAll('.kanban-card').forEach(c => c.remove());
 
-    const stageleads = leads.filter(l => l.stage === stage);
-    const countEl = document.getElementById('count-' + stage);
-    if (countEl) countEl.textContent = stageleads.length;
+    const stageLeads = leads.filter(l => l.stage === stage);
+    const countEl    = document.getElementById('count-' + stage);
+    if (countEl) countEl.textContent = stageLeads.length;
 
-    stageleads.forEach(lead => {
+    stageLeads.forEach(lead => {
       const card = document.createElement('div');
-      card.className = 'kanban-card';
-      card.draggable = true;
+      card.className  = 'kanban-card';
+      card.draggable  = true;
       card.dataset.id = lead.id;
-      card.innerHTML = `
+      card.innerHTML  = `
         <div class="kc-name">${lead.name}</div>
         <div class="kc-company">${lead.company || '—'}</div>
         <div class="kc-value">${formatCurrency(lead.value || 0)}</div>
@@ -70,9 +138,7 @@ function renderBoard() {
         <button class="delete-btn" data-id="${lead.id}" style="margin-top:0.6rem; background:none; border:none; color:rgba(239,68,68,0.6); font-size:0.75rem; cursor:pointer; padding:0; transition:color 0.2s;">✕ Remove</button>
       `;
 
-      // Drag events
       card.addEventListener('dragstart', (e) => {
-        dragCard = card;
         dragLeadId = lead.id;
         setTimeout(() => card.classList.add('dragging'), 0);
         e.dataTransfer.effectAllowed = 'move';
@@ -81,40 +147,35 @@ function renderBoard() {
       card.addEventListener('dragend', () => {
         card.classList.remove('dragging');
         document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
-        dragCard = null;
         dragLeadId = null;
       });
 
-      // Delete
-      card.querySelector('.delete-btn').addEventListener('click', (e) => {
+      card.querySelector('.delete-btn').addEventListener('click', async (e) => {
         e.stopPropagation();
-        leads = leads.filter(l => l.id !== lead.id);
-        save();
-        renderBoard();
-        updateStats();
+        await removeLead(lead.id);
+        // onSnapshot will re-render automatically
       });
 
       col.appendChild(card);
     });
   });
 
-  // Update total in toolbar
   const totalEl = document.getElementById('total-leads');
   if (totalEl) totalEl.textContent = leads.length;
 }
 
 function updateStats() {
-  const total = leads.length;
+  const total      = leads.length;
   const totalValue = leads.reduce((s, l) => s + (l.value || 0), 0);
-  const wonLeads = leads.filter(l => l.stage === 'won');
-  const wonValue = wonLeads.reduce((s, l) => s + (l.value || 0), 0);
-  const closedTotal = leads.filter(l => l.stage === 'won' || l.stage === 'lost').length;
-  const winRate = closedTotal > 0 ? Math.round((wonLeads.length / closedTotal) * 100) : 0;
+  const wonLeads   = leads.filter(l => l.stage === 'won');
+  const wonValue   = wonLeads.reduce((s, l) => s + (l.value || 0), 0);
+  const closed     = leads.filter(l => l.stage === 'won' || l.stage === 'lost').length;
+  const winRate    = closed > 0 ? Math.round((wonLeads.length / closed) * 100) : 0;
 
   const el = (id) => document.getElementById(id);
-  if (el('stat-total'))  el('stat-total').textContent = total;
-  if (el('stat-value'))  el('stat-value').textContent = formatCurrency(totalValue);
-  if (el('stat-won'))    el('stat-won').textContent = winRate + '%';
+  if (el('stat-total'))  el('stat-total').textContent  = total;
+  if (el('stat-value'))  el('stat-value').textContent  = formatCurrency(totalValue);
+  if (el('stat-won'))    el('stat-won').textContent    = winRate + '%';
   if (el('stat-closed')) el('stat-closed').textContent = formatCurrency(wonValue);
   if (el('total-leads')) el('total-leads').textContent = total;
 }
@@ -131,17 +192,15 @@ function initDragDrop() {
 
     col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
 
-    col.addEventListener('drop', (e) => {
+    col.addEventListener('drop', async (e) => {
       e.preventDefault();
       col.classList.remove('drag-over');
       const newStage = col.dataset.col;
       if (dragLeadId && newStage) {
         const lead = leads.find(l => l.id === dragLeadId);
         if (lead && lead.stage !== newStage) {
-          lead.stage = newStage;
-          save();
-          renderBoard();
-          updateStats();
+          await saveLead({ ...lead, stage: newStage });
+          // onSnapshot re-renders automatically
         }
       }
     });
@@ -152,10 +211,10 @@ function initDragDrop() {
 // ADD LEAD MODAL
 // ============================
 function initModal() {
-  const btn    = document.getElementById('add-lead-btn');
-  const modal  = document.getElementById('add-lead-modal');
-  const close  = document.getElementById('modal-close');
-  const form   = document.getElementById('add-lead-form');
+  const btn   = document.getElementById('add-lead-btn');
+  const modal = document.getElementById('add-lead-modal');
+  const close = document.getElementById('modal-close');
+  const form  = document.getElementById('add-lead-form');
 
   if (!btn || !modal) return;
 
@@ -163,10 +222,9 @@ function initModal() {
   close.addEventListener('click', () => modal.classList.remove('open'));
   modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    console.log('CRM: Form submitted');
-    
+
     const name    = document.getElementById('lead-name').value.trim();
     const company = document.getElementById('lead-company').value.trim();
     const value   = parseInt(document.getElementById('lead-value').value) || 0;
@@ -183,22 +241,9 @@ function initModal() {
       date:    new Date().toISOString().split('T')[0],
     };
 
-    console.log('CRM: Adding lead', newLead);
-    leads.unshift(newLead);
-    save();
-    renderBoard();
-    updateStats();
+    await saveLead(newLead);
+    // onSnapshot re-renders automatically
     form.reset();
     modal.classList.remove('open');
   });
 }
-
-// ============================
-// INIT
-// ============================
-document.addEventListener('DOMContentLoaded', () => {
-  renderBoard();
-  updateStats();
-  initDragDrop();
-  initModal();
-});

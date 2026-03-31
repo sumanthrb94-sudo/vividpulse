@@ -4,8 +4,9 @@
   "framework": "vite",
   "rewrites": [
     { "source": "/websites", "destination": "/websites.html" },
-    { "source": "/crm", "destination": "/crm.html" },
-    { "source": "/content", "destination": "/content.html" }
+    { "source": "/crm",      "destination": "/crm.html" },
+    { "source": "/content",  "destination": "/content.html" },
+    { "source": "/login",    "destination": "/login.html" }
   ],
   "headers": [
     {
