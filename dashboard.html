@@ -140,6 +140,40 @@
         </div>
       </div>
 
+      <!-- LEAD CAPTURE FORM EMBED -->
+      <div class="dash-card" style="margin-top:1.5rem;">
+        <div class="dash-card-header">
+          <h2 class="dash-card-title">Your Lead Capture Form</h2>
+          <span style="font-size:0.75rem; color:var(--web-green); background:rgba(16,185,129,0.1); padding:0.2rem 0.6rem; border-radius:99px; border:1px solid rgba(16,185,129,0.25);">Live</span>
+        </div>
+        <p style="color:var(--text-dim); font-size:0.85rem; margin-bottom:1.25rem;">
+          Share your form link or embed it on any website. Every submission lands directly in your CRM pipeline as a new lead.
+        </p>
+
+        <!-- Form Link -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="font-size:0.78rem; color:var(--text-dim); font-weight:500; margin-bottom:0.4rem;">Your shareable form link</div>
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <input type="text" id="form-link" readonly
+              style="flex:1; padding:0.65rem 0.9rem; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); border-radius:var(--radius-sm); color:var(--primary); font-family:var(--font-mono); font-size:0.8rem; outline:none; cursor:pointer;"
+              onclick="this.select()" />
+            <button class="btn btn-outline btn-sm" id="copy-link-btn" style="flex-shrink:0; white-space:nowrap;">Copy Link</button>
+            <a id="open-form-btn" href="#" target="_blank" class="btn btn-blue btn-sm" style="flex-shrink:0; white-space:nowrap;">Open →</a>
+          </div>
+        </div>
+
+        <!-- Embed Code -->
+        <div>
+          <div style="font-size:0.78rem; color:var(--text-dim); font-weight:500; margin-bottom:0.4rem;">Embed on your website (iframe)</div>
+          <div style="display:flex; gap:0.5rem; align-items:flex-start;">
+            <textarea id="embed-code" readonly rows="3"
+              style="flex:1; padding:0.65rem 0.9rem; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); border-radius:var(--radius-sm); color:var(--text-dim); font-family:var(--font-mono); font-size:0.75rem; outline:none; resize:none; line-height:1.5;"
+              onclick="this.select()"></textarea>
+            <button class="btn btn-outline btn-sm" id="copy-embed-btn" style="flex-shrink:0; white-space:nowrap; margin-top:0;">Copy Code</button>
+          </div>
+        </div>
+      </div>
+
     </main>
 
     <!-- ADD LEAD MODAL -->

@@ -7,7 +7,8 @@
     { "source": "/crm",      "destination": "/crm.html" },
     { "source": "/content",  "destination": "/content.html" },
     { "source": "/login",     "destination": "/login.html" },
-    { "source": "/dashboard", "destination": "/dashboard.html" }
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/form",      "destination": "/form.html" }
   ],
   "headers": [
     {

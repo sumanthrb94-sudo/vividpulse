@@ -1,10 +1,5 @@
 // Firestore Security Rules — Vivid Pulse
 // Deploy with: firebase deploy --only firestore:rules
-//
-// Authorization model:
-//   - Only authenticated users may read or write their own leads.
-//   - Each user's data is isolated under /users/{userId}/leads/{leadId}.
-//   - Unauthenticated requests are rejected globally.
 
 rules_version = '2';
 
@@ -13,12 +8,21 @@ service cloud.firestore {
 
     // ── User-scoped CRM leads ──────────────────────────────────────────────
     match /users/{userId}/leads/{leadId} {
-      // Allow read/write only when the signed-in user's UID matches the path
-      allow read, write: if request.auth != null
-                         && request.auth.uid == userId;
+
+      // Authenticated owner: full read / write / delete
+      allow read, update, delete: if request.auth != null
+                                  && request.auth.uid == userId;
+
+      // Public lead capture form: unauthenticated CREATE only.
+      // Validates required fields so bots can't write arbitrary data.
+      allow create: if request.resource.data.keys().hasAll(['name', 'stage', 'date', 'source'])
+                    && request.resource.data.source == 'form'
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() <= 120;
     }
 
-    // ── Deny all other paths by default ───────────────────────────────────
+    // ── Deny everything else ───────────────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
     }

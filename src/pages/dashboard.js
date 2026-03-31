@@ -48,6 +48,9 @@ requireAuth('/login').then((user) => {
     });
   }
 
+  // Lead capture form embed section
+  initEmbedSection(user.uid);
+
   // Subscribe to leads
   const leadsCol = collection(db, 'users', user.uid, 'leads');
   const q        = query(leadsCol, orderBy('date', 'desc'));
@@ -168,6 +171,33 @@ function renderRevenueBars(leads) {
         <div class="rev-bar-label">${meta.label}</div>
       </div>`;
   }).join('');
+}
+
+// ── Lead capture form embed ───────────────────────────────────────────────────
+function initEmbedSection(uid) {
+  const base      = window.location.origin;
+  const formUrl   = `${base}/form?u=${uid}`;
+  const embedCode = `<iframe src="${formUrl}" width="100%" height="640" style="border:none;border-radius:16px;" loading="lazy"></iframe>`;
+
+  const linkInput  = document.getElementById('form-link');
+  const embedInput = document.getElementById('embed-code');
+  const openBtn    = document.getElementById('open-form-btn');
+  const copyLink   = document.getElementById('copy-link-btn');
+  const copyEmbed  = document.getElementById('copy-embed-btn');
+
+  if (linkInput)  linkInput.value  = formUrl;
+  if (embedInput) embedInput.value = embedCode;
+  if (openBtn)    openBtn.href     = formUrl;
+
+  function copyText(text, btn, label) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = label; }, 2000);
+    });
+  }
+
+  if (copyLink)  copyLink.addEventListener('click',  () => copyText(formUrl,   copyLink,  'Copy Link'));
+  if (copyEmbed) copyEmbed.addEventListener('click', () => copyText(embedCode, copyEmbed, 'Copy Code'));
 }
 
 // ── Add Lead modal ────────────────────────────────────────────────────────────

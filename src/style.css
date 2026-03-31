@@ -195,6 +195,9 @@ section:nth-of-type(even) {
 .nav-links a:hover::after { transform: translateX(-50%) scaleX(1); }
 .nav-links a.active { color: var(--primary); }
 .nav-links a.active::after { transform: translateX(-50%) scaleX(1); }
+/* Buttons inside nav — don't inherit nav-link underline or dim colour */
+.nav-links a.btn { color: var(--text-main); }
+.nav-links a.btn::after { display: none; }
 
 /* Hamburger Mobile */
 .nav-toggle {
