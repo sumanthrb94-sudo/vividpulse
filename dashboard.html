@@ -23,6 +23,13 @@
         <a href="/crm" class="sidebar-link">
           <span class="material-icons">view_kanban</span> CRM Pipeline
         </a>
+        <div class="sidebar-section-label">Services</div>
+        <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20discuss%20a%20website%20project." target="_blank" class="sidebar-link">
+          <span class="material-icons">web</span> Website Studio
+        </a>
+        <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20content%20creation%20services." target="_blank" class="sidebar-link">
+          <span class="material-icons">video_camera_front</span> Content Engine
+        </a>
         <a href="/" class="sidebar-link">
           <span class="material-icons">home</span> Home
         </a>
@@ -61,6 +68,59 @@
           <p class="dash-sub" id="dash-greeting">Welcome back</p>
         </div>
         <button class="btn btn-blue btn-glow" id="dash-add-lead">+ Add Lead</button>
+      </div>
+
+      <!-- SERVICES OVERVIEW -->
+      <div class="services-overview">
+
+        <div class="svc-card svc-active">
+          <div class="svc-top">
+            <div class="svc-icon" style="background:rgba(59,130,246,0.12); color:var(--crm-blue);">
+              <span class="material-icons">view_kanban</span>
+            </div>
+            <span class="svc-badge svc-badge--active">Active</span>
+          </div>
+          <div class="svc-name">CRM Pipeline</div>
+          <div class="svc-desc">Leads, pipeline, notes & analytics</div>
+          <a href="/crm" class="btn btn-blue btn-sm" style="margin-top:auto;">Open CRM →</a>
+        </div>
+
+        <div class="svc-card">
+          <div class="svc-top">
+            <div class="svc-icon" style="background:rgba(16,185,129,0.12); color:var(--web-green);">
+              <span class="material-icons">web</span>
+            </div>
+            <span class="svc-badge">From ₹12,999</span>
+          </div>
+          <div class="svc-name">Website Studio</div>
+          <div class="svc-desc">Landing pages, business sites & e-commerce</div>
+          <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20discuss%20a%20website%20project." target="_blank" class="btn btn-outline btn-sm" style="margin-top:auto;">Start Project →</a>
+        </div>
+
+        <div class="svc-card">
+          <div class="svc-top">
+            <div class="svc-icon" style="background:rgba(239,68,68,0.12); color:var(--yt-red);">
+              <span class="material-icons">video_camera_front</span>
+            </div>
+            <span class="svc-badge">From ₹7,999/mo</span>
+          </div>
+          <div class="svc-name">Content Engine</div>
+          <div class="svc-desc">Instagram Reels, YouTube & growth strategy</div>
+          <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20discuss%20content%20creation." target="_blank" class="btn btn-outline btn-sm" style="margin-top:auto;">Get Started →</a>
+        </div>
+
+        <div class="svc-card svc-highlight">
+          <div class="svc-top">
+            <div class="svc-icon" style="background:rgba(168,85,247,0.12); color:var(--secondary);">
+              <span class="material-icons">rocket_launch</span>
+            </div>
+            <span class="svc-badge svc-badge--hot">Best Value</span>
+          </div>
+          <div class="svc-name">Growth Bundle</div>
+          <div class="svc-desc">Website + CRM + Content — everything together</div>
+          <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20discuss%20the%20Growth%20Bundle." target="_blank" class="btn btn-sm" style="margin-top:auto; background:linear-gradient(135deg,var(--secondary),var(--primary)); color:#fff; border:none; cursor:pointer;">Talk to Us →</a>
+        </div>
+
       </div>
 
       <!-- STATS ROW -->
@@ -138,6 +198,203 @@
         <div class="revenue-bars" id="revenue-bars">
           <!-- Rendered by JS -->
         </div>
+      </div>
+
+      <!-- IMPLEMENTATION PLANS -->
+      <div class="dash-card" style="margin-top:1.5rem;">
+        <div class="dash-card-header">
+          <h2 class="dash-card-title">Service Plans & Implementation</h2>
+          <span style="font-size:0.75rem; color:var(--text-dim);">Click a service to expand</span>
+        </div>
+
+        <!-- CRM -->
+        <div class="plan-row">
+          <button class="plan-toggle" data-target="plan-crm">
+            <span style="color:var(--crm-blue);">⬤</span> CRM Pipeline
+            <span class="plan-chevron">▾</span>
+          </button>
+          <div class="plan-body" id="plan-crm">
+            <div class="plan-tiers">
+              <div class="plan-tier">
+                <div class="plan-tier-name">Solo</div>
+                <div class="plan-tier-price">₹999<span>/mo</span></div>
+                <ul class="plan-features">
+                  <li>1 user</li><li>Unlimited leads</li><li>Kanban pipeline</li>
+                  <li>Lead notes</li><li>Embeddable form</li><li>Dashboard analytics</li>
+                </ul>
+              </div>
+              <div class="plan-tier plan-tier--featured">
+                <div class="plan-tier-badge">Popular</div>
+                <div class="plan-tier-name">Team</div>
+                <div class="plan-tier-price" style="color:var(--crm-blue);">₹2,999<span>/mo</span></div>
+                <ul class="plan-features">
+                  <li>Up to 5 users</li><li>Everything in Solo</li><li>Team lead assignment</li>
+                  <li>Activity log</li><li>Priority support</li><li>Custom stages</li>
+                </ul>
+              </div>
+              <div class="plan-tier">
+                <div class="plan-tier-name">Agency</div>
+                <div class="plan-tier-price" style="color:var(--secondary);">₹6,999<span>/mo</span></div>
+                <ul class="plan-features">
+                  <li>Unlimited users</li><li>White-label branding</li><li>API access</li>
+                  <li>Dedicated support</li><li>Custom integrations</li><li>SLA guarantee</li>
+                </ul>
+              </div>
+            </div>
+            <div class="plan-timeline">
+              <div class="plan-timeline-title">Implementation Timeline</div>
+              <div class="plan-steps">
+                <div class="plan-step"><span class="plan-step-day">Day 1</span><span>Account setup & pipeline customisation</span></div>
+                <div class="plan-step"><span class="plan-step-day">Day 2</span><span>Lead form embedded on your website</span></div>
+                <div class="plan-step"><span class="plan-step-day">Day 3</span><span>Team training & first leads imported</span></div>
+                <div class="plan-step"><span class="plan-step-day">Day 4</span><span>Go live — leads flowing automatically</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEBSITE -->
+        <div class="plan-row">
+          <button class="plan-toggle" data-target="plan-web">
+            <span style="color:var(--web-green);">⬤</span> Website Studio
+            <span class="plan-chevron">▾</span>
+          </button>
+          <div class="plan-body" id="plan-web" style="display:none;">
+            <div class="plan-tiers">
+              <div class="plan-tier">
+                <div class="plan-tier-name">Landing Page</div>
+                <div class="plan-tier-price">₹12,999<span> one-time</span></div>
+                <ul class="plan-features">
+                  <li>Single page design</li><li>Mobile responsive</li><li>SEO optimised</li>
+                  <li>Lead form embed</li><li>WhatsApp button</li><li>Delivered in 7 days</li>
+                </ul>
+              </div>
+              <div class="plan-tier plan-tier--featured">
+                <div class="plan-tier-badge">Most Chosen</div>
+                <div class="plan-tier-name">Business Site</div>
+                <div class="plan-tier-price" style="color:var(--web-green);">₹29,999<span> one-time</span></div>
+                <ul class="plan-features">
+                  <li>Up to 8 pages</li><li>CRM form integration</li><li>Google Analytics</li>
+                  <li>Blog setup</li><li>1 month support</li><li>Delivered in 21 days</li>
+                </ul>
+              </div>
+              <div class="plan-tier">
+                <div class="plan-tier-name">E-commerce</div>
+                <div class="plan-tier-price" style="color:var(--secondary);">₹64,999<span> one-time</span></div>
+                <ul class="plan-features">
+                  <li>Full online store</li><li>Razorpay / Stripe</li><li>Inventory management</li>
+                  <li>Admin dashboard</li><li>3 months support</li><li>Delivered in 45 days</li>
+                </ul>
+              </div>
+            </div>
+            <div class="plan-timeline">
+              <div class="plan-timeline-title">Implementation Timeline</div>
+              <div class="plan-steps">
+                <div class="plan-step"><span class="plan-step-day">Day 1–2</span><span>Discovery call & requirements gathering</span></div>
+                <div class="plan-step"><span class="plan-step-day">Day 3–5</span><span>Design mockup & approval</span></div>
+                <div class="plan-step"><span class="plan-step-day">Day 6–18</span><span>Development & content population</span></div>
+                <div class="plan-step"><span class="plan-step-day">Day 19–21</span><span>Review, revisions & launch</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="plan-row">
+          <button class="plan-toggle" data-target="plan-content">
+            <span style="color:var(--yt-red);">⬤</span> Content Engine
+            <span class="plan-chevron">▾</span>
+          </button>
+          <div class="plan-body" id="plan-content" style="display:none;">
+            <div class="plan-tiers">
+              <div class="plan-tier">
+                <div class="plan-tier-name">Starter</div>
+                <div class="plan-tier-price">₹7,999<span>/mo</span></div>
+                <ul class="plan-features">
+                  <li>8 Instagram Reels/posts</li><li>Captions + hashtags</li><li>Content calendar</li>
+                  <li>Basic analytics</li><li>1 revision per post</li><li>Monthly report</li>
+                </ul>
+              </div>
+              <div class="plan-tier plan-tier--featured">
+                <div class="plan-tier-badge">Growth</div>
+                <div class="plan-tier-name">Growth</div>
+                <div class="plan-tier-price" style="color:var(--yt-red);">₹15,999<span>/mo</span></div>
+                <ul class="plan-features">
+                  <li>16 Instagram posts</li><li>4 YouTube videos</li><li>Thumbnail design</li>
+                  <li>Monthly strategy call</li><li>Competitor analysis</li><li>Weekly report</li>
+                </ul>
+              </div>
+              <div class="plan-tier">
+                <div class="plan-tier-name">Viral</div>
+                <div class="plan-tier-price" style="color:var(--ig-pink);">₹29,999<span>/mo</span></div>
+                <ul class="plan-features">
+                  <li>Unlimited content</li><li>Paid ad creatives</li><li>Dedicated manager</li>
+                  <li>Weekly strategy calls</li><li>Influencer outreach</li><li>Real-time reports</li>
+                </ul>
+              </div>
+            </div>
+            <div class="plan-timeline">
+              <div class="plan-timeline-title">Implementation Timeline</div>
+              <div class="plan-steps">
+                <div class="plan-step"><span class="plan-step-day">Week 1</span><span>Brand audit, competitor research & content strategy</span></div>
+                <div class="plan-step"><span class="plan-step-day">Week 2</span><span>Content calendar creation & first batch scripting</span></div>
+                <div class="plan-step"><span class="plan-step-day">Week 3</span><span>Content creation, editing & client approval</span></div>
+                <div class="plan-step"><span class="plan-step-day">Week 4</span><span>Publishing, scheduling & performance review</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GROWTH BUNDLE -->
+        <div class="plan-row" style="border-bottom:none;">
+          <button class="plan-toggle" data-target="plan-bundle">
+            <span style="color:var(--secondary);">⬤</span> Growth Bundle
+            <span class="svc-badge svc-badge--hot" style="margin-left:0.5rem; font-size:0.68rem;">Best Value</span>
+            <span class="plan-chevron">▾</span>
+          </button>
+          <div class="plan-body" id="plan-bundle" style="display:none;">
+            <div class="plan-tiers">
+              <div class="plan-tier">
+                <div class="plan-tier-name">Starter Bundle</div>
+                <div class="plan-tier-price">₹9,999<span>/mo</span></div>
+                <div style="font-size:0.72rem; color:var(--text-dim); margin-bottom:0.75rem;">+ ₹12,999 one-time setup</div>
+                <ul class="plan-features">
+                  <li>Landing Page website</li><li>CRM Solo plan</li><li>8 Instagram posts/mo</li>
+                  <li>Lead form on website</li><li>Monthly strategy call</li><li>Email support</li>
+                </ul>
+              </div>
+              <div class="plan-tier plan-tier--featured">
+                <div class="plan-tier-badge">Recommended</div>
+                <div class="plan-tier-name">Pro Bundle</div>
+                <div class="plan-tier-price" style="background:linear-gradient(135deg,var(--primary),var(--secondary)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">₹19,999<span style="-webkit-text-fill-color:var(--text-dim)">/mo</span></div>
+                <div style="font-size:0.72rem; color:var(--text-dim); margin-bottom:0.75rem;">+ ₹29,999 one-time setup</div>
+                <ul class="plan-features">
+                  <li>Business website (8 pages)</li><li>CRM Team plan (5 users)</li><li>16 Instagram + 4 YouTube</li>
+                  <li>CRM form integration</li><li>Weekly strategy calls</li><li>Priority support</li>
+                </ul>
+              </div>
+              <div class="plan-tier">
+                <div class="plan-tier-name">Agency Bundle</div>
+                <div class="plan-tier-price" style="color:var(--secondary);">Custom</div>
+                <div style="font-size:0.72rem; color:var(--text-dim); margin-bottom:0.75rem;">contact for pricing</div>
+                <ul class="plan-features">
+                  <li>E-commerce website</li><li>CRM Agency plan</li><li>Unlimited content</li>
+                  <li>Dedicated account manager</li><li>White-label CRM</li><li>SLA + priority</li>
+                </ul>
+              </div>
+            </div>
+            <div class="plan-timeline">
+              <div class="plan-timeline-title">Onboarding Timeline</div>
+              <div class="plan-steps">
+                <div class="plan-step"><span class="plan-step-day">Day 1</span><span>Kickoff call — website brief, CRM setup & content strategy</span></div>
+                <div class="plan-step"><span class="plan-step-day">Week 1</span><span>CRM live + website design approved + first content batch</span></div>
+                <div class="plan-step"><span class="plan-step-day">Week 3</span><span>Website launched + content published + leads flowing in</span></div>
+                <div class="plan-step"><span class="plan-step-day">Month 2+</span><span>Monthly reviews, optimisation & scaling</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- LEAD CAPTURE FORM EMBED -->
@@ -568,7 +825,196 @@
         color: var(--text-main);
       }
 
+      /* SIDEBAR SECTION LABEL */
+      .sidebar-section-label {
+        font-size: 0.68rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-dim);
+        padding: 0.75rem 0.85rem 0.25rem;
+        opacity: 0.6;
+      }
+
+      /* SERVICES OVERVIEW */
+      .services-overview {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .svc-card {
+        background: var(--bg-card);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        transition: var(--transition);
+        min-height: 180px;
+      }
+
+      .svc-card:hover { border-color: var(--glass-border-hover); transform: translateY(-2px); }
+
+      .svc-card.svc-active { border-color: rgba(59,130,246,0.3); }
+
+      .svc-card.svc-highlight { border-color: rgba(168,85,247,0.3); }
+
+      .svc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.25rem; }
+
+      .svc-icon {
+        width: 40px; height: 40px;
+        border-radius: var(--radius-sm);
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .svc-badge {
+        font-size: 0.68rem;
+        font-weight: 600;
+        padding: 0.2rem 0.5rem;
+        border-radius: 99px;
+        background: rgba(255,255,255,0.07);
+        color: var(--text-dim);
+        border: 1px solid var(--glass-border);
+        white-space: nowrap;
+      }
+
+      .svc-badge--active { background: rgba(59,130,246,0.12); color: var(--crm-blue); border-color: rgba(59,130,246,0.25); }
+      .svc-badge--hot    { background: rgba(168,85,247,0.12); color: var(--secondary);  border-color: rgba(168,85,247,0.25); }
+
+      .svc-name { font-family: var(--font-heading); font-weight: 600; font-size: 0.95rem; }
+      .svc-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; flex: 1; }
+
+      /* IMPLEMENTATION PLANS */
+      .plan-row {
+        border-bottom: 1px solid var(--glass-border);
+        padding-bottom: 0;
+      }
+
+      .plan-toggle {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 1rem 0;
+        background: none;
+        border: none;
+        color: var(--text-main);
+        font-family: var(--font-heading);
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+        transition: var(--transition);
+      }
+
+      .plan-toggle:hover { color: var(--primary); }
+      .plan-chevron { margin-left: auto; font-size: 0.8rem; transition: transform 0.2s; }
+      .plan-toggle.open .plan-chevron { transform: rotate(180deg); }
+
+      .plan-body { padding-bottom: 1.25rem; }
+
+      .plan-tiers {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .plan-tier {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        padding: 1rem;
+        position: relative;
+      }
+
+      .plan-tier--featured {
+        border-color: rgba(34,211,238,0.25);
+        background: rgba(34,211,238,0.04);
+      }
+
+      .plan-tier-badge {
+        position: absolute;
+        top: -10px; left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary);
+        color: var(--bg-dark);
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 0.15rem 0.6rem;
+        border-radius: 99px;
+        white-space: nowrap;
+      }
+
+      .plan-tier-name { font-weight: 700; font-size: 0.85rem; margin-bottom: 0.4rem; color: var(--text-dim); }
+
+      .plan-tier-price {
+        font-family: var(--font-heading);
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--text-main);
+        margin-bottom: 0.75rem;
+        line-height: 1;
+      }
+
+      .plan-tier-price span { font-size: 0.8rem; font-weight: 400; color: var(--text-dim); }
+
+      .plan-features {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+
+      .plan-features li {
+        font-size: 0.78rem;
+        color: var(--text-dim);
+        padding-left: 1rem;
+        position: relative;
+      }
+
+      .plan-features li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: var(--web-green);
+        font-weight: 700;
+      }
+
+      .plan-timeline { background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); padding: 1rem; }
+
+      .plan-timeline-title { font-size: 0.8rem; font-weight: 600; color: var(--text-dim); margin-bottom: 0.75rem; }
+
+      .plan-steps { display: flex; flex-direction: column; gap: 0.5rem; }
+
+      .plan-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        font-size: 0.82rem;
+      }
+
+      .plan-step-day {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        color: var(--primary);
+        font-weight: 600;
+        white-space: nowrap;
+        min-width: 70px;
+        padding-top: 0.05rem;
+      }
+
       /* MOBILE RESPONSIVE */
+      @media (max-width: 1100px) {
+        .services-overview { grid-template-columns: repeat(2, 1fr); }
+        .plan-tiers { grid-template-columns: 1fr; gap: 0.75rem; }
+      }
+
       @media (max-width: 900px) {
         .sidebar { transform: translateX(-100%); }
         .sidebar.open { transform: translateX(0); }
@@ -580,6 +1026,7 @@
       }
 
       @media (max-width: 480px) {
+        .services-overview { grid-template-columns: 1fr 1fr; }
         .dash-stats { grid-template-columns: 1fr 1fr; }
         .revenue-bars { height: 80px; }
       }

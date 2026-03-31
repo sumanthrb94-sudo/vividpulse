@@ -48,6 +48,16 @@ requireAuth('/login').then((user) => {
     });
   }
 
+  // Plan accordion toggles
+  document.querySelectorAll('.plan-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const body = document.getElementById(btn.dataset.target);
+      const open = body.style.display !== 'none';
+      body.style.display = open ? 'none' : '';
+      btn.classList.toggle('open', !open);
+    });
+  });
+
   // Lead capture form embed section
   initEmbedSection(user.uid);
 
