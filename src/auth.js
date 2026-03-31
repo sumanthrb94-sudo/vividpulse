@@ -75,7 +75,7 @@ export function requireAuth(redirectTo = '/login') {
  * @param {string} redirectTo  Path to redirect authenticated visitors.
  * @returns {Promise<void>}
  */
-export function redirectIfAuthenticated(redirectTo = '/crm') {
+export function redirectIfAuthenticated(redirectTo = '/dashboard') {
   return new Promise((resolve) => {
     const unsub = onAuthStateChanged(auth, (user) => {
       unsub();

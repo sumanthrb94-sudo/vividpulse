@@ -93,7 +93,7 @@ btnGoogle.addEventListener('click', async () => {
   try {
     await signInWithGoogle();
     showSuccess('Signed in! Redirecting…');
-    window.location.href = '/crm';
+    window.location.href = '/dashboard';
   } catch (err) {
     showError(friendlyError(err.code));
     setLoading(btnGoogle, false);
@@ -124,7 +124,7 @@ loginForm.addEventListener('submit', async (e) => {
   try {
     await signInWithEmail(email, password);
     showSuccess('Signed in! Redirecting…');
-    window.location.href = '/crm';
+    window.location.href = '/dashboard';
   } catch (err) {
     showError(friendlyError(err.code));
     setLoading(loginSubmit, false);
@@ -152,7 +152,7 @@ registerForm.addEventListener('submit', async (e) => {
   try {
     await registerWithEmail(email, password);
     showSuccess('Account created! Redirecting…');
-    window.location.href = '/crm';
+    window.location.href = '/dashboard';
   } catch (err) {
     showError(friendlyError(err.code));
     setLoading(registerSubmit, false);

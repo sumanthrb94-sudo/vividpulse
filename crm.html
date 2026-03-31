@@ -281,6 +281,173 @@
       </div>
     </div>
 
+    <!-- LEAD DETAIL PANEL -->
+    <div class="lead-panel-overlay" id="lead-panel-overlay"></div>
+    <aside class="lead-panel" id="lead-panel">
+      <div class="lead-panel-header">
+        <h3 class="lead-panel-title">Lead Details</h3>
+        <button class="modal-close" id="lead-panel-close">✕</button>
+      </div>
+
+      <form id="lead-edit-form" class="lead-panel-body">
+        <div class="form-group">
+          <label>Contact Name</label>
+          <input type="text" id="edit-name" required />
+        </div>
+        <div class="form-group">
+          <label>Company</label>
+          <input type="text" id="edit-company" />
+        </div>
+        <div class="form-group">
+          <label>Deal Value (₹)</label>
+          <input type="number" id="edit-value" min="0" />
+        </div>
+        <div class="form-group">
+          <label>Stage</label>
+          <select id="edit-stage">
+            <option value="new">New Lead</option>
+            <option value="contacted">Contacted</option>
+            <option value="proposal">Proposal Sent</option>
+            <option value="won">Won</option>
+            <option value="lost">Lost</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-blue" style="width:100%; justify-content:center; margin-top:0.25rem;">Save Changes</button>
+      </form>
+
+      <div class="lead-panel-notes">
+        <h4 class="lead-panel-notes-title">Notes</h4>
+        <div id="notes-list" class="notes-list"></div>
+        <form id="note-form" class="note-form">
+          <input type="text" id="note-input" placeholder="Add a note…" autocomplete="off" />
+          <button type="submit" class="btn btn-blue btn-sm">Add</button>
+        </form>
+      </div>
+    </aside>
+
+    <style>
+      /* Lead detail panel */
+      .lead-panel-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 300;
+        backdrop-filter: blur(2px);
+      }
+      .lead-panel-overlay.open { display: block; }
+
+      .lead-panel {
+        position: fixed;
+        top: 0; right: 0;
+        width: 360px;
+        max-width: 95vw;
+        height: 100vh;
+        background: rgba(15,23,42,0.97);
+        border-left: 1px solid var(--glass-border);
+        backdrop-filter: blur(16px);
+        z-index: 400;
+        transform: translateX(100%);
+        transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+      }
+      .lead-panel.open { transform: translateX(0); }
+
+      .lead-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--glass-border);
+        position: sticky;
+        top: 0;
+        background: rgba(15,23,42,0.97);
+        z-index: 1;
+      }
+      .lead-panel-title {
+        font-family: var(--font-heading);
+        font-size: 1rem;
+        font-weight: 600;
+      }
+
+      .lead-panel-body {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .lead-panel-body .form-group { margin-bottom: 0.9rem; }
+      .lead-panel-body label {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--text-dim);
+        margin-bottom: 0.3rem;
+        font-weight: 500;
+      }
+      .lead-panel-body input,
+      .lead-panel-body select {
+        width: 100%;
+        padding: 0.6rem 0.8rem;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        color: var(--text-main);
+        font-family: var(--font-body);
+        font-size: 0.875rem;
+        outline: none;
+        transition: var(--transition);
+      }
+      .lead-panel-body input:focus,
+      .lead-panel-body select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(34,211,238,0.1);
+      }
+
+      .lead-panel-notes {
+        padding: 1.25rem 1.5rem;
+        flex: 1;
+      }
+      .lead-panel-notes-title {
+        font-family: var(--font-heading);
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.9rem;
+        color: var(--text-dim);
+      }
+
+      .notes-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem; }
+
+      .note-item {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        padding: 0.65rem 0.85rem;
+      }
+      .note-item-text { font-size: 0.85rem; line-height: 1.5; }
+      .note-item-time { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.25rem; }
+
+      .note-form {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .note-form input {
+        flex: 1;
+        padding: 0.6rem 0.8rem;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        color: var(--text-main);
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        outline: none;
+        transition: var(--transition);
+      }
+      .note-form input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(34,211,238,0.1);
+      }
+    </style>
+
     <script type="module" src="/src/pages/crm.js"></script>
     <script type="module" src="/src/page-shared.js"></script>
   </body>

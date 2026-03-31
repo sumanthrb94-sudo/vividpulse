@@ -15,6 +15,8 @@ import {
   writeBatch,
   query,
   orderBy,
+  updateDoc,
+  arrayUnion,
 } from 'firebase/firestore';
 
 // ============================
@@ -75,6 +77,7 @@ requireAuth('/login').then((user) => {
 
   initDragDrop();
   initModal();
+  initLeadPanel();
 });
 
 // ============================
@@ -130,13 +133,19 @@ function renderBoard() {
       card.className  = 'kanban-card';
       card.draggable  = true;
       card.dataset.id = lead.id;
+      const noteCount = (lead.notes || []).length;
       card.innerHTML  = `
-        <div class="kc-name">${lead.name}</div>
+        <div class="kc-name" style="cursor:pointer; text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(255,255,255,0.2);" data-open="${lead.id}">${lead.name}</div>
         <div class="kc-company">${lead.company || '—'}</div>
         <div class="kc-value">${formatCurrency(lead.value || 0)}</div>
-        <div class="kc-date">Added ${formatDate(lead.date)}</div>
+        <div class="kc-date">Added ${formatDate(lead.date)}${noteCount ? ` · 📝 ${noteCount}` : ''}</div>
         <button class="delete-btn" data-id="${lead.id}" style="margin-top:0.6rem; background:none; border:none; color:rgba(239,68,68,0.6); font-size:0.75rem; cursor:pointer; padding:0; transition:color 0.2s;">✕ Remove</button>
       `;
+
+      // Open detail panel on name click
+      card.querySelector('[data-open]').addEventListener('click', () => {
+        if (window._openLeadPanel) window._openLeadPanel(lead);
+      });
 
       card.addEventListener('dragstart', (e) => {
         dragLeadId = lead.id;
@@ -205,6 +214,84 @@ function initDragDrop() {
       }
     });
   });
+}
+
+// ============================
+// LEAD DETAIL PANEL
+// ============================
+function initLeadPanel() {
+  const overlay  = document.getElementById('lead-panel-overlay');
+  const panel    = document.getElementById('lead-panel');
+  const closeBtn = document.getElementById('lead-panel-close');
+  const editForm = document.getElementById('lead-edit-form');
+  const noteForm = document.getElementById('note-form');
+  const noteInput = document.getElementById('note-input');
+  const notesList = document.getElementById('notes-list');
+
+  if (!panel) return;
+
+  function openPanel(lead) {
+    document.getElementById('edit-name').value    = lead.name || '';
+    document.getElementById('edit-company').value = lead.company || '';
+    document.getElementById('edit-value').value   = lead.value || 0;
+    document.getElementById('edit-stage').value   = lead.stage || 'new';
+    editForm.dataset.leadId = lead.id;
+
+    // Render notes
+    const notes = lead.notes || [];
+    notesList.innerHTML = notes.length
+      ? notes.slice().reverse().map(n => `
+          <div class="note-item">
+            <div class="note-item-text">${n.text}</div>
+            <div class="note-item-time">${new Date(n.at).toLocaleString('en-IN', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })}</div>
+          </div>`).join('')
+      : '<p style="color:var(--text-dim);font-size:0.8rem;">No notes yet.</p>';
+
+    panel.classList.add('open');
+    overlay.classList.add('open');
+  }
+
+  function closePanel() {
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
+  }
+
+  closeBtn.addEventListener('click', closePanel);
+  overlay.addEventListener('click', closePanel);
+
+  // Save edits
+  editForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id      = editForm.dataset.leadId;
+    const lead    = leads.find(l => l.id === id);
+    if (!lead) return;
+    await saveLead({
+      ...lead,
+      name:    document.getElementById('edit-name').value.trim(),
+      company: document.getElementById('edit-company').value.trim() || 'Unknown',
+      value:   parseInt(document.getElementById('edit-value').value) || 0,
+      stage:   document.getElementById('edit-stage').value,
+    });
+    closePanel();
+  });
+
+  // Add note
+  noteForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = noteInput.value.trim();
+    if (!text) return;
+    const id = editForm.dataset.leadId;
+    await updateDoc(doc(leadsColRef, id), {
+      notes: arrayUnion({ text, at: new Date().toISOString() }),
+    });
+    noteInput.value = '';
+    // Re-open with updated lead
+    const updated = leads.find(l => l.id === id);
+    if (updated) openPanel(updated);
+  });
+
+  // Expose openPanel so cards can call it
+  window._openLeadPanel = openPanel;
 }
 
 // ============================
