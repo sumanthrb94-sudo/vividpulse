@@ -1,0 +1,19 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/websites", "destination": "/websites.html" },
+    { "source": "/crm", "destination": "/crm.html" },
+    { "source": "/content", "destination": "/content.html" }
+  ],
+  "headers": [
+    {
+      "source": "/projects/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}
