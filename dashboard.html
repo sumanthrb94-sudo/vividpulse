@@ -163,28 +163,52 @@
         </div>
       </div>
 
-      <!-- PIPELINE OVERVIEW + RECENT LEADS -->
-      <div class="dash-grid">
+      <!-- 3-SERVICE GRID -->
+      <div class="dash-3grid">
 
-        <!-- PIPELINE FUNNEL -->
+        <!-- CRM PIPELINE -->
         <div class="dash-card">
           <div class="dash-card-header">
-            <h2 class="dash-card-title">Pipeline Overview</h2>
-            <a href="/crm" class="dash-card-link">View Kanban →</a>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <span class="material-icons" style="color:var(--crm-blue); font-size:1rem;">view_kanban</span>
+              <h2 class="dash-card-title">CRM Pipeline</h2>
+            </div>
+            <a href="/crm" class="dash-card-link">Open →</a>
           </div>
-          <div class="pipeline-stages" id="pipeline-stages">
-            <!-- Rendered by JS -->
+          <div class="pipeline-stages" id="pipeline-stages"></div>
+          <div style="border-top:1px solid var(--glass-border); margin-top:1rem; padding-top:1rem;">
+            <div class="dash-card-header" style="margin-bottom:0.75rem;">
+              <h2 class="dash-card-title" style="font-size:0.875rem;">Recent Leads</h2>
+            </div>
+            <div class="recent-leads" id="recent-leads"></div>
           </div>
         </div>
 
-        <!-- RECENT LEADS -->
+        <!-- WEBSITE PROJECTS -->
         <div class="dash-card">
           <div class="dash-card-header">
-            <h2 class="dash-card-title">Recent Leads</h2>
-            <a href="/crm" class="dash-card-link">All leads →</a>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <span class="material-icons" style="color:var(--web-green); font-size:1rem;">web</span>
+              <h2 class="dash-card-title">Website Projects</h2>
+            </div>
+            <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20check%20on%20my%20website%20project." target="_blank" class="dash-card-link">+ New →</a>
           </div>
-          <div class="recent-leads" id="recent-leads">
-            <!-- Rendered by JS -->
+          <div id="projects-list">
+            <div class="dash-empty">No projects yet.<br><a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20start%20a%20website%20project." target="_blank" style="color:var(--web-green);">Start your first project →</a></div>
+          </div>
+        </div>
+
+        <!-- CONTENT ENGINE -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <span class="material-icons" style="color:var(--yt-red); font-size:1rem;">video_camera_front</span>
+              <h2 class="dash-card-title">Content Engine</h2>
+            </div>
+            <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20content%20creation%20services." target="_blank" class="dash-card-link">+ Start →</a>
+          </div>
+          <div id="content-overview">
+            <div class="dash-empty">No content plan yet.<br><a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20start%20content%20creation." target="_blank" style="color:var(--yt-red);">Get content started →</a></div>
           </div>
         </div>
 
@@ -825,6 +849,140 @@
         color: var(--text-main);
       }
 
+      /* 3-SERVICE GRID */
+      .dash-3grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* EMPTY STATE */
+      .dash-empty {
+        color: var(--text-dim);
+        font-size: 0.82rem;
+        text-align: center;
+        padding: 2rem 1rem;
+        line-height: 1.8;
+      }
+
+      /* WEBSITE PROJECT CARD */
+      .project-item {
+        padding: 0.85rem 0;
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .project-item:last-child { border-bottom: none; }
+
+      .project-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+      }
+
+      .project-name { font-weight: 600; font-size: 0.875rem; }
+      .project-type { font-size: 0.72rem; color: var(--text-dim); }
+
+      .project-status {
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 0.18rem 0.55rem;
+        border-radius: 99px;
+        white-space: nowrap;
+      }
+
+      .status-completed { background: rgba(16,185,129,0.12); color: var(--web-green); }
+      .status-in_progress { background: rgba(59,130,246,0.12); color: var(--crm-blue); }
+      .status-revision { background: rgba(245,158,11,0.12); color: #f59e0b; }
+      .status-pending { background: rgba(148,163,184,0.12); color: var(--text-dim); }
+
+      .project-progress-track {
+        height: 5px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 99px;
+        overflow: hidden;
+        margin-top: 0.4rem;
+      }
+      .project-progress-fill {
+        height: 100%;
+        border-radius: 99px;
+        background: linear-gradient(90deg, var(--web-green), var(--primary));
+        transition: width 0.6s ease;
+      }
+
+      /* CONTENT OVERVIEW */
+      .content-platform {
+        padding: 0.85rem;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        margin-bottom: 0.75rem;
+      }
+
+      .content-platform-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+      }
+
+      .content-platform-name {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+
+      .content-growth {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--web-green);
+        background: rgba(16,185,129,0.1);
+        padding: 0.15rem 0.45rem;
+        border-radius: 99px;
+      }
+
+      .content-stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+      }
+
+      .content-stat {
+        text-align: center;
+      }
+
+      .content-stat-val {
+        font-family: var(--font-heading);
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .content-stat-lbl {
+        font-size: 0.65rem;
+        color: var(--text-dim);
+        margin-top: 0.1rem;
+      }
+
+      .content-month-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--glass-border);
+      }
+
+      .content-month-label { font-size: 0.75rem; color: var(--text-dim); }
+
+      .content-pill {
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 0.18rem 0.5rem;
+        border-radius: 99px;
+      }
+
       /* SIDEBAR SECTION LABEL */
       .sidebar-section-label {
         font-size: 0.68rem;
@@ -1012,6 +1170,7 @@
       /* MOBILE RESPONSIVE */
       @media (max-width: 1100px) {
         .services-overview { grid-template-columns: repeat(2, 1fr); }
+        .dash-3grid { grid-template-columns: 1fr 1fr; }
         .plan-tiers { grid-template-columns: 1fr; gap: 0.75rem; }
       }
 
@@ -1021,7 +1180,7 @@
         .app-topbar { display: flex; }
         .app-main { margin-left: 0; padding: 1rem; padding-top: 76px; }
         .dash-stats { grid-template-columns: repeat(2, 1fr); }
-        .dash-grid { grid-template-columns: 1fr; }
+        .dash-3grid { grid-template-columns: 1fr; }
         .revenue-bars { grid-template-columns: repeat(5,1fr); height: 100px; }
       }
 
