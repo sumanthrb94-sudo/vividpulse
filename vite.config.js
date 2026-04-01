@@ -11,7 +11,8 @@ export default defineConfig({
         content:  'content.html',
         login:     'login.html',
         dashboard: 'dashboard.html',
-        form:      'form.html',
+        form:           'form.html',
+        contentStudio:  'content-studio.html',
       }
     }
   }

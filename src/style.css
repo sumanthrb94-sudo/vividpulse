@@ -1307,3 +1307,141 @@ textarea { resize: vertical; min-height: 120px; }
   .kanban-col { flex: 0 0 220px; }
   .calendar-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* ========================================
+   CONTENT STUDIO — AI 3-step wizard
+   ======================================== */
+
+/* Step indicator */
+#step-indicator { user-select: none; }
+
+.step-dot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.step-num {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 2px solid var(--border);
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.03);
+  transition: all 0.3s ease;
+}
+
+.step-dot.active .step-num {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: rgba(139,92,246,0.1);
+  box-shadow: 0 0 12px rgba(139,92,246,0.3);
+}
+
+.step-dot.done .step-num {
+  border-color: #10b981;
+  color: #10b981;
+  background: rgba(16,185,129,0.1);
+}
+
+.step-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.step-dot.active .step-label { color: var(--primary); }
+.step-dot.done .step-label   { color: #10b981; }
+
+.step-line {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  margin: 0 0.5rem;
+  margin-bottom: 1.1rem;
+  min-width: 60px;
+  max-width: 120px;
+  transition: background 0.3s ease;
+}
+
+.step-line.done { background: #10b981; }
+
+/* Plan display fields */
+.plan-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.plan-field-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+}
+
+.plan-field-value {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.88rem;
+  color: var(--text-main);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.plan-field-value:focus {
+  border-color: rgba(139,92,246,0.4);
+}
+
+/* Result sections */
+.result-section {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.result-section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+}
+
+.result-content {
+  font-size: 0.9rem;
+  color: var(--text-main);
+  line-height: 1.65;
+}
+
+.copy-btn {
+  align-self: flex-start;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.copy-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}

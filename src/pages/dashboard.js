@@ -12,7 +12,8 @@ import {
   onSnapshot, query, orderBy, writeBatch,
 } from 'firebase/firestore';
 
-const DEMO_EMAIL = 'sumanthbolla97@gmail.com';
+const DEMO_EMAIL  = 'sumanthbolla97@gmail.com';
+const PRO_EMAILS  = ['sumanthrb94@gmail.com'];
 
 // ── Demo seed data ────────────────────────────────────────────────────────────
 const DEMO_LEADS = [
@@ -49,6 +50,7 @@ const DEMO_STATS = {
 // ── Auth guard ────────────────────────────────────────────────────────────────
 requireAuth('/login').then(async (user) => {
   const isDemo = user.email === DEMO_EMAIL;
+  const isPro  = PRO_EMAILS.includes(user.email);
 
   // User info
   const emailEl = document.getElementById('sidebar-email');
@@ -65,6 +67,19 @@ requireAuth('/login').then(async (user) => {
     badge.textContent = 'Demo';
     badge.style.cssText = 'font-size:0.65rem;font-weight:700;padding:0.18rem 0.55rem;border-radius:99px;background:rgba(168,85,247,0.15);color:var(--secondary);border:1px solid rgba(168,85,247,0.3);margin-left:0.5rem;vertical-align:middle;';
     document.querySelector('.dash-title').appendChild(badge);
+  }
+
+  // Pro badge + Content Studio button
+  if (isPro) {
+    const titleEl = document.querySelector('.dash-title');
+    if (titleEl) {
+      const badge = document.createElement('span');
+      badge.textContent = 'Pro';
+      badge.style.cssText = 'font-size:0.65rem;font-weight:700;padding:0.18rem 0.55rem;border-radius:99px;background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);margin-left:0.5rem;vertical-align:middle;';
+      titleEl.appendChild(badge);
+    }
+    const studioBtn = document.getElementById('studio-btn');
+    if (studioBtn) studioBtn.style.display = '';
   }
 
   // Logout
