@@ -133,12 +133,18 @@ function renderBoard() {
       card.className  = 'kanban-card';
       card.draggable  = true;
       card.dataset.id = lead.id;
-      const noteCount = (lead.notes || []).length;
+      const noteCount  = (lead.notes || []).length;
+      const today      = new Date().toISOString().split('T')[0];
+      const isOverdue  = lead.dueDate && lead.dueDate < today && lead.stage !== 'won' && lead.stage !== 'lost';
+      const isDueToday = lead.dueDate && lead.dueDate === today && lead.stage !== 'won' && lead.stage !== 'lost';
+      if (isOverdue)  card.style.borderColor = 'rgba(239,68,68,0.5)';
+      if (isDueToday) card.style.borderColor = 'rgba(245,158,11,0.5)';
       card.innerHTML  = `
         <div class="kc-name" style="cursor:pointer; text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(255,255,255,0.2);" data-open="${lead.id}">${lead.name}</div>
         <div class="kc-company">${lead.company || '—'}</div>
         <div class="kc-value">${formatCurrency(lead.value || 0)}</div>
-        <div class="kc-date">Added ${formatDate(lead.date)}${noteCount ? ` · 📝 ${noteCount}` : ''}</div>
+        <div class="kc-date">Added ${formatDate(lead.date)}${noteCount ? ` · 📝 ${noteCount}` : ''}${isOverdue ? ' · <span style="color:#ef4444;font-weight:600;">⚠ Overdue</span>' : ''}${isDueToday ? ' · <span style="color:#f59e0b;font-weight:600;">📅 Due today</span>' : ''}</div>
+        ${lead.dueDate ? `<div style="font-size:0.72rem; color:${isOverdue ? '#ef4444' : isDueToday ? '#f59e0b' : 'var(--text-dim)'}; margin-top:0.25rem;">Follow-up: ${formatDate(lead.dueDate)}</div>` : ''}
         <button class="delete-btn" data-id="${lead.id}" style="margin-top:0.6rem; background:none; border:none; color:rgba(239,68,68,0.6); font-size:0.75rem; cursor:pointer; padding:0; transition:color 0.2s;">✕ Remove</button>
       `;
 
@@ -235,6 +241,7 @@ function initLeadPanel() {
     document.getElementById('edit-company').value = lead.company || '';
     document.getElementById('edit-value').value   = lead.value || 0;
     document.getElementById('edit-stage').value   = lead.stage || 'new';
+    document.getElementById('edit-due').value     = lead.dueDate || '';
     editForm.dataset.leadId = lead.id;
 
     // Render notes
@@ -271,6 +278,7 @@ function initLeadPanel() {
       company: document.getElementById('edit-company').value.trim() || 'Unknown',
       value:   parseInt(document.getElementById('edit-value').value) || 0,
       stage:   document.getElementById('edit-stage').value,
+      dueDate: document.getElementById('edit-due').value || null,
     });
     closePanel();
   });
@@ -316,6 +324,7 @@ function initModal() {
     const company = document.getElementById('lead-company').value.trim();
     const value   = parseInt(document.getElementById('lead-value').value) || 0;
     const stage   = document.getElementById('lead-stage').value;
+    const dueDate = document.getElementById('lead-due').value || null;
 
     if (!name) return;
 
@@ -324,6 +333,7 @@ function initModal() {
       name,
       company: company || 'Unknown',
       value,
+      dueDate,
       stage,
       date:    new Date().toISOString().split('T')[0],
     };

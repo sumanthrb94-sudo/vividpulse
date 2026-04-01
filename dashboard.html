@@ -67,7 +67,16 @@
           <h1 class="dash-title">Dashboard</h1>
           <p class="dash-sub" id="dash-greeting">Welcome back</p>
         </div>
-        <button class="btn btn-blue btn-glow" id="dash-add-lead">+ Add Lead</button>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" id="export-csv-btn">⬇ Export CSV</button>
+          <button class="btn btn-blue btn-glow" id="dash-add-lead">+ Add Lead</button>
+        </div>
+      </div>
+
+      <!-- OVERDUE ALERT -->
+      <div id="overdue-alert" style="display:none; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); border-radius:var(--radius-sm); padding:0.75rem 1.1rem; margin-bottom:1.25rem; font-size:0.875rem; display:none; align-items:center; justify-content:space-between; gap:1rem;">
+        <span id="overdue-text" style="color:#fca5a5;"></span>
+        <a href="/crm" style="color:var(--yt-red); font-weight:600; font-size:0.8rem; white-space:nowrap;">View Pipeline →</a>
       </div>
 
       <!-- SERVICES OVERVIEW -->
@@ -205,10 +214,16 @@
               <span class="material-icons" style="color:var(--yt-red); font-size:1rem;">video_camera_front</span>
               <h2 class="dash-card-title">Content Engine</h2>
             </div>
-            <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20content%20creation%20services." target="_blank" class="dash-card-link">+ Start →</a>
+            <div style="display:flex;gap:0.5rem;align-items:center;">
+              <button class="dash-card-link" id="update-stats-btn" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:0.8rem;">📊 Stats</button>
+              <button class="dash-card-link" id="add-content-btn" style="background:none;border:none;cursor:pointer;color:var(--primary);font-size:0.8rem;">+ Add</button>
+            </div>
           </div>
-          <div id="content-overview">
-            <div class="dash-empty">No content plan yet.<br><a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20start%20content%20creation." target="_blank" style="color:var(--yt-red);">Get content started →</a></div>
+          <!-- Platform stats summary -->
+          <div id="content-stats-summary" style="display:none; margin-bottom:1rem;"></div>
+          <!-- Content items list -->
+          <div id="content-items-list">
+            <div class="dash-empty">No content pieces yet.<br><span style="color:var(--text-dim);">Click "+ Add" to track your first piece.</span></div>
           </div>
         </div>
 
@@ -456,6 +471,104 @@
       </div>
 
     </main>
+
+    <!-- ADD CONTENT MODAL -->
+    <div class="modal-overlay" id="add-content-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="content-modal-title">🎬 Add Content Piece</h3>
+          <button class="modal-close" id="content-modal-close">✕</button>
+        </div>
+        <form id="add-content-form">
+          <input type="hidden" id="content-edit-id" />
+          <div class="form-group">
+            <label for="c-title">Title *</label>
+            <input type="text" id="c-title" placeholder="e.g. 5 Tips to Grow on Instagram" required />
+          </div>
+          <div class="form-group">
+            <label for="c-platform">Platform</label>
+            <select id="c-platform">
+              <option value="instagram">Instagram</option>
+              <option value="youtube">YouTube</option>
+              <option value="both">Both</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="c-type">Content Type</label>
+            <select id="c-type">
+              <option value="reel">Reel / Short</option>
+              <option value="post">Post / Carousel</option>
+              <option value="video">YouTube Video</option>
+              <option value="story">Story</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="c-status">Status</label>
+            <select id="c-status">
+              <option value="planned">Planned</option>
+              <option value="scripting">Scripting</option>
+              <option value="production">In Production</option>
+              <option value="editing">Editing</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="c-date">Scheduled / Publish Date</label>
+            <input type="date" id="c-date" />
+          </div>
+          <div class="form-group">
+            <label for="c-notes">Notes</label>
+            <textarea id="c-notes" rows="2" placeholder="Hook idea, key points…"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-glow" style="width:100%;justify-content:center;margin-top:0.25rem;">Save Content</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- UPDATE PLATFORM STATS MODAL -->
+    <div class="modal-overlay" id="stats-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>📊 Update Platform Stats</h3>
+          <button class="modal-close" id="stats-modal-close">✕</button>
+        </div>
+        <form id="stats-form">
+          <p style="color:var(--text-dim);font-size:0.82rem;margin-bottom:1.25rem;">Enter your latest numbers — these show on your dashboard.</p>
+          <div style="font-size:0.8rem;font-weight:600;color:var(--ig-pink);margin-bottom:0.75rem;">📸 Instagram</div>
+          <div class="form-group">
+            <label for="s-ig-followers">Followers</label>
+            <input type="number" id="s-ig-followers" placeholder="e.g. 12400" min="0" />
+          </div>
+          <div class="form-group">
+            <label for="s-ig-posts">Posts This Month</label>
+            <input type="number" id="s-ig-posts" placeholder="e.g. 12" min="0" />
+          </div>
+          <div class="form-group">
+            <label for="s-ig-growth">Growth % (e.g. +8.3%)</label>
+            <input type="text" id="s-ig-growth" placeholder="+8.3%" />
+          </div>
+          <div style="font-size:0.8rem;font-weight:600;color:var(--yt-red);margin:1rem 0 0.75rem;">▶ YouTube</div>
+          <div class="form-group">
+            <label for="s-yt-subs">Subscribers</label>
+            <input type="number" id="s-yt-subs" placeholder="e.g. 3200" min="0" />
+          </div>
+          <div class="form-group">
+            <label for="s-yt-videos">Videos This Month</label>
+            <input type="number" id="s-yt-videos" placeholder="e.g. 4" min="0" />
+          </div>
+          <div class="form-group">
+            <label for="s-yt-views">Total Views This Month</label>
+            <input type="number" id="s-yt-views" placeholder="e.g. 48000" min="0" />
+          </div>
+          <div class="form-group">
+            <label for="s-yt-growth">Growth % (e.g. +12.1%)</label>
+            <input type="text" id="s-yt-growth" placeholder="+12.1%" />
+          </div>
+          <button type="submit" class="btn btn-primary btn-glow" style="width:100%;justify-content:center;margin-top:0.25rem;">Save Stats</button>
+        </form>
+      </div>
+    </div>
 
     <!-- ADD LEAD MODAL -->
     <div class="modal-overlay" id="add-lead-modal">
@@ -982,6 +1095,26 @@
         padding: 0.18rem 0.5rem;
         border-radius: 99px;
       }
+
+      /* CONTENT ITEMS */
+      .content-item-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid var(--glass-border);
+        gap: 0.5rem;
+      }
+      .content-item-row:last-child { border-bottom: none; }
+      .content-item-title {
+        font-size: 0.82rem;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 180px;
+      }
+      .content-item-meta { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.1rem; }
 
       /* SIDEBAR SECTION LABEL */
       .sidebar-section-label {
