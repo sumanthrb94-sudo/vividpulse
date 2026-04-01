@@ -26,6 +26,16 @@ const VIDEO_TYPES = ['video', 'reel'];
 const DAILY_VIDEO_LIMIT = 2;
 
 // ============================
+// AI STRATEGIES
+// ============================
+const STRATEGIES = {
+  google:    { label: 'Google Only',  planApi: '/api/plan-content-gemini', genApi: '/api/generate-content', planModel: 'Gemini',  genModel: 'Gemini'  },
+  optimized: { label: 'Optimized',    planApi: '/api/plan-content',        genApi: '/api/generate-content', planModel: 'Claude',  genModel: 'Gemini'  },
+  claude:    { label: 'Claude Only',  planApi: '/api/plan-content',        genApi: '/api/generate-content-claude', planModel: 'Claude', genModel: 'Claude' },
+};
+let selectedStrategy = 'google'; // default
+
+// ============================
 // STATE
 // ============================
 let currentUser   = null;
@@ -66,6 +76,7 @@ requireAuth('/login').then(async (user) => {
   await loadHistory();
   await checkUsageBanner();
 
+  initStrategySelector();
   initPlanForm();
   initReviewStep();
   initMobileNav();
@@ -172,6 +183,39 @@ function goToStep(n) {
 }
 
 // ============================
+// STRATEGY SELECTOR
+// ============================
+function initStrategySelector() {
+  const btns = document.querySelectorAll('.strategy-btn');
+
+  function select(strategy) {
+    selectedStrategy = strategy;
+    btns.forEach(b => b.classList.toggle('active', b.dataset.strategy === strategy));
+
+    const s = STRATEGIES[strategy];
+    const desc = document.getElementById('step1-desc');
+    if (desc) desc.textContent = `${s.planModel} will analyze your past content and build a smart plan. ${s.genModel} will generate the final content.`;
+
+    const planBtnText = document.getElementById('plan-btn-text');
+    if (planBtnText) planBtnText.textContent = `✦ Generate Plan with ${s.planModel}`;
+
+    const genBtnText = document.getElementById('gen-btn-text');
+    if (genBtnText) genBtnText.textContent = `✦ Generate with ${s.genModel}`;
+
+    const genBtnLoading = document.getElementById('gen-btn-loading');
+    if (genBtnLoading) genBtnLoading.textContent = `Generating with ${s.genModel}…`;
+
+    const planBtnLoading = document.getElementById('plan-btn-loading');
+    if (planBtnLoading) planBtnLoading.textContent = `Analyzing with ${s.planModel}…`;
+  }
+
+  btns.forEach(btn => btn.addEventListener('click', () => select(btn.dataset.strategy)));
+
+  // Default = google
+  select('google');
+}
+
+// ============================
 // STEP 1: PLAN FORM
 // ============================
 function initPlanForm() {
@@ -207,7 +251,8 @@ function initPlanForm() {
     document.getElementById('plan-btn').disabled              = true;
 
     try {
-      const res = await fetch('/api/plan-content', {
+      const planApi = STRATEGIES[selectedStrategy].planApi;
+      const res = await fetch(planApi, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contentType, platform, brief, history: contentHistory }),
@@ -301,7 +346,8 @@ function initReviewStep() {
     document.getElementById('generate-btn').disabled         = true;
 
     try {
-      const res = await fetch('/api/generate-content', {
+      const genApi = STRATEGIES[selectedStrategy].genApi;
+      const res = await fetch(genApi, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
