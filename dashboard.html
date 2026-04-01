@@ -442,6 +442,95 @@
 
     </main>
 
+    <!-- ═══ LEAD DETAIL PANEL ═══ -->
+    <div class="lead-panel-overlay" id="lead-panel-overlay"></div>
+    <aside class="lead-panel" id="lead-panel" aria-label="Lead Details">
+
+      <!-- Panel Header -->
+      <div class="lead-panel-header">
+        <div>
+          <div class="lead-panel-label">Lead Detail</div>
+          <div class="lead-panel-name" id="lp-name">—</div>
+        </div>
+        <button class="lead-panel-close" id="lead-panel-close" aria-label="Close">✕</button>
+      </div>
+
+      <!-- Stage Quick-Change Pills -->
+      <div class="lp-section">
+        <div class="lp-section-label">Move to Stage</div>
+        <div class="lp-stage-pills" id="lp-stage-pills"></div>
+      </div>
+
+      <!-- Info Grid -->
+      <div class="lp-section">
+        <div class="lp-info-grid" id="lp-info-grid"></div>
+      </div>
+
+      <!-- Edit Form -->
+      <div class="lp-section">
+        <div class="lp-section-label">Edit Details</div>
+        <form id="lp-edit-form" autocomplete="off">
+          <input type="hidden" id="lp-lead-id" />
+          <div class="lp-form-row">
+            <div class="lp-form-group">
+              <label class="lp-label" for="lp-edit-name">Name</label>
+              <input id="lp-edit-name" class="lp-input" type="text" required />
+            </div>
+            <div class="lp-form-group">
+              <label class="lp-label" for="lp-edit-company">Company</label>
+              <input id="lp-edit-company" class="lp-input" type="text" />
+            </div>
+          </div>
+          <div class="lp-form-row">
+            <div class="lp-form-group">
+              <label class="lp-label" for="lp-edit-value">Value (₹)</label>
+              <input id="lp-edit-value" class="lp-input" type="number" min="0" />
+            </div>
+            <div class="lp-form-group">
+              <label class="lp-label" for="lp-edit-due">Follow-up Date</label>
+              <input id="lp-edit-due" class="lp-input" type="date" />
+            </div>
+          </div>
+          <div class="lp-form-group">
+            <label class="lp-label" for="lp-edit-phone">Phone</label>
+            <input id="lp-edit-phone" class="lp-input" type="tel" placeholder="Optional" />
+          </div>
+          <div class="lp-form-group">
+            <label class="lp-label" for="lp-edit-email">Email</label>
+            <input id="lp-edit-email" class="lp-input" type="email" placeholder="Optional" />
+          </div>
+          <div class="lp-form-group">
+            <label class="lp-label" for="lp-edit-source">Source</label>
+            <select id="lp-edit-source" class="lp-input">
+              <option value="">— Unknown —</option>
+              <option value="form">Website Form</option>
+              <option value="whatsapp">WhatsApp</option>
+              <option value="referral">Referral</option>
+              <option value="instagram">Instagram</option>
+              <option value="youtube">YouTube</option>
+              <option value="cold">Cold Outreach</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:0.6rem;margin-top:0.75rem;">
+            <button type="submit" class="btn btn-primary" style="flex:1;" id="lp-save-btn">Save Changes</button>
+            <button type="button" class="btn btn-outline" id="lp-delete-btn" style="color:#fca5a5;border-color:rgba(239,68,68,0.3);" title="Delete lead">🗑</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Notes -->
+      <div class="lp-section" style="flex:1; display:flex; flex-direction:column; min-height:0;">
+        <div class="lp-section-label">Notes</div>
+        <div class="lp-notes-list" id="lp-notes-list"></div>
+        <form id="lp-note-form" style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+          <input id="lp-note-input" class="lp-input" type="text" placeholder="Add a note…" style="flex:1;" />
+          <button type="submit" class="btn btn-blue btn-sm">Add</button>
+        </form>
+      </div>
+
+    </aside>
+
     <!-- EDIT / ADD PROJECT MODAL -->
     <div class="modal-overlay" id="project-modal">
       <div class="modal">

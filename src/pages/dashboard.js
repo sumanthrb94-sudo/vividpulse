@@ -10,6 +10,7 @@ import { db } from '/src/firebase.js';
 import {
   collection, doc, setDoc, deleteDoc, getDoc,
   onSnapshot, query, orderBy, writeBatch,
+  updateDoc, arrayUnion,
 } from 'firebase/firestore';
 
 const DEMO_EMAIL        = 'sumanthbolla97@gmail.com';
@@ -155,6 +156,9 @@ requireAuth('/login').then(async (user) => {
   onSnapshot(statsRef, snap => {
     if (snap.exists()) renderStatsSummary(snap.data());
   });
+
+  // Lead panel
+  initLeadPanel(leadsCol);
 
   // Embed section
   initEmbedSection(user.uid);
@@ -356,40 +360,70 @@ function renderPipeline(leads) {
   if (!el) return;
   const total = leads.length || 1;
   el.innerHTML = Object.entries(STAGE_META).map(([key, m]) => {
-    const count = leads.filter(l => l.stage === key).length;
+    const stageLeads = leads.filter(l => l.stage === key);
+    const count = stageLeads.length;
     const pct   = Math.round((count / total) * 100);
-    return `<div class="pipeline-stage-row">
+    const value = stageLeads.reduce((s, l) => s + (l.value || 0), 0);
+    return `<div class="pipeline-stage-row pipeline-stage-clickable" data-stage="${key}" style="cursor:pointer;" title="Click to see ${m.label} leads">
       <div class="pipeline-stage-meta">
         <span class="pipeline-stage-name">${m.label}</span>
-        <span class="pipeline-stage-count">${count} · ${pct}%</span>
+        <span class="pipeline-stage-count">${count} lead${count !== 1 ? 's' : ''} · ${fmt(value)}</span>
       </div>
       <div class="pipeline-bar-track">
         <div class="pipeline-bar-fill" style="width:${pct}%;background:${m.color};"></div>
       </div>
     </div>`;
   }).join('');
+
+  // Clicking a stage row opens a mini-list popup of those leads
+  el.querySelectorAll('.pipeline-stage-clickable').forEach(row => {
+    row.addEventListener('click', () => {
+      const stage      = row.dataset.stage;
+      const stageLeads = leads.filter(l => l.stage === stage);
+      if (!stageLeads.length) return;
+      if (stageLeads.length === 1) {
+        window._openLeadPanel && window._openLeadPanel(stageLeads[0]);
+      } else {
+        window._openStageLeadPicker && window._openStageLeadPicker(stage, stageLeads);
+      }
+    });
+  });
 }
 
 // ── Recent leads ──────────────────────────────────────────────────────────────
 function renderRecentLeads(leads) {
   const el = document.getElementById('recent-leads');
   if (!el) return;
-  const recent = leads.slice(0, 5);
+  const recent = leads.slice(0, 8);
   if (!recent.length) { el.innerHTML = `<div class="dash-empty">No leads yet.</div>`; return; }
   el.innerHTML = recent.map(l => {
-    const m   = STAGE_META[l.stage] || STAGE_META.new;
+    const m         = STAGE_META[l.stage] || STAGE_META.new;
     const isOverdue = l.dueDate && l.dueDate < TODAY && l.stage !== 'won' && l.stage !== 'lost';
-    return `<div class="recent-lead-row">
-      <div>
-        <div class="recent-lead-name">${l.name}${isOverdue ? ' <span style="color:#ef4444;font-size:0.7rem;">⚠</span>' : ''}</div>
-        <div class="recent-lead-company">${l.company || '—'}${l.dueDate ? ' · Due ' + fmtDate(l.dueDate) : ''}</div>
+    const isDueToday = l.dueDate === TODAY && l.stage !== 'won' && l.stage !== 'lost';
+    return `<div class="recent-lead-row lead-clickable" data-lead-id="${l.id}" style="cursor:pointer;" title="Click to view / edit">
+      <div style="min-width:0;">
+        <div class="recent-lead-name">
+          ${l.name}
+          ${isOverdue  ? '<span style="color:#ef4444;font-size:0.68rem;margin-left:0.3rem;">⚠ Overdue</span>'  : ''}
+          ${isDueToday ? '<span style="color:#f59e0b;font-size:0.68rem;margin-left:0.3rem;">📅 Today</span>'    : ''}
+        </div>
+        <div class="recent-lead-company">${l.company || '—'}${l.source ? ' · ' + l.source : ''}${l.dueDate ? ' · Due ' + fmtDate(l.dueDate) : ''}</div>
       </div>
       <div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0;">
         <span class="recent-lead-value">${fmt(l.value || 0)}</span>
         <span class="stage-badge" style="background:${m.bg};color:${m.color};">${m.label}</span>
+        <span style="color:var(--text-dim);font-size:0.8rem;">›</span>
       </div>
     </div>`;
   }).join('');
+
+  // Wire click to open panel
+  el.querySelectorAll('.lead-clickable').forEach(row => {
+    row.addEventListener('click', () => {
+      const lead = leads.find(l => l.id === row.dataset.leadId);
+      if (lead) window._openLeadPanel && window._openLeadPanel(lead);
+    });
+  });
 }
 
 // ── Revenue bars ──────────────────────────────────────────────────────────────
@@ -680,6 +714,198 @@ function initProjectModal(projectsCol) {
       saveBtn.textContent = 'Save Project';
     }
   });
+}
+
+// ── Lead detail panel ─────────────────────────────────────────────────────────
+function initLeadPanel(leadsCol) {
+  const panel   = document.getElementById('lead-panel');
+  const overlay = document.getElementById('lead-panel-overlay');
+  if (!panel) return;
+
+  let currentLead = null;
+
+  // ── Open / Close ────────────────────────────────────────────────────────────
+  function openPanel(lead) {
+    currentLead = lead;
+    _populatePanel(lead);
+    panel.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePanel() {
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    currentLead = null;
+  }
+
+  document.getElementById('lead-panel-close').addEventListener('click', closePanel);
+  overlay.addEventListener('click', closePanel);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+  // ── Populate panel with lead data ────────────────────────────────────────────
+  function _populatePanel(lead) {
+    const m = STAGE_META[lead.stage] || STAGE_META.new;
+
+    // Header
+    document.getElementById('lp-name').textContent = lead.name;
+
+    // Stage pills
+    const pillsEl = document.getElementById('lp-stage-pills');
+    pillsEl.innerHTML = Object.entries(STAGE_META).map(([key, sm]) => `
+      <button class="lp-stage-pill ${lead.stage === key ? 'active' : ''}"
+        data-stage="${key}"
+        style="--pill-color:${sm.color};">
+        ${sm.label}
+      </button>`).join('');
+
+    pillsEl.querySelectorAll('.lp-stage-pill').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const newStage = btn.dataset.stage;
+        if (newStage === currentLead.stage) return;
+        btn.disabled = true;
+        await setDoc(doc(leadsCol, currentLead.id), { ...currentLead, stage: newStage });
+        // onSnapshot will update leads; re-open with updated data
+        closePanel();
+      });
+    });
+
+    // Info grid
+    const isOverdue  = lead.dueDate && lead.dueDate < TODAY && lead.stage !== 'won' && lead.stage !== 'lost';
+    const isDueToday = lead.dueDate === TODAY && lead.stage !== 'won' && lead.stage !== 'lost';
+    const infoItems  = [
+      { label: 'Stage',   value: `<span class="stage-badge" style="background:${m.bg};color:${m.color};">${m.label}</span>` },
+      { label: 'Value',   value: fmt(lead.value || 0) },
+      { label: 'Added',   value: lead.date ? fmtDate(lead.date) : '—' },
+      { label: 'Due',     value: lead.dueDate ? `<span style="color:${isOverdue ? '#ef4444' : isDueToday ? '#f59e0b' : 'var(--text-main)'}">${fmtDate(lead.dueDate)}${isOverdue ? ' ⚠' : isDueToday ? ' 📅' : ''}</span>` : '—' },
+      { label: 'Source',  value: lead.source  || '—' },
+      { label: 'Phone',   value: lead.phone   ? `<a href="tel:${lead.phone}" style="color:var(--primary);">${lead.phone}</a>` : '—' },
+      { label: 'Email',   value: lead.email   ? `<a href="mailto:${lead.email}" style="color:var(--primary);">${lead.email}</a>` : '—' },
+      { label: 'Company', value: lead.company || '—' },
+    ];
+    document.getElementById('lp-info-grid').innerHTML = infoItems.map(i =>
+      `<div class="lp-info-item"><div class="lp-info-label">${i.label}</div><div class="lp-info-value">${i.value}</div></div>`
+    ).join('');
+
+    // Edit form
+    document.getElementById('lp-lead-id').value       = lead.id;
+    document.getElementById('lp-edit-name').value     = lead.name    || '';
+    document.getElementById('lp-edit-company').value  = lead.company || '';
+    document.getElementById('lp-edit-value').value    = lead.value   || '';
+    document.getElementById('lp-edit-due').value      = lead.dueDate || '';
+    document.getElementById('lp-edit-phone').value    = lead.phone   || '';
+    document.getElementById('lp-edit-email').value    = lead.email   || '';
+    document.getElementById('lp-edit-source').value   = lead.source  || '';
+
+    // Notes
+    _renderNotes(lead.notes || []);
+  }
+
+  function _renderNotes(notes) {
+    const el = document.getElementById('lp-notes-list');
+    if (!notes.length) {
+      el.innerHTML = '<p style="color:var(--text-dim);font-size:0.78rem;padding:0.5rem 0;">No notes yet. Add one below.</p>';
+      return;
+    }
+    el.innerHTML = notes.slice().reverse().map(n => `
+      <div class="lp-note-item">
+        <div class="lp-note-text">${n.text}</div>
+        <div class="lp-note-time">${new Date(n.at).toLocaleString('en-IN', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })}</div>
+      </div>`).join('');
+  }
+
+  // ── Save edits ───────────────────────────────────────────────────────────────
+  document.getElementById('lp-edit-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const id   = document.getElementById('lp-lead-id').value;
+    const btn  = document.getElementById('lp-save-btn');
+    btn.disabled    = true;
+    btn.textContent = 'Saving…';
+    try {
+      await setDoc(doc(leadsCol, id), {
+        ...currentLead,
+        name:    document.getElementById('lp-edit-name').value.trim(),
+        company: document.getElementById('lp-edit-company').value.trim() || 'Unknown',
+        value:   Number(document.getElementById('lp-edit-value').value) || 0,
+        dueDate: document.getElementById('lp-edit-due').value || null,
+        phone:   document.getElementById('lp-edit-phone').value.trim() || null,
+        email:   document.getElementById('lp-edit-email').value.trim() || null,
+        source:  document.getElementById('lp-edit-source').value || null,
+      });
+      btn.textContent = '✓ Saved';
+      setTimeout(() => { btn.disabled = false; btn.textContent = 'Save Changes'; }, 1200);
+    } catch (err) {
+      alert('Save failed: ' + err.message);
+      btn.disabled = false; btn.textContent = 'Save Changes';
+    }
+  });
+
+  // ── Delete ───────────────────────────────────────────────────────────────────
+  document.getElementById('lp-delete-btn').addEventListener('click', async () => {
+    if (!currentLead) return;
+    if (!confirm(`Delete "${currentLead.name}"? This cannot be undone.`)) return;
+    await deleteDoc(doc(leadsCol, currentLead.id));
+    closePanel();
+  });
+
+  // ── Add note ─────────────────────────────────────────────────────────────────
+  document.getElementById('lp-note-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const input = document.getElementById('lp-note-input');
+    const text  = input.value.trim();
+    if (!text || !currentLead) return;
+    input.value = '';
+    await updateDoc(doc(leadsCol, currentLead.id), {
+      notes: arrayUnion({ text, at: new Date().toISOString() }),
+    });
+    // onSnapshot re-fires; update notes in panel live
+    const updatedNotes = [...(currentLead.notes || []), { text, at: new Date().toISOString() }];
+    currentLead = { ...currentLead, notes: updatedNotes };
+    _renderNotes(updatedNotes);
+  });
+
+  // ── Stage lead picker (when clicking a stage bar with multiple leads) ─────────
+  window._openStageLeadPicker = (stage, stageLeads) => {
+    const m = STAGE_META[stage];
+    const picker = document.createElement('div');
+    picker.id = 'stage-picker-modal';
+    picker.style.cssText = 'position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:1rem;';
+    picker.innerHTML = `
+      <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:18px;padding:1.5rem;max-width:420px;width:100%;max-height:80vh;overflow-y:auto;backdrop-filter:blur(20px);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div style="font-weight:700;color:${m.color};">${m.label} — ${stageLeads.length} leads</div>
+          <button onclick="document.getElementById('stage-picker-modal').remove()" style="background:none;border:none;color:var(--text-dim);font-size:1.1rem;cursor:pointer;">✕</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          ${stageLeads.map(l => `
+            <button class="stage-picker-item" data-id="${l.id}"
+              style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:10px;padding:0.65rem 0.9rem;cursor:pointer;text-align:left;width:100%;transition:background 0.15s;">
+              <div>
+                <div style="font-size:0.88rem;font-weight:600;color:var(--text-main);">${l.name}</div>
+                <div style="font-size:0.72rem;color:var(--text-dim);">${l.company || '—'}${l.dueDate ? ' · Due ' + fmtDate(l.dueDate) : ''}</div>
+              </div>
+              <div style="font-size:0.82rem;font-weight:700;color:${m.color};flex-shrink:0;">${fmt(l.value || 0)}</div>
+            </button>`).join('')}
+        </div>
+      </div>`;
+
+    picker.querySelectorAll('.stage-picker-item').forEach(btn => {
+      btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.06)');
+      btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.03)');
+      btn.addEventListener('click', () => {
+        const lead = stageLeads.find(l => l.id === btn.dataset.id);
+        picker.remove();
+        if (lead) openPanel(lead);
+      });
+    });
+
+    picker.addEventListener('click', e => { if (e.target === picker) picker.remove(); });
+    document.body.appendChild(picker);
+  };
+
+  // Expose for use from recent leads / focus section clicks
+  window._openLeadPanel = openPanel;
 }
 
 // ── Lead capture form embed ───────────────────────────────────────────────────
