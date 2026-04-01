@@ -150,6 +150,9 @@ requireAuth('/login').then(async (user) => {
   // Content modals
   initContentModal(contentItemsCol);
   initStatsModal(statsRef);
+
+  // Project modal
+  initProjectModal(projectsCol);
 });
 
 // ── Demo seeding ──────────────────────────────────────────────────────────────
@@ -214,6 +217,18 @@ function renderStats(leads) {
   document.getElementById('ds-pipeline').textContent = fmt(pipeline);
   document.getElementById('ds-winrate').textContent  = winRate + '%';
   document.getElementById('ds-closed').textContent   = fmt(revenue);
+
+  // New leads badge on CRM card
+  const newCount = leads.filter(l => l.stage === 'new').length;
+  const badge    = document.getElementById('new-leads-badge');
+  if (badge) {
+    if (newCount > 0) {
+      badge.textContent  = newCount + ' new';
+      badge.style.display = '';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
 }
 
 // ── Overdue alert ─────────────────────────────────────────────────────────────
@@ -311,23 +326,38 @@ function renderProjects(projects) {
   const el = document.getElementById('projects-list');
   if (!el) return;
   if (!projects.length) {
-    el.innerHTML = `<div class="dash-empty">No projects yet.<br><a href="https://wa.me/917799934943" target="_blank" style="color:var(--web-green);">Start your first project →</a></div>`;
+    el.innerHTML = `<div class="dash-empty">No projects yet.<br><span style="color:var(--text-dim);">Click "+ Add" to track a project.</span></div>`;
     return;
   }
-  const labels = { completed: 'Completed', in_progress: 'In Progress', revision: 'Revision', pending: 'Pending' };
+  const labels = { completed: 'Completed', in_progress: 'In Progress', revision: 'Revision', pending: 'Pending', on_hold: 'On Hold' };
   el.innerHTML = projects.map(p => `
     <div class="project-item">
       <div class="project-meta">
         <div>
           <div class="project-name">${p.name}</div>
-          <div class="project-type">${p.type} · ${fmt(p.value || 0)} · Due ${fmtDate(p.dueDate)}</div>
+          <div class="project-type">${p.type}${p.value ? ' · ' + fmt(p.value) : ''}${p.dueDate ? ' · Due ' + fmtDate(p.dueDate) : ''}</div>
         </div>
-        <span class="project-status status-${p.status}">${labels[p.status] || p.status}</span>
+        <div style="display:flex;align-items:center;gap:0.4rem;flex-shrink:0;">
+          <span class="project-status status-${p.status}">${labels[p.status] || p.status}</span>
+          <button class="proj-edit-btn" data-id="${p.id}" title="Update progress" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.78rem;padding:0.1rem 0.3rem;" >✎</button>
+        </div>
       </div>
-      <div class="project-progress-track">
-        <div class="project-progress-fill" style="width:${p.progress || 0}%;"></div>
+      <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.4rem;">
+        <div class="project-progress-track" style="flex:1;">
+          <div class="project-progress-fill" style="width:${p.progress || 0}%;"></div>
+        </div>
+        <span style="font-size:0.72rem;color:var(--text-dim);flex-shrink:0;min-width:2rem;text-align:right;">${p.progress || 0}%</span>
       </div>
+      ${p.notes ? `<div style="font-size:0.75rem;color:var(--text-dim);margin-top:0.35rem;padding-top:0.35rem;border-top:1px solid var(--glass-border);">${p.notes}</div>` : ''}
     </div>`).join('');
+
+  // wire edit buttons
+  el.querySelectorAll('.proj-edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = projects.find(x => x.id === btn.dataset.id);
+      if (p) window._openProjectModal && window._openProjectModal(p);
+    });
+  });
 }
 
 // ── Platform stats summary ────────────────────────────────────────────────────
@@ -358,6 +388,21 @@ function renderStatsSummary(stats) {
 function renderContentItems(items) {
   const el = document.getElementById('content-items-list');
   if (!el) return;
+
+  // Pipeline counts
+  const countsEl = document.getElementById('content-pipeline-counts');
+  if (countsEl && items.length > 0) {
+    const counts = {};
+    items.forEach(i => { counts[i.status] = (counts[i.status] || 0) + 1; });
+    countsEl.innerHTML = Object.entries(CONTENT_STATUS).map(([key, meta]) => {
+      const n = counts[key] || 0;
+      if (!n) return '';
+      return `<span style="background:${meta.bg};color:${meta.color};font-size:0.68rem;font-weight:600;padding:0.2rem 0.5rem;border-radius:99px;border:1px solid ${meta.color}33;">${meta.label} ${n}</span>`;
+    }).join('');
+  } else if (countsEl) {
+    countsEl.innerHTML = '';
+  }
+
   if (!items.length) {
     el.innerHTML = `<div class="dash-empty">No content pieces yet.<br><span style="color:var(--text-dim);">Click "+ Add" to track your first piece.</span></div>`;
     return;
@@ -469,6 +514,70 @@ function initStatsModal(statsRef) {
       },
     });
     modal.classList.remove('open');
+  });
+}
+
+// ── Project modal (Add / Edit) ────────────────────────────────────────────────
+function initProjectModal(projectsCol) {
+  const modal    = document.getElementById('project-modal');
+  const closeBtn = document.getElementById('project-modal-close');
+  const cancelBtn = document.getElementById('proj-cancel-btn');
+  const form     = document.getElementById('project-form');
+  const addBtn   = document.getElementById('add-project-btn');
+  const slider   = document.getElementById('proj-progress');
+  const sliderVal = document.getElementById('proj-progress-val');
+  if (!modal) return;
+
+  slider?.addEventListener('input', () => { sliderVal.textContent = slider.value; });
+
+  function openModal(project = null) {
+    document.getElementById('project-modal-title').textContent = project ? '✎ Update Project' : '🌐 Add Project';
+    document.getElementById('project-edit-id').value  = project?.id  || '';
+    document.getElementById('proj-name').value        = project?.name || '';
+    document.getElementById('proj-type').value        = project?.type || 'Landing Page';
+    document.getElementById('proj-status').value      = project?.status || 'pending';
+    document.getElementById('proj-value').value       = project?.value || '';
+    document.getElementById('proj-due').value         = project?.dueDate || '';
+    document.getElementById('proj-notes').value       = project?.notes || '';
+    const prog = project?.progress || 0;
+    slider.value        = prog;
+    sliderVal.textContent = prog;
+    modal.classList.add('open');
+  }
+
+  window._openProjectModal = openModal;
+  addBtn?.addEventListener('click', () => openModal());
+  closeBtn?.addEventListener('click', () => modal.classList.remove('open'));
+  cancelBtn?.addEventListener('click', () => modal.classList.remove('open'));
+  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id   = document.getElementById('project-edit-id').value;
+    const data = {
+      name:     document.getElementById('proj-name').value.trim(),
+      type:     document.getElementById('proj-type').value,
+      status:   document.getElementById('proj-status').value,
+      progress: Number(slider.value),
+      value:    Number(document.getElementById('proj-value').value) || 0,
+      dueDate:  document.getElementById('proj-due').value,
+      notes:    document.getElementById('proj-notes').value.trim(),
+    };
+
+    const saveBtn = document.getElementById('proj-save-btn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+
+    try {
+      const docRef = id ? doc(projectsCol, id) : doc(projectsCol);
+      await setDoc(docRef, data, { merge: true });
+      modal.classList.remove('open');
+    } catch (err) {
+      alert('Save failed: ' + err.message);
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save Project';
+    }
   });
 }
 

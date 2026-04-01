@@ -182,6 +182,7 @@
             <div style="display:flex; align-items:center; gap:0.5rem;">
               <span class="material-icons" style="color:var(--crm-blue); font-size:1rem;">view_kanban</span>
               <h2 class="dash-card-title">CRM Pipeline</h2>
+              <span id="new-leads-badge" style="display:none; background:#ef4444; color:#fff; font-size:0.65rem; font-weight:700; padding:0.15rem 0.45rem; border-radius:99px; line-height:1.4;">0 new</span>
             </div>
             <a href="/crm" class="dash-card-link">Open →</a>
           </div>
@@ -201,10 +202,13 @@
               <span class="material-icons" style="color:var(--web-green); font-size:1rem;">web</span>
               <h2 class="dash-card-title">Website Projects</h2>
             </div>
-            <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20check%20on%20my%20website%20project." target="_blank" class="dash-card-link">+ New →</a>
+            <div style="display:flex;gap:0.5rem;align-items:center;">
+              <button class="dash-card-link" id="add-project-btn" style="background:none;border:none;cursor:pointer;color:var(--web-green);font-size:0.8rem;">+ Add</button>
+              <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20check%20on%20my%20website%20project." target="_blank" class="dash-card-link">Contact →</a>
+            </div>
           </div>
           <div id="projects-list">
-            <div class="dash-empty">No projects yet.<br><a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20start%20a%20website%20project." target="_blank" style="color:var(--web-green);">Start your first project →</a></div>
+            <div class="dash-empty">No projects yet.<br><span style="color:var(--text-dim);">Click "+ Add" to track a project.</span></div>
           </div>
         </div>
 
@@ -220,6 +224,8 @@
               <button class="dash-card-link" id="add-content-btn" style="background:none;border:none;cursor:pointer;color:var(--primary);font-size:0.8rem;">+ Add</button>
             </div>
           </div>
+          <!-- Content pipeline counts -->
+          <div id="content-pipeline-counts" style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;"></div>
           <!-- Platform stats summary -->
           <div id="content-stats-summary" style="display:none; margin-bottom:1rem;"></div>
           <!-- Content items list -->
@@ -472,6 +478,68 @@
       </div>
 
     </main>
+
+    <!-- EDIT / ADD PROJECT MODAL -->
+    <div class="modal-overlay" id="project-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="project-modal-title">🌐 Add Project</h3>
+          <button class="modal-close" id="project-modal-close">✕</button>
+        </div>
+        <form id="project-form">
+          <input type="hidden" id="project-edit-id" />
+          <div class="form-group">
+            <label for="proj-name">Client / Project Name *</label>
+            <input type="text" id="proj-name" class="form-input" placeholder="e.g. Bloom Studio" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="proj-type">Project Type</label>
+              <select id="proj-type" class="form-input">
+                <option value="Landing Page">Landing Page</option>
+                <option value="Business Website">Business Website</option>
+                <option value="E-commerce Store">E-commerce Store</option>
+                <option value="Portfolio">Portfolio</option>
+                <option value="Redesign">Redesign</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="proj-status">Status</label>
+              <select id="proj-status" class="form-input">
+                <option value="pending">Pending</option>
+                <option value="in_progress">In Progress</option>
+                <option value="revision">Revision</option>
+                <option value="completed">Completed</option>
+                <option value="on_hold">On Hold</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="proj-progress">Progress: <span id="proj-progress-val">0</span>%</label>
+            <input type="range" id="proj-progress" min="0" max="100" value="0"
+              style="width:100%; accent-color:var(--web-green); height:6px; cursor:pointer;" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="proj-value">Project Value (₹)</label>
+              <input type="number" id="proj-value" class="form-input" placeholder="e.g. 29999" min="0" />
+            </div>
+            <div class="form-group">
+              <label for="proj-due">Due Date</label>
+              <input type="date" id="proj-due" class="form-input" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="proj-notes">Notes</label>
+            <textarea id="proj-notes" class="form-input" rows="2" placeholder="e.g. Client approved wireframes, waiting on content..."></textarea>
+          </div>
+          <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
+            <button type="submit" class="btn btn-primary" style="flex:1;" id="proj-save-btn">Save Project</button>
+            <button type="button" class="btn btn-outline" id="proj-cancel-btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <!-- ADD CONTENT MODAL -->
     <div class="modal-overlay" id="add-content-modal">
