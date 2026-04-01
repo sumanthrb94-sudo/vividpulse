@@ -2,6 +2,8 @@
  * Content Engine Tab Logic — Vivid Pulse
  */
 import '/src/style.css';
+import { initNavAuth } from '/src/nav-auth.js';
+initNavAuth();
 
 document.addEventListener('DOMContentLoaded', () => {
   const tabs = document.querySelectorAll('.tab-btn');

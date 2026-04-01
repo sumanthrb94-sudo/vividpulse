@@ -1,4 +1,6 @@
 import '/src/style.css';
+import { initNavAuth } from '/src/nav-auth.js';
+initNavAuth();
 
 // ============================
 // CURSOR GLOW

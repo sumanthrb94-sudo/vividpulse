@@ -5,6 +5,8 @@
  */
 import '/src/style.css';
 import { requireAuth, logout } from '/src/auth.js';
+import { initNavAuth } from '/src/nav-auth.js';
+initNavAuth();
 import { db } from '/src/firebase.js';
 import {
   collection,
@@ -61,16 +63,7 @@ requireAuth('/login').then(async (user) => {
     return;
   }
 
-  // Navbar
-  const emailEl   = document.getElementById('user-email');
-  const logoutBtn = document.getElementById('logout-btn');
-  if (emailEl)   { emailEl.textContent = user.email; emailEl.style.display = ''; }
-  if (logoutBtn) {
-    logoutBtn.style.display = '';
-    logoutBtn.addEventListener('click', () =>
-      logout().then(() => { window.location.href = '/login'; })
-    );
-  }
+  // Navbar auth handled by initNavAuth() (imported at top of file)
 
   // Load past content for history context + show usage
   await loadHistory();

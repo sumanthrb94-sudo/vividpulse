@@ -1794,3 +1794,126 @@ textarea { resize: vertical; min-height: 120px; }
   .kpi-row { grid-template-columns: 1fr 1fr; }
   .kpi-value { font-size: 1.1rem; }
 }
+
+/* ========================================
+   NAVBAR AUTH (user chip + dropdown)
+   ======================================== */
+
+.nav-user-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.nav-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: 99px;
+  padding: 0.3rem 0.7rem 0.3rem 0.35rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.nav-user-chip:hover {
+  background: rgba(139,92,246,0.08);
+  border-color: rgba(139,92,246,0.35);
+}
+
+.nav-user-name {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-user-chevron {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+}
+
+.nav-user-chip[aria-expanded="true"] .nav-user-chevron {
+  transform: rotate(180deg);
+}
+
+/* Dropdown panel */
+.nav-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 0.5rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  z-index: 1000;
+  animation: dropdown-in 0.15s ease;
+}
+
+.nav-dropdown.open { display: flex; flex-direction: column; gap: 0.15rem; }
+
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.nav-dropdown-email {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  padding: 0.35rem 0.6rem 0.5rem;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 0.25rem;
+  word-break: break-all;
+}
+
+.nav-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: var(--text-main);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.nav-dropdown-item:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.nav-dropdown-divider {
+  height: 1px;
+  background: var(--glass-border);
+  margin: 0.25rem 0;
+}
+
+.nav-dropdown-signout {
+  color: #fca5a5;
+}
+
+.nav-dropdown-signout:hover {
+  background: rgba(239,68,68,0.08);
+}
+
+/* Hide Sign In text from mobile when logged in */
+@media (max-width: 768px) {
+  .nav-user-name { display: none; }
+  .nav-dropdown { right: -0.5rem; }
+}

@@ -5,6 +5,8 @@
  */
 import '/src/style.css';
 import { requireAuth, logout } from '/src/auth.js';
+import { initNavAuth } from '/src/nav-auth.js';
+initNavAuth();
 import { db } from '/src/firebase.js';
 import {
   collection,
@@ -48,19 +50,7 @@ requireAuth('/login').then((user) => {
   currentUser = user;
   leadsColRef = collection(db, 'users', user.uid, 'leads');
 
-  // Show user email + logout button in navbar
-  const emailEl  = document.getElementById('user-email');
-  const logoutBtn = document.getElementById('logout-btn');
-  if (emailEl) {
-    emailEl.textContent = user.email || user.displayName || 'Signed in';
-    emailEl.style.display = '';
-  }
-  if (logoutBtn) {
-    logoutBtn.style.display = '';
-    logoutBtn.addEventListener('click', () =>
-      logout().then(() => { window.location.href = '/login'; })
-    );
-  }
+  // Navbar auth handled by initNavAuth() above
 
   // Subscribe to real-time Firestore updates
   const q = query(leadsColRef, orderBy('date', 'desc'));

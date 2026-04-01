@@ -3,6 +3,8 @@
  * Cursor glow, mobile nav, scroll reveal, smooth scroll
  */
 import '/src/style.css';
+import { initNavAuth } from '/src/nav-auth.js';
+initNavAuth();
 
 // Cursor glow
 const cursorGlow = document.getElementById('cursor-glow');
