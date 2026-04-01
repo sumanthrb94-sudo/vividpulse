@@ -12,8 +12,9 @@ import {
   onSnapshot, query, orderBy, writeBatch,
 } from 'firebase/firestore';
 
-const DEMO_EMAIL  = 'sumanthbolla97@gmail.com';
-const PRO_EMAILS  = ['sumanthrb94@gmail.com'];
+const DEMO_EMAIL        = 'sumanthbolla97@gmail.com';
+const ALL_ACCESS_EMAILS = ['sumanthbolla97@gmail.com', 'sumanthrb94@gmail.com']; // All packages incl. AI Studio
+const PRO_EMAILS        = ['sumanthrb94@gmail.com'];  // additional Pro-only (kept for compat)
 
 // ── Demo seed data ────────────────────────────────────────────────────────────
 const DEMO_LEADS = [
@@ -49,40 +50,51 @@ const DEMO_STATS = {
 
 // ── Auth guard ────────────────────────────────────────────────────────────────
 requireAuth('/login').then(async (user) => {
-  const isDemo = user.email === DEMO_EMAIL;
-  const isPro  = PRO_EMAILS.includes(user.email);
+  const isDemo      = user.email === DEMO_EMAIL;
+  const isAllAccess = ALL_ACCESS_EMAILS.includes(user.email);
 
-  // User info
+  // ── Sidebar email ────────────────────────────────────────────────────────────
   const emailEl = document.getElementById('sidebar-email');
-  if (emailEl) emailEl.textContent = user.email || user.displayName || 'User';
+  if (emailEl) emailEl.textContent = user.displayName || user.email;
 
-  const greeting = document.getElementById('dash-greeting');
-  if (greeting) {
-    const name = user.displayName || user.email.split('@')[0];
-    greeting.textContent = `Welcome back, ${name}`;
+  // ── Smart greeting ───────────────────────────────────────────────────────────
+  const name  = user.displayName || user.email.split('@')[0];
+  const hour  = new Date().getHours();
+  const tod   = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const greetEl = document.getElementById('dash-greeting');
+  if (greetEl) greetEl.textContent = `${tod}, ${name} 👋`;
+
+  // Date + live clock in cmd-meta
+  const metaEl = document.getElementById('cmd-meta');
+  if (metaEl) {
+    const tick = () => {
+      const now = new Date();
+      metaEl.textContent = now.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' })
+        + ' · ' + now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+    };
+    tick(); setInterval(tick, 30000);
   }
 
-  if (isDemo) {
-    const badge = document.createElement('span');
-    badge.textContent = 'Demo';
-    badge.style.cssText = 'font-size:0.65rem;font-weight:700;padding:0.18rem 0.55rem;border-radius:99px;background:rgba(168,85,247,0.15);color:var(--secondary);border:1px solid rgba(168,85,247,0.3);margin-left:0.5rem;vertical-align:middle;';
-    document.querySelector('.dash-title').appendChild(badge);
-  }
-
-  // Pro badge + Content Studio button
-  if (isPro) {
-    const titleEl = document.querySelector('.dash-title');
-    if (titleEl) {
-      const badge = document.createElement('span');
-      badge.textContent = 'Pro';
-      badge.style.cssText = 'font-size:0.65rem;font-weight:700;padding:0.18rem 0.55rem;border-radius:99px;background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);margin-left:0.5rem;vertical-align:middle;';
-      titleEl.appendChild(badge);
+  // ── Plan badge ───────────────────────────────────────────────────────────────
+  const planBadge = document.getElementById('plan-badge');
+  if (planBadge) {
+    if (isAllAccess) {
+      planBadge.innerHTML = '<span style="font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:99px;background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(139,92,246,0.2));color:#10b981;border:1px solid rgba(16,185,129,0.35);">All Access</span>';
+    } else {
+      planBadge.innerHTML = '<span style="font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:99px;background:rgba(148,163,184,0.1);color:var(--text-dim);border:1px solid var(--border);">Free</span>';
     }
-    const studioBtn = document.getElementById('studio-btn');
-    if (studioBtn) studioBtn.style.display = '';
+    planBadge.style.display = '';
   }
 
-  // Logout
+  // ── AI Studio access ─────────────────────────────────────────────────────────
+  if (isAllAccess) {
+    const studioBtn  = document.getElementById('studio-btn');
+    const studioLink = document.getElementById('sidebar-studio-link');
+    if (studioBtn)  studioBtn.style.display  = '';
+    if (studioLink) studioLink.style.display = '';
+  }
+
+  // ── Logout ───────────────────────────────────────────────────────────────────
   ['sidebar-logout', 'topbar-logout'].forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.addEventListener('click', () =>
@@ -111,23 +123,26 @@ requireAuth('/login').then(async (user) => {
   if (isDemo) await seedDemoUser(user.uid, leadsCol, projectsCol, contentItemsCol, statsRef);
 
   // ── Live listeners ──────────────────────────────────────────────────────────
+  let _leads = [], _projects = [];
 
   // CRM leads
   onSnapshot(query(leadsCol, orderBy('date', 'desc')), snap => {
-    const leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    renderStats(leads);
-    renderPipeline(leads);
-    renderRecentLeads(leads);
-    renderRevenueBars(leads);
-    renderOverdueAlert(leads);
-    // wire CSV export
-    document.getElementById('export-csv-btn').onclick = () => exportCSV(leads);
+    _leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderStats(_leads);
+    renderPipeline(_leads);
+    renderRecentLeads(_leads);
+    renderRevenueBars(_leads);
+    renderOverdueAlert(_leads);
+    renderTodayFocus(_leads, _projects);
+    document.getElementById('export-csv-btn').onclick  = () => exportCSV(_leads);
   });
 
   // Website projects
   onSnapshot(projectsCol, snap => {
-    const projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    renderProjects(projects);
+    _projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderProjects(_projects);
+    renderProjectKpi(_projects);
+    renderTodayFocus(_leads, _projects);
   });
 
   // Content items
@@ -144,8 +159,19 @@ requireAuth('/login').then(async (user) => {
   // Embed section
   initEmbedSection(user.uid);
 
-  // Add Lead modal
+  // Add Lead modal (wire both buttons)
   initAddLeadModal(leadsCol);
+  const addLead2 = document.getElementById('dash-add-lead-2');
+  if (addLead2) addLead2.addEventListener('click', () => document.getElementById('add-lead-modal').classList.add('open'));
+
+  // CSV second button
+  const csvBtn2 = document.getElementById('export-csv-btn-2');
+  if (csvBtn2) {
+    onSnapshot(query(leadsCol, orderBy('date', 'desc')), snap => {
+      const leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      csvBtn2.onclick = () => exportCSV(leads);
+    });
+  }
 
   // Content modals
   initContentModal(contentItemsCol);
@@ -207,45 +233,120 @@ const PLATFORM_ICON = { instagram: '📸', youtube: '▶', both: '🎯' };
 
 // ── Stats row ─────────────────────────────────────────────────────────────────
 function renderStats(leads) {
-  const total    = leads.length;
-  const pipeline = leads.filter(l => l.stage !== 'lost').reduce((s, l) => s + (l.value || 0), 0);
-  const wonLeads = leads.filter(l => l.stage === 'won');
-  const closed   = leads.filter(l => l.stage === 'won' || l.stage === 'lost').length;
-  const winRate  = closed > 0 ? Math.round((wonLeads.length / closed) * 100) : 0;
-  const revenue  = wonLeads.reduce((s, l) => s + (l.value || 0), 0);
+  const total     = leads.length;
+  const newCount  = leads.filter(l => l.stage === 'new').length;
+  const pipeline  = leads.filter(l => l.stage !== 'lost').reduce((s, l) => s + (l.value || 0), 0);
+  const proposals = leads.filter(l => l.stage === 'proposal').length;
+  const wonLeads  = leads.filter(l => l.stage === 'won');
+  const closed    = leads.filter(l => l.stage === 'won' || l.stage === 'lost').length;
+  const winRate   = closed > 0 ? Math.round((wonLeads.length / closed) * 100) : 0;
+  const revenue   = wonLeads.reduce((s, l) => s + (l.value || 0), 0);
+
   document.getElementById('ds-total').textContent    = total;
   document.getElementById('ds-pipeline').textContent = fmt(pipeline);
-  document.getElementById('ds-winrate').textContent  = winRate + '%';
   document.getElementById('ds-closed').textContent   = fmt(revenue);
 
+  const sub = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+  sub('kpi-new-leads',  newCount > 0 ? `${newCount} new this week` : 'No new leads');
+  sub('kpi-proposals',  proposals > 0 ? `${proposals} proposals open` : 'No open proposals');
+  sub('kpi-winrate',    `${winRate}% win rate`);
+
   // New leads badge on CRM card
-  const newCount = leads.filter(l => l.stage === 'new').length;
-  const badge    = document.getElementById('new-leads-badge');
+  const badge = document.getElementById('new-leads-badge');
   if (badge) {
-    if (newCount > 0) {
-      badge.textContent  = newCount + ' new';
-      badge.style.display = '';
-    } else {
-      badge.style.display = 'none';
-    }
+    badge.textContent   = newCount + ' new';
+    badge.style.display = newCount > 0 ? '' : 'none';
   }
 }
 
-// ── Overdue alert ─────────────────────────────────────────────────────────────
-function renderOverdueAlert(leads) {
-  const alert    = document.getElementById('overdue-alert');
-  const alertTxt = document.getElementById('overdue-text');
-  const overdue  = leads.filter(l => l.dueDate && l.dueDate < TODAY && l.stage !== 'won' && l.stage !== 'lost');
+// ── Today's Focus ─────────────────────────────────────────────────────────────
+function renderTodayFocus(leads, projects) {
+  const section  = document.getElementById('focus-section');
+  const itemsEl  = document.getElementById('focus-items');
+  const countEl  = document.getElementById('focus-count');
+  if (!section || !itemsEl) return;
+
+  const items = [];
+
+  // Overdue leads
+  const overdue = leads.filter(l => l.dueDate && l.dueDate < TODAY && l.stage !== 'won' && l.stage !== 'lost');
+  if (overdue.length) {
+    items.push({ type: 'danger', icon: '⚠', text: `${overdue.length} lead${overdue.length > 1 ? 's' : ''} overdue`, sub: overdue.map(l => l.name).join(', '), href: '/crm' });
+  }
+
+  // Due today
   const dueToday = leads.filter(l => l.dueDate === TODAY && l.stage !== 'won' && l.stage !== 'lost');
-  if (!alert) return;
-  if (overdue.length || dueToday.length) {
-    const parts = [];
-    if (overdue.length)  parts.push(`⚠ ${overdue.length} lead${overdue.length > 1 ? 's' : ''} overdue`);
-    if (dueToday.length) parts.push(`📅 ${dueToday.length} due today`);
-    alertTxt.textContent = parts.join(' · ');
-    alert.style.display = 'flex';
+  if (dueToday.length) {
+    items.push({ type: 'warn', icon: '📅', text: `${dueToday.length} follow-up${dueToday.length > 1 ? 's' : ''} due today`, sub: dueToday.map(l => l.name).join(', '), href: '/crm' });
+  }
+
+  // New uncontacted leads
+  const newLeads = leads.filter(l => l.stage === 'new');
+  if (newLeads.length) {
+    items.push({ type: 'info', icon: '👤', text: `${newLeads.length} new lead${newLeads.length > 1 ? 's' : ''} waiting`, sub: newLeads.map(l => l.name).join(', '), href: '/crm' });
+  }
+
+  // Projects due within 7 days
+  const soon = new Date(); soon.setDate(soon.getDate() + 7);
+  const soonStr = soon.toISOString().split('T')[0];
+  const projDue = (projects || []).filter(p => p.dueDate && p.dueDate <= soonStr && p.status !== 'completed');
+  if (projDue.length) {
+    items.push({ type: 'warn', icon: '🌐', text: `${projDue.length} website project${projDue.length > 1 ? 's' : ''} due soon`, sub: projDue.map(p => p.name).join(', '), href: null });
+  }
+
+  if (!items.length) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = '';
+  countEl.textContent   = items.length + ' item' + (items.length > 1 ? 's' : '');
+  itemsEl.innerHTML     = items.map(item => `
+    <div class="focus-item focus-item--${item.type}" ${item.href ? `onclick="window.location='${item.href}'" style="cursor:pointer;"` : ''}>
+      <span class="focus-item-icon">${item.icon}</span>
+      <div>
+        <div class="focus-item-text">${item.text}</div>
+        <div class="focus-item-sub">${item.sub}</div>
+      </div>
+      ${item.href ? '<span class="focus-item-arrow">→</span>' : ''}
+    </div>`).join('');
+}
+
+// ── Overdue alert (inline span in revenue card) ───────────────────────────────
+function renderOverdueAlert(leads) {
+  const el      = document.getElementById('overdue-alert');
+  if (!el) return;
+  const overdue = leads.filter(l => l.dueDate && l.dueDate < TODAY && l.stage !== 'won' && l.stage !== 'lost');
+  if (overdue.length) {
+    el.textContent   = `⚠ ${overdue.length} overdue`;
+    el.style.display = '';
   } else {
-    alert.style.display = 'none';
+    el.style.display = 'none';
+  }
+}
+
+// ── Project KPI card ──────────────────────────────────────────────────────────
+function renderProjectKpi(projects) {
+  const active   = projects.filter(p => p.status === 'in_progress' || p.status === 'revision').length;
+  const valEl    = document.getElementById('kpi-active-projects');
+  const subEl    = document.getElementById('kpi-proj-sub');
+  const healthEl = document.getElementById('project-health-bar');
+
+  if (valEl) valEl.textContent = active;
+  if (subEl) {
+    const done = projects.filter(p => p.status === 'completed').length;
+    subEl.textContent = done > 0 ? `${done} completed` : projects.length > 0 ? `${projects.length} total` : 'No projects yet';
+  }
+
+  // Health status pills
+  if (healthEl) {
+    const statuses = { pending:'Pending', in_progress:'In Progress', revision:'Revision', completed:'Completed', on_hold:'On Hold' };
+    const colors   = { pending:'#94a3b8', in_progress:'#22d3ee', revision:'#f59e0b', completed:'#10b981', on_hold:'#a855f7' };
+    const counts   = {};
+    projects.forEach(p => { counts[p.status] = (counts[p.status] || 0) + 1; });
+    healthEl.innerHTML = Object.entries(counts).map(([s, n]) =>
+      `<span style="background:${colors[s]}18;color:${colors[s]};font-size:0.68rem;font-weight:600;padding:0.2rem 0.5rem;border-radius:99px;border:1px solid ${colors[s]}44;">${statuses[s] || s} ${n}</span>`
+    ).join('');
   }
 }
 

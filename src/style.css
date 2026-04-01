@@ -1519,3 +1519,278 @@ textarea { resize: vertical; min-height: 120px; }
   #strategy-selector { flex-direction: column; align-items: stretch; }
   .strategy-btn { max-width: 100%; }
 }
+
+/* ========================================
+   COMMAND CENTER DASHBOARD (v2)
+   ======================================== */
+
+/* ── Command Header ─────────────────────── */
+.cmd-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.cmd-header-left { flex: 1; min-width: 0; }
+.cmd-header-right { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; flex-shrink: 0; }
+
+.cmd-greeting {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  margin-bottom: 0.2rem;
+  font-weight: 500;
+}
+
+.cmd-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.25rem;
+}
+
+.cmd-meta {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  opacity: 0.7;
+}
+
+/* ── Today's Focus ──────────────────────── */
+.focus-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.focus-icon { font-size: 1rem; }
+
+.focus-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.focus-count {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #f59e0b;
+  background: rgba(245,158,11,0.12);
+  border: 1px solid rgba(245,158,11,0.25);
+  padding: 0.1rem 0.45rem;
+  border-radius: 99px;
+}
+
+.focus-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.focus-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  border: 1px solid;
+  transition: opacity 0.15s;
+}
+
+.focus-item:hover { opacity: 0.85; }
+
+.focus-item--danger { background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.2); }
+.focus-item--warn   { background: rgba(245,158,11,0.06); border-color: rgba(245,158,11,0.2); }
+.focus-item--info   { background: rgba(34,211,238,0.05); border-color: rgba(34,211,238,0.15); }
+
+.focus-item-icon { font-size: 1rem; flex-shrink: 0; }
+
+.focus-item-text {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.focus-item-sub {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: 0.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 30ch;
+}
+
+.focus-item-arrow {
+  margin-left: auto;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* ── KPI Row ────────────────────────────── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--kpi-accent, var(--primary));
+}
+
+.kpi-card:hover { border-color: var(--kpi-accent, var(--primary)); }
+
+.kpi-icon {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--kpi-accent, var(--primary)) 12%, transparent);
+  color: var(--kpi-accent, var(--primary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpi-icon .material-icons { font-size: 1.1rem; }
+
+.kpi-body { min-width: 0; }
+
+.kpi-value {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.1;
+  margin-bottom: 0.2rem;
+}
+
+.kpi-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+  margin-bottom: 0.2rem;
+}
+
+.kpi-sub {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  opacity: 0.8;
+}
+
+/* ── Service Panel (cards in grid) ─────── */
+.service-panel { display: flex; flex-direction: column; }
+
+.svc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.service-open-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.service-open-btn:hover { opacity: 0.75; }
+
+/* Quick add bar inside CRM panel */
+.quick-add-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.quick-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 7px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.quick-add-btn:hover {
+  background: rgba(139,92,246,0.08);
+  border-color: rgba(139,92,246,0.3);
+}
+
+/* ── 2-column bottom row ────────────────── */
+.dash-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+/* ── Animated badge pulse ───────────────── */
+@keyframes pulse-badge {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+  50%       { box-shadow: 0 0 0 4px rgba(239,68,68,0); }
+}
+
+/* ── Sidebar Pro link ───────────────────── */
+.sidebar-link--pro {
+  background: rgba(16,185,129,0.04);
+  border: 1px solid rgba(16,185,129,0.15);
+  border-radius: 8px;
+  margin: 0.1rem 0;
+}
+
+/* ── Responsive breakpoints ─────────────── */
+@media (max-width: 1100px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+  .dash-2col { grid-template-columns: 1fr; }
+  .cmd-header { gap: 0.75rem; }
+  .cmd-header-right { width: 100%; justify-content: flex-start; }
+  .focus-item-sub { max-width: 20ch; }
+}
+
+@media (max-width: 480px) {
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .kpi-value { font-size: 1.1rem; }
+}

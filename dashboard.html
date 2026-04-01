@@ -23,13 +23,15 @@
         <a href="/crm" class="sidebar-link">
           <span class="material-icons">view_kanban</span> CRM Pipeline
         </a>
-        <div class="sidebar-section-label">Services</div>
-        <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20discuss%20a%20website%20project." target="_blank" class="sidebar-link">
-          <span class="material-icons">web</span> Website Studio
-        </a>
-        <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20content%20creation%20services." target="_blank" class="sidebar-link">
+        <div class="sidebar-section-label">Tools</div>
+        <a href="/content" class="sidebar-link">
           <span class="material-icons">video_camera_front</span> Content Engine
         </a>
+        <a href="/content-studio" class="sidebar-link sidebar-link--pro" id="sidebar-studio-link" style="display:none;">
+          <span class="material-icons">auto_awesome</span> AI Studio
+          <span style="font-size:0.6rem;font-weight:700;padding:0.1rem 0.35rem;border-radius:99px;background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);margin-left:auto;">Pro</span>
+        </a>
+        <div class="sidebar-section-label">Company</div>
         <a href="/" class="sidebar-link">
           <span class="material-icons">home</span> Home
         </a>
@@ -61,191 +63,186 @@
     <!-- MAIN CONTENT -->
     <main class="app-main" id="app-main">
 
-      <!-- PAGE HEADER -->
-      <div class="dash-header">
-        <div>
-          <h1 class="dash-title">Dashboard</h1>
-          <p class="dash-sub" id="dash-greeting">Welcome back</p>
+      <!-- ═══ COMMAND CENTER HEADER ═══ -->
+      <div class="cmd-header">
+        <div class="cmd-header-left">
+          <div class="cmd-greeting" id="dash-greeting">Good morning</div>
+          <div class="cmd-title-row">
+            <h1 class="dash-title" id="dash-title">Command Center</h1>
+            <span id="plan-badge" style="display:none;"></span>
+          </div>
+          <div class="cmd-meta" id="cmd-meta"></div>
         </div>
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-          <a href="/content-studio" class="btn btn-primary btn-glow" id="studio-btn" style="display:none;">✨ Create Content</a>
-          <button class="btn btn-outline btn-sm" id="export-csv-btn">⬇ Export CSV</button>
+        <div class="cmd-header-right">
+          <a href="/content-studio" class="btn btn-primary btn-glow" id="studio-btn" style="display:none;">✨ AI Studio</a>
           <button class="btn btn-blue btn-glow" id="dash-add-lead">+ Add Lead</button>
+          <button class="btn btn-outline btn-sm" id="export-csv-btn" title="Export all leads to CSV">⬇ CSV</button>
         </div>
       </div>
 
-      <!-- OVERDUE ALERT -->
-      <div id="overdue-alert" style="display:none; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); border-radius:var(--radius-sm); padding:0.75rem 1.1rem; margin-bottom:1.25rem; font-size:0.875rem; display:none; align-items:center; justify-content:space-between; gap:1rem;">
-        <span id="overdue-text" style="color:#fca5a5;"></span>
-        <a href="/crm" style="color:var(--yt-red); font-weight:600; font-size:0.8rem; white-space:nowrap;">View Pipeline →</a>
+      <!-- ═══ TODAY'S FOCUS ═══ -->
+      <div id="focus-section" style="display:none; margin-bottom:1.5rem;">
+        <div class="focus-header">
+          <span class="focus-icon">🎯</span>
+          <span class="focus-title">Today's Focus</span>
+          <span id="focus-count" class="focus-count"></span>
+        </div>
+        <div id="focus-items" class="focus-items"></div>
       </div>
 
-      <!-- SERVICES OVERVIEW -->
-      <div class="services-overview">
-
-        <div class="svc-card svc-active">
-          <div class="svc-top">
-            <div class="svc-icon" style="background:rgba(59,130,246,0.12); color:var(--crm-blue);">
-              <span class="material-icons">view_kanban</span>
-            </div>
-            <span class="svc-badge svc-badge--active">Active</span>
-          </div>
-          <div class="svc-name">CRM Pipeline</div>
-          <div class="svc-desc">Leads, pipeline, notes & analytics</div>
-          <a href="/crm" class="btn btn-blue btn-sm" style="margin-top:auto;">Open CRM →</a>
-        </div>
-
-        <div class="svc-card">
-          <div class="svc-top">
-            <div class="svc-icon" style="background:rgba(16,185,129,0.12); color:var(--web-green);">
-              <span class="material-icons">web</span>
-            </div>
-            <span class="svc-badge">From ₹12,999</span>
-          </div>
-          <div class="svc-name">Website Studio</div>
-          <div class="svc-desc">Landing pages, business sites & e-commerce</div>
-          <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20discuss%20a%20website%20project." target="_blank" class="btn btn-outline btn-sm" style="margin-top:auto;">Start Project →</a>
-        </div>
-
-        <div class="svc-card">
-          <div class="svc-top">
-            <div class="svc-icon" style="background:rgba(239,68,68,0.12); color:var(--yt-red);">
-              <span class="material-icons">video_camera_front</span>
-            </div>
-            <span class="svc-badge">From ₹7,999/mo</span>
-          </div>
-          <div class="svc-name">Content Engine</div>
-          <div class="svc-desc">Instagram Reels, YouTube & growth strategy</div>
-          <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20discuss%20content%20creation." target="_blank" class="btn btn-outline btn-sm" style="margin-top:auto;">Get Started →</a>
-        </div>
-
-        <div class="svc-card svc-highlight">
-          <div class="svc-top">
-            <div class="svc-icon" style="background:rgba(168,85,247,0.12); color:var(--secondary);">
-              <span class="material-icons">rocket_launch</span>
-            </div>
-            <span class="svc-badge svc-badge--hot">Best Value</span>
-          </div>
-          <div class="svc-name">Growth Bundle</div>
-          <div class="svc-desc">Website + CRM + Content — everything together</div>
-          <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20discuss%20the%20Growth%20Bundle." target="_blank" class="btn btn-sm" style="margin-top:auto; background:linear-gradient(135deg,var(--secondary),var(--primary)); color:#fff; border:none; cursor:pointer;">Talk to Us →</a>
-        </div>
-
-      </div>
-
-      <!-- STATS ROW -->
-      <div class="dash-stats">
-        <div class="dash-stat-card">
-          <div class="dash-stat-icon" style="background:rgba(59,130,246,0.12); color:var(--crm-blue);">
-            <span class="material-icons">people</span>
-          </div>
-          <div class="dash-stat-body">
-            <div class="dash-stat-value" id="ds-total">0</div>
-            <div class="dash-stat-label">Total Leads</div>
+      <!-- ═══ KPI ROW ═══ -->
+      <div class="kpi-row">
+        <div class="kpi-card" style="--kpi-accent:#22d3ee;">
+          <div class="kpi-icon"><span class="material-icons">people</span></div>
+          <div class="kpi-body">
+            <div class="kpi-value" id="ds-total">—</div>
+            <div class="kpi-label">Total Leads</div>
+            <div class="kpi-sub" id="kpi-new-leads"></div>
           </div>
         </div>
-        <div class="dash-stat-card">
-          <div class="dash-stat-icon" style="background:rgba(34,211,238,0.12); color:var(--primary);">
-            <span class="material-icons">account_balance_wallet</span>
-          </div>
-          <div class="dash-stat-body">
-            <div class="dash-stat-value" id="ds-pipeline">₹0</div>
-            <div class="dash-stat-label">Pipeline Value</div>
-          </div>
-        </div>
-        <div class="dash-stat-card">
-          <div class="dash-stat-icon" style="background:rgba(168,85,247,0.12); color:var(--secondary);">
-            <span class="material-icons">trending_up</span>
-          </div>
-          <div class="dash-stat-body">
-            <div class="dash-stat-value" id="ds-winrate">0%</div>
-            <div class="dash-stat-label">Win Rate</div>
+        <div class="kpi-card" style="--kpi-accent:#a855f7;">
+          <div class="kpi-icon"><span class="material-icons">account_balance_wallet</span></div>
+          <div class="kpi-body">
+            <div class="kpi-value" id="ds-pipeline">—</div>
+            <div class="kpi-label">Pipeline Value</div>
+            <div class="kpi-sub" id="kpi-proposals"></div>
           </div>
         </div>
-        <div class="dash-stat-card">
-          <div class="dash-stat-icon" style="background:rgba(16,185,129,0.12); color:var(--web-green);">
-            <span class="material-icons">paid</span>
+        <div class="kpi-card" style="--kpi-accent:#10b981;">
+          <div class="kpi-icon"><span class="material-icons">paid</span></div>
+          <div class="kpi-body">
+            <div class="kpi-value" id="ds-closed">—</div>
+            <div class="kpi-label">Revenue Closed</div>
+            <div class="kpi-sub" id="kpi-winrate"></div>
           </div>
-          <div class="dash-stat-body">
-            <div class="dash-stat-value" id="ds-closed">₹0</div>
-            <div class="dash-stat-label">Revenue Closed</div>
+        </div>
+        <div class="kpi-card" style="--kpi-accent:#f59e0b;">
+          <div class="kpi-icon"><span class="material-icons">web</span></div>
+          <div class="kpi-body">
+            <div class="kpi-value" id="kpi-active-projects">—</div>
+            <div class="kpi-label">Active Projects</div>
+            <div class="kpi-sub" id="kpi-proj-sub"></div>
           </div>
         </div>
       </div>
 
-      <!-- 3-SERVICE GRID -->
+      <!-- ═══ 3-SERVICE GRID ═══ -->
       <div class="dash-3grid">
 
-        <!-- CRM PIPELINE -->
-        <div class="dash-card">
+        <!-- CRM PANEL -->
+        <div class="dash-card service-panel">
           <div class="dash-card-header">
-            <div style="display:flex; align-items:center; gap:0.5rem;">
-              <span class="material-icons" style="color:var(--crm-blue); font-size:1rem;">view_kanban</span>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <div class="svc-dot" style="background:#22d3ee;"></div>
               <h2 class="dash-card-title">CRM Pipeline</h2>
-              <span id="new-leads-badge" style="display:none; background:#ef4444; color:#fff; font-size:0.65rem; font-weight:700; padding:0.15rem 0.45rem; border-radius:99px; line-height:1.4;">0 new</span>
+              <span id="new-leads-badge" style="display:none; background:#ef4444; color:#fff; font-size:0.65rem; font-weight:700; padding:0.15rem 0.45rem; border-radius:99px; animation:pulse-badge 2s infinite;">0 new</span>
             </div>
-            <a href="/crm" class="dash-card-link">Open →</a>
+            <a href="/crm" class="service-open-btn">Open Full CRM →</a>
           </div>
+
+          <!-- Quick add lead inline -->
+          <div class="quick-add-bar">
+            <button class="quick-add-btn" id="dash-add-lead-2">
+              <span class="material-icons" style="font-size:0.9rem;">add</span> Quick Add Lead
+            </button>
+            <button class="quick-add-btn" id="export-csv-btn-2" style="color:var(--text-dim);">
+              <span class="material-icons" style="font-size:0.9rem;">download</span> Export CSV
+            </button>
+          </div>
+
           <div class="pipeline-stages" id="pipeline-stages"></div>
-          <div style="border-top:1px solid var(--glass-border); margin-top:1rem; padding-top:1rem;">
-            <div class="dash-card-header" style="margin-bottom:0.75rem;">
-              <h2 class="dash-card-title" style="font-size:0.875rem;">Recent Leads</h2>
-            </div>
+
+          <div style="border-top:1px solid var(--glass-border); margin-top:1rem; padding-top:0.75rem;">
+            <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim);margin-bottom:0.6rem;">Recent Activity</div>
             <div class="recent-leads" id="recent-leads"></div>
           </div>
         </div>
 
-        <!-- WEBSITE PROJECTS -->
-        <div class="dash-card">
+        <!-- WEBSITE PANEL -->
+        <div class="dash-card service-panel">
           <div class="dash-card-header">
-            <div style="display:flex; align-items:center; gap:0.5rem;">
-              <span class="material-icons" style="color:var(--web-green); font-size:1rem;">web</span>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <div class="svc-dot" style="background:#10b981;"></div>
               <h2 class="dash-card-title">Website Projects</h2>
             </div>
-            <div style="display:flex;gap:0.5rem;align-items:center;">
-              <button class="dash-card-link" id="add-project-btn" style="background:none;border:none;cursor:pointer;color:var(--web-green);font-size:0.8rem;">+ Add</button>
-              <a href="https://wa.me/917799934943?text=Hi!%20I%20want%20to%20check%20on%20my%20website%20project." target="_blank" class="dash-card-link">Contact →</a>
-            </div>
+            <button class="service-open-btn" id="add-project-btn">+ New Project</button>
           </div>
+
+          <!-- Project health bar -->
+          <div id="project-health-bar" style="display:flex;gap:0.4rem;margin-bottom:0.75rem;flex-wrap:wrap;"></div>
+
           <div id="projects-list">
-            <div class="dash-empty">No projects yet.<br><span style="color:var(--text-dim);">Click "+ Add" to track a project.</span></div>
+            <div class="dash-empty">No projects yet. Click "+ New Project" to start tracking.</div>
           </div>
         </div>
 
-        <!-- CONTENT ENGINE -->
-        <div class="dash-card">
+        <!-- CONTENT PANEL -->
+        <div class="dash-card service-panel">
           <div class="dash-card-header">
-            <div style="display:flex; align-items:center; gap:0.5rem;">
-              <span class="material-icons" style="color:var(--yt-red); font-size:1rem;">video_camera_front</span>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <div class="svc-dot" style="background:#f59e0b;"></div>
               <h2 class="dash-card-title">Content Engine</h2>
             </div>
-            <div style="display:flex;gap:0.5rem;align-items:center;">
-              <button class="dash-card-link" id="update-stats-btn" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:0.8rem;">📊 Stats</button>
-              <button class="dash-card-link" id="add-content-btn" style="background:none;border:none;cursor:pointer;color:var(--primary);font-size:0.8rem;">+ Add</button>
+            <div style="display:flex;gap:0.4rem;">
+              <button class="service-open-btn" id="update-stats-btn">📊 Stats</button>
+              <button class="service-open-btn" style="color:var(--primary);" id="add-content-btn">+ Add</button>
             </div>
           </div>
-          <!-- Content pipeline counts -->
+
+          <!-- Platform summary mini-cards -->
+          <div id="content-stats-summary" style="display:none; margin-bottom:0.75rem;"></div>
+
+          <!-- Pipeline counts -->
           <div id="content-pipeline-counts" style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;"></div>
-          <!-- Platform stats summary -->
-          <div id="content-stats-summary" style="display:none; margin-bottom:1rem;"></div>
-          <!-- Content items list -->
+
           <div id="content-items-list">
-            <div class="dash-empty">No content pieces yet.<br><span style="color:var(--text-dim);">Click "+ Add" to track your first piece.</span></div>
+            <div class="dash-empty">No content yet. Click "+ Add" to track your first piece.</div>
           </div>
         </div>
 
       </div>
 
-      <!-- REVENUE BREAKDOWN -->
-      <div class="dash-card" style="margin-top:1.5rem;">
-        <div class="dash-card-header">
-          <h2 class="dash-card-title">Revenue Breakdown by Stage</h2>
+      <!-- ═══ REVENUE + FORM EMBED (2-col) ═══ -->
+      <div class="dash-2col" style="margin-top:1.5rem;">
+
+        <!-- Revenue chart -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h2 class="dash-card-title">Revenue by Stage</h2>
+            <span id="overdue-alert" style="display:none;font-size:0.72rem;color:#fca5a5;"></span>
+          </div>
+          <div class="revenue-bars" id="revenue-bars"></div>
         </div>
-        <div class="revenue-bars" id="revenue-bars">
-          <!-- Rendered by JS -->
+
+        <!-- Lead form embed -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h2 class="dash-card-title">Lead Capture Form</h2>
+            <span style="font-size:0.7rem;color:#10b981;background:rgba(16,185,129,0.1);padding:0.15rem 0.5rem;border-radius:99px;border:1px solid rgba(16,185,129,0.2);">● Live</span>
+          </div>
+          <p style="color:var(--text-dim);font-size:0.82rem;margin-bottom:1rem;">Share your form link. Every submission lands in CRM automatically.</p>
+          <div style="margin-bottom:0.75rem;">
+            <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:0.35rem;">Shareable link</div>
+            <div style="display:flex;gap:0.5rem;">
+              <input type="text" id="form-link" readonly onclick="this.select()"
+                style="flex:1;padding:0.5rem 0.75rem;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:var(--radius-sm);color:var(--primary);font-family:var(--font-mono);font-size:0.75rem;outline:none;" />
+              <button class="btn btn-outline btn-sm" id="copy-link-btn">Copy</button>
+              <a id="open-form-btn" href="#" target="_blank" class="btn btn-blue btn-sm">Open →</a>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:0.35rem;">Embed code (iframe)</div>
+            <div style="display:flex;gap:0.5rem;align-items:flex-start;">
+              <textarea id="embed-code" readonly rows="3" onclick="this.select()"
+                style="flex:1;padding:0.5rem 0.75rem;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:var(--radius-sm);color:var(--text-dim);font-family:var(--font-mono);font-size:0.72rem;outline:none;resize:none;line-height:1.5;"></textarea>
+              <button class="btn btn-outline btn-sm" id="copy-embed-btn" style="flex-shrink:0;">Copy</button>
+            </div>
+          </div>
         </div>
+
       </div>
 
+      <!-- ═══ SERVICE PLANS (collapsed accordion) ═══ -->
       <!-- IMPLEMENTATION PLANS -->
       <div class="dash-card" style="margin-top:1.5rem;">
         <div class="dash-card-header">
@@ -441,40 +438,6 @@
           </div>
         </div>
 
-      </div>
-
-      <!-- LEAD CAPTURE FORM EMBED -->
-      <div class="dash-card" style="margin-top:1.5rem;">
-        <div class="dash-card-header">
-          <h2 class="dash-card-title">Your Lead Capture Form</h2>
-          <span style="font-size:0.75rem; color:var(--web-green); background:rgba(16,185,129,0.1); padding:0.2rem 0.6rem; border-radius:99px; border:1px solid rgba(16,185,129,0.25);">Live</span>
-        </div>
-        <p style="color:var(--text-dim); font-size:0.85rem; margin-bottom:1.25rem;">
-          Share your form link or embed it on any website. Every submission lands directly in your CRM pipeline as a new lead.
-        </p>
-
-        <!-- Form Link -->
-        <div style="margin-bottom:1.25rem;">
-          <div style="font-size:0.78rem; color:var(--text-dim); font-weight:500; margin-bottom:0.4rem;">Your shareable form link</div>
-          <div style="display:flex; gap:0.5rem; align-items:center;">
-            <input type="text" id="form-link" readonly
-              style="flex:1; padding:0.65rem 0.9rem; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); border-radius:var(--radius-sm); color:var(--primary); font-family:var(--font-mono); font-size:0.8rem; outline:none; cursor:pointer;"
-              onclick="this.select()" />
-            <button class="btn btn-outline btn-sm" id="copy-link-btn" style="flex-shrink:0; white-space:nowrap;">Copy Link</button>
-            <a id="open-form-btn" href="#" target="_blank" class="btn btn-blue btn-sm" style="flex-shrink:0; white-space:nowrap;">Open →</a>
-          </div>
-        </div>
-
-        <!-- Embed Code -->
-        <div>
-          <div style="font-size:0.78rem; color:var(--text-dim); font-weight:500; margin-bottom:0.4rem;">Embed on your website (iframe)</div>
-          <div style="display:flex; gap:0.5rem; align-items:flex-start;">
-            <textarea id="embed-code" readonly rows="3"
-              style="flex:1; padding:0.65rem 0.9rem; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); border-radius:var(--radius-sm); color:var(--text-dim); font-family:var(--font-mono); font-size:0.75rem; outline:none; resize:none; line-height:1.5;"
-              onclick="this.select()"></textarea>
-            <button class="btn btn-outline btn-sm" id="copy-embed-btn" style="flex-shrink:0; white-space:nowrap; margin-top:0;">Copy Code</button>
-          </div>
-        </div>
       </div>
 
     </main>
