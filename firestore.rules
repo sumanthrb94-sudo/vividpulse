@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Authenticated owner: full access to all user data
+    match /users/{userId}/{document=**} {
+      allow read, update, delete: if request.auth != null
+                                  && request.auth.uid == userId;
+    }
+
+    // Public lead capture form: unauthenticated CREATE only on leads
+    match /users/{userId}/leads/{leadId} {
+      allow create: if request.resource.data.keys().hasAll(['name', 'stage', 'date', 'source'])
+                    && request.resource.data.source == 'form'
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() <= 120;
+    }
+
+    // Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

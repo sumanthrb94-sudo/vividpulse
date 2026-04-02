@@ -9,6 +9,10 @@ export default defineConfig({
         websites: 'websites.html',
         crm:      'crm.html',
         content:  'content.html',
+        login:     'login.html',
+        dashboard: 'dashboard.html',
+        form:           'form.html',
+        contentStudio:  'content-studio.html',
       }
     }
   }

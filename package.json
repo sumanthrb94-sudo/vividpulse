@@ -9,6 +9,9 @@
     "preview": "npx vite preview"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.81.0",
+    "@google/generative-ai": "^0.24.1",
+    "firebase": "^12.11.0",
     "vite": "^8.0.1"
   }
 }

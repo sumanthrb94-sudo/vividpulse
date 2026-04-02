@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Get in Touch</title>
+    <meta name="description" content="Fill in your details and we'll get back to you shortly." />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body>
+
+    <div class="cursor-glow" id="cursor-glow"></div>
+    <div class="bg-blobs">
+      <div class="blob blob-1" style="background:var(--primary);"></div>
+      <div class="blob blob-2" style="background:var(--secondary);"></div>
+    </div>
+
+    <main class="form-main">
+      <div class="form-card" id="form-card">
+
+        <!-- BRAND (populated by JS if businessName set) -->
+        <div class="form-brand" id="form-brand" style="display:none;">
+          <div class="form-brand-dot" id="form-brand-dot"></div>
+          <span id="form-brand-name"></span>
+        </div>
+
+        <!-- STATES -->
+        <div id="state-loading" class="form-state">
+          <div class="spinner"></div>
+          <p>Loading…</p>
+        </div>
+
+        <div id="state-error" class="form-state" style="display:none;">
+          <span style="font-size:2.5rem;">⚠️</span>
+          <h2>Invalid link</h2>
+          <p style="color:var(--text-dim); font-size:0.9rem;">This form link is missing a valid user ID. Please contact the business for the correct link.</p>
+        </div>
+
+        <div id="state-success" class="form-state" style="display:none;">
+          <span style="font-size:2.5rem;">✅</span>
+          <h2 style="background:linear-gradient(135deg,var(--primary),var(--secondary)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">We got your details!</h2>
+          <p style="color:var(--text-dim); font-size:0.9rem;">Someone will get back to you shortly. Thank you!</p>
+        </div>
+
+        <div id="state-form" style="display:none;">
+          <div class="form-header">
+            <h1 class="form-title text-white-grad">Let's Talk Business</h1>
+            <p class="form-sub">Fill in your details and we'll reach out within 24 hours.</p>
+          </div>
+
+          <div id="form-error" class="form-msg form-msg--error" style="display:none;"></div>
+
+          <form id="lead-form" autocomplete="on">
+            <div class="form-group">
+              <label for="f-name">Your Name *</label>
+              <input type="text" id="f-name" placeholder="e.g. Rahul Sharma" required autocomplete="name" />
+            </div>
+            <div class="form-group">
+              <label for="f-company">Business / Company</label>
+              <input type="text" id="f-company" placeholder="e.g. My Startup Pvt Ltd" autocomplete="organization" />
+            </div>
+            <div class="form-group">
+              <label for="f-phone">Phone / WhatsApp</label>
+              <input type="tel" id="f-phone" placeholder="e.g. +91 98765 43210" autocomplete="tel" />
+            </div>
+            <div class="form-group">
+              <label for="f-email">Email</label>
+              <input type="email" id="f-email" placeholder="you@example.com" autocomplete="email" />
+            </div>
+            <div class="form-group">
+              <label for="f-budget">Estimated Budget (₹)</label>
+              <select id="f-budget">
+                <option value="0">Not sure yet</option>
+                <option value="10000">Under ₹10,000</option>
+                <option value="25000">₹10,000 – ₹25,000</option>
+                <option value="50000">₹25,000 – ₹50,000</option>
+                <option value="100000">₹50,000 – ₹1L</option>
+                <option value="200000">₹1L – ₹2L</option>
+                <option value="500000">₹2L+</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="f-message">What do you need help with?</label>
+              <textarea id="f-message" rows="3" placeholder="Website, CRM, content strategy…"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-glow form-submit" id="form-submit">
+              Send Enquiry →
+            </button>
+          </form>
+
+          <p class="form-footer">Powered by <a href="/" style="color:var(--primary);">Vivid Pulse</a></p>
+        </div>
+
+      </div>
+    </main>
+
+    <style>
+      .form-main {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+      }
+
+      .form-card {
+        width: 100%;
+        max-width: 480px;
+        background: var(--bg-card);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        padding: 2.5rem;
+        backdrop-filter: blur(12px);
+      }
+
+      .form-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      .form-brand-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--primary);
+      }
+
+      .form-state {
+        text-align: center;
+        padding: 2rem 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .form-state h2 {
+        font-family: var(--font-heading);
+        font-size: 1.4rem;
+      }
+
+      .spinner {
+        width: 36px;
+        height: 36px;
+        border: 3px solid rgba(255,255,255,0.1);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      .form-header { margin-bottom: 1.5rem; }
+
+      .form-title {
+        font-family: var(--font-heading);
+        font-size: clamp(1.4rem, 4vw, 1.8rem);
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+      }
+
+      .form-sub { color: var(--text-dim); font-size: 0.875rem; }
+
+      .form-msg--error {
+        padding: 0.75rem 1rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+        background: rgba(239,68,68,0.1);
+        border: 1px solid rgba(239,68,68,0.3);
+        color: #fca5a5;
+      }
+
+      .form-group { margin-bottom: 1rem; }
+
+      .form-group label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--text-dim);
+        margin-bottom: 0.35rem;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.7rem 0.9rem;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        color: var(--text-main);
+        font-family: var(--font-body);
+        font-size: 0.875rem;
+        outline: none;
+        transition: var(--transition);
+        resize: vertical;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        border-color: var(--primary);
+        background: rgba(34,211,238,0.04);
+        box-shadow: 0 0 0 3px rgba(34,211,238,0.1);
+      }
+
+      .form-submit {
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.5rem;
+        padding: 0.875rem;
+        font-size: 0.95rem;
+      }
+
+      .form-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: none !important;
+      }
+
+      .form-footer {
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        margin-top: 1.25rem;
+      }
+    </style>
+
+    <script type="module" src="/src/pages/form.js"></script>
+  </body>
+</html>

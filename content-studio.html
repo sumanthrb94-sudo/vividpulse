@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Content Studio | Vivid Pulse — AI-Powered Content Creation</title>
+    <meta name="description" content="Create stunning content in 3 steps with AI. Plan with Claude, review your prompts, generate with Gemini." />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body>
+
+    <div class="cursor-glow" id="cursor-glow"></div>
+    <div class="bg-blobs">
+      <div class="blob blob-1" style="background:var(--primary);"></div>
+      <div class="blob blob-2" style="background:var(--secondary);"></div>
+      <div class="blob blob-3"></div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+      <div class="container">
+        <a href="/" class="logo-container">
+          <img src="/logo.png" alt="Vivid Pulse" class="logo-img" />
+          <span class="brand-name">Vivid Pulse</span>
+        </a>
+        <nav class="nav-links" id="nav-links">
+          <a href="/">Home</a>
+          <a href="/dashboard">Dashboard</a>
+          <a href="/crm">CRM</a>
+          <a href="/content">Content</a>
+          <a href="/content-studio" class="active">✨ Studio</a>
+          <a href="/login" class="btn btn-outline btn-sm" id="nav-signin">Sign In</a>
+        </nav>
+        <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="container" style="padding-top:7rem; padding-bottom:4rem; max-width:860px;">
+
+      <!-- HEADER -->
+      <div style="text-align:center; margin-bottom:2.5rem;">
+        <span class="hero-badge" style="background:rgba(139,92,246,0.08); border-color:rgba(139,92,246,0.25); color:var(--primary); margin-bottom:1rem; display:inline-block;">✨ AI Content Studio — Pro</span>
+        <h1 style="font-size:2.2rem; margin-bottom:0.75rem;">
+          <span class="text-white-grad">Create Content</span><br/>
+          <span class="text-primary-grad">in 3 Smart Steps</span>
+        </h1>
+        <p style="color:var(--text-dim); max-width:540px; margin:0 auto;">Choose your AI strategy below. You review and edit before every generation.</p>
+      </div>
+
+      <!-- AI STRATEGY SELECTOR -->
+      <div id="strategy-selector" style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap; margin-bottom:2rem;">
+
+        <button class="strategy-btn" data-strategy="google" id="strat-google">
+          <div class="strat-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+          </div>
+          <div class="strat-info">
+            <div class="strat-name">Google Only</div>
+            <div class="strat-desc">Gemini handles both plan &amp; generation</div>
+          </div>
+          <div class="strat-badge" style="background:rgba(66,133,244,0.12); color:#4285F4; border-color:rgba(66,133,244,0.25);">Default</div>
+        </button>
+
+        <button class="strategy-btn" data-strategy="optimized" id="strat-optimized">
+          <div class="strat-icon" style="font-size:1.1rem;">⚡</div>
+          <div class="strat-info">
+            <div class="strat-name">Optimized</div>
+            <div class="strat-desc">Claude plans → Gemini generates</div>
+          </div>
+          <div class="strat-badge" style="background:rgba(139,92,246,0.12); color:var(--primary); border-color:rgba(139,92,246,0.25);">Recommended</div>
+        </button>
+
+        <button class="strategy-btn" data-strategy="claude" id="strat-claude">
+          <div class="strat-icon" style="font-size:1.1rem;">✦</div>
+          <div class="strat-info">
+            <div class="strat-name">Claude Only</div>
+            <div class="strat-desc">Anthropic Claude for all steps</div>
+          </div>
+        </button>
+
+      </div>
+
+      <!-- USAGE BANNER (for video limit) -->
+      <div id="usage-banner" style="display:none; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); border-radius:12px; padding:0.75rem 1.25rem; margin-bottom:1.5rem; color:#f59e0b; font-size:0.85rem; text-align:center;"></div>
+
+      <!-- STEP INDICATOR -->
+      <div id="step-indicator" style="display:flex; align-items:center; justify-content:center; gap:0; margin-bottom:2.5rem;">
+        <div class="step-dot active" id="dot-1" data-step="1">
+          <div class="step-num">1</div>
+          <div class="step-label">Plan</div>
+        </div>
+        <div class="step-line" id="line-1"></div>
+        <div class="step-dot" id="dot-2" data-step="2">
+          <div class="step-num">2</div>
+          <div class="step-label">Review</div>
+        </div>
+        <div class="step-line" id="line-2"></div>
+        <div class="step-dot" id="dot-3" data-step="3">
+          <div class="step-num">3</div>
+          <div class="step-label">Generate</div>
+        </div>
+      </div>
+
+      <!-- ===== STEP 1: INPUT + PLAN ===== -->
+      <div id="step-1" class="studio-step">
+        <div class="glass-card" style="padding:2rem;">
+          <h2 style="font-size:1.3rem; margin-bottom:0.4rem;">Step 1: Describe Your Content</h2>
+          <p style="color:var(--text-dim); font-size:0.88rem; margin-bottom:1.5rem;" id="step1-desc">AI will analyze your past content and build a smart plan.</p>
+
+          <form id="plan-form">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+              <div>
+                <label class="form-label">Content Type</label>
+                <select id="content-type" class="form-input" required>
+                  <option value="">Select type…</option>
+                  <option value="post">Instagram Post</option>
+                  <option value="reel">Instagram Reel / Short</option>
+                  <option value="video">YouTube Video</option>
+                  <option value="image">Standalone Image</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Platform</label>
+                <select id="platform" class="form-input" required>
+                  <option value="">Select platform…</option>
+                  <option value="instagram">Instagram</option>
+                  <option value="youtube">YouTube</option>
+                  <option value="twitter">Twitter / X</option>
+                  <option value="linkedin">LinkedIn</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-bottom:1.25rem;">
+              <label class="form-label">Your Brief <span style="color:var(--text-dim);font-size:0.78rem;">(max 500 chars)</span></label>
+              <textarea id="brief" class="form-input" rows="4" maxlength="500" placeholder="e.g. Show behind-the-scenes of building a website for a small bakery. Tone should be warm and relatable. Target: small business owners." required style="resize:vertical;"></textarea>
+              <div id="brief-count" style="text-align:right; font-size:0.75rem; color:var(--text-dim); margin-top:0.25rem;">0 / 500</div>
+            </div>
+
+            <div id="history-preview" style="display:none; margin-bottom:1.25rem; padding:0.75rem 1rem; background:rgba(255,255,255,0.03); border-radius:10px; border:1px solid var(--border);">
+              <div style="font-size:0.78rem; color:var(--text-dim); margin-bottom:0.4rem;">Your recent content (Claude will avoid repeating these):</div>
+              <div id="history-list" style="font-size:0.8rem; color:var(--text-main);"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-glow" id="plan-btn" style="width:100%;">
+              <span id="plan-btn-text">✦ Generate Plan with Claude</span>
+              <span id="plan-btn-loading" style="display:none;">Analyzing with Claude…</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ===== STEP 2: REVIEW & EDIT ===== -->
+      <div id="step-2" class="studio-step" style="display:none;">
+        <div class="glass-card" style="padding:2rem;">
+          <h2 style="font-size:1.3rem; margin-bottom:0.4rem;">Step 2: Review &amp; Refine</h2>
+          <p style="color:var(--text-dim); font-size:0.88rem; margin-bottom:1.5rem;">Claude's plan is below. Edit any section before generating the final content.</p>
+
+          <!-- Plan Display -->
+          <div id="plan-display" style="margin-bottom:1.5rem;"></div>
+
+          <!-- Editable Prompts -->
+          <div style="border-top:1px solid var(--border); padding-top:1.5rem; margin-top:0.5rem;">
+            <h3 style="font-size:1rem; margin-bottom:1rem; color:var(--text-dim);">Edit Generation Directions</h3>
+            <div style="display:flex; flex-direction:column; gap:1rem;">
+              <div>
+                <label class="form-label">Visual / Image Direction</label>
+                <textarea id="edit-visual" class="form-input" rows="2" style="resize:vertical;"></textarea>
+              </div>
+              <div>
+                <label class="form-label">Caption Direction</label>
+                <textarea id="edit-caption" class="form-input" rows="2" style="resize:vertical;"></textarea>
+              </div>
+              <div>
+                <label class="form-label">Call to Action</label>
+                <textarea id="edit-cta" class="form-input" rows="2" style="resize:vertical;"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:1rem; margin-top:1.5rem;">
+            <button id="back-to-step1" class="btn btn-outline" style="flex:0 0 auto;">← Back</button>
+            <button id="generate-btn" class="btn btn-primary btn-glow" style="flex:1;">
+              <span id="gen-btn-text">✦ Generate with Gemini</span>
+              <span id="gen-btn-loading" style="display:none;">Generating with Gemini…</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== STEP 3: RESULT ===== -->
+      <div id="step-3" class="studio-step" style="display:none;">
+        <div class="glass-card" style="padding:2rem;">
+          <h2 style="font-size:1.3rem; margin-bottom:0.4rem;">Step 3: Your Content is Ready</h2>
+          <p style="color:var(--text-dim); font-size:0.88rem; margin-bottom:1.5rem;">Copy what you need, then save to your Content Engine.</p>
+
+          <div id="result-display"></div>
+
+          <div style="display:flex; gap:1rem; margin-top:1.5rem; flex-wrap:wrap;">
+            <button id="save-to-engine" class="btn btn-primary">Save to Content Engine</button>
+            <button id="start-over" class="btn btn-outline">Create Another</button>
+            <a href="/content" class="btn btn-outline">View Content Engine →</a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- MOBILE NAV OVERLAY -->
+    <div class="nav-overlay" id="nav-overlay"></div>
+
+    <script type="module" src="/src/pages/content-studio.js"></script>
+  </body>
+</html>

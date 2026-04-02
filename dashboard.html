@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Vivid Pulse CRM</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <img src="/logo.png" alt="Vivid Pulse" class="logo-img" />
+        <span class="brand-name">Vivid Pulse</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/dashboard" class="sidebar-link active">
+          <span class="material-icons">dashboard</span> Dashboard
+        </a>
+        <a href="/crm" class="sidebar-link">
+          <span class="material-icons">view_kanban</span> CRM Pipeline
+        </a>
+        <div class="sidebar-section-label">Tools</div>
+        <a href="/content" class="sidebar-link">
+          <span class="material-icons">video_camera_front</span> Content Engine
+        </a>
+        <a href="/content-studio" class="sidebar-link sidebar-link--pro" id="sidebar-studio-link" style="display:none;">
+          <span class="material-icons">auto_awesome</span> AI Studio
+          <span style="font-size:0.6rem;font-weight:700;padding:0.1rem 0.35rem;border-radius:99px;background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);margin-left:auto;">Pro</span>
+        </a>
+        <div class="sidebar-section-label">Company</div>
+        <a href="/" class="sidebar-link">
+          <span class="material-icons">home</span> Home
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <span class="material-icons" style="font-size:1.2rem; color:var(--primary);">account_circle</span>
+          <span id="sidebar-email" class="sidebar-email">Loading…</span>
+        </div>
+        <button id="sidebar-logout" class="sidebar-logout">
+          <span class="material-icons">logout</span> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- MOBILE TOPBAR -->
+    <header class="app-topbar" id="app-topbar">
+      <button class="sidebar-toggle" id="sidebar-toggle">
+        <span class="material-icons">menu</span>
+      </button>
+      <div class="logo-container">
+        <img src="/logo.png" alt="Vivid Pulse" class="logo-img" style="width:28px;height:28px;" />
+        <span class="brand-name" style="font-size:1rem;">Vivid Pulse</span>
+      </div>
+      <button id="topbar-logout" class="btn btn-outline btn-sm" style="font-size:0.75rem; padding:0.35rem 0.75rem;">Sign Out</button>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="app-main" id="app-main">
+
+      <!-- ═══ COMMAND CENTER HEADER ═══ -->
+      <div class="cmd-header">
+        <div class="cmd-header-left">
+          <div class="cmd-greeting" id="dash-greeting">Good morning</div>
+          <div class="cmd-title-row">
+            <h1 class="dash-title" id="dash-title">Command Center</h1>
+            <span id="plan-badge" style="display:none;"></span>
+          </div>
+          <div class="cmd-meta" id="cmd-meta"></div>
+        </div>
+        <div class="cmd-header-right">
+          <a href="/content-studio" class="btn btn-primary btn-glow" id="studio-btn" style="display:none;">✨ AI Studio</a>
+          <button class="btn btn-blue btn-glow" id="dash-add-lead">+ Add Lead</button>
+          <button class="btn btn-outline btn-sm" id="export-csv-btn" title="Export all leads to CSV">⬇ CSV</button>
+        </div>
+      </div>
+
+      <!-- ═══ TODAY'S FOCUS ═══ -->
+      <div id="focus-section" style="display:none; margin-bottom:1.5rem;">
+        <div class="focus-header">
+          <span class="focus-icon">🎯</span>
+          <span class="focus-title">Today's Focus</span>
+          <span id="focus-count" class="focus-count"></span>
+        </div>
+        <div id="focus-items" class="focus-items"></div>
+      </div>
+
+      <!-- ═══ KPI ROW ═══ -->
+      <div class="kpi-row">
+        <div class="kpi-card" style="--kpi-accent:#22d3ee;">
+          <div class="kpi-icon"><span class="material-icons">people</span></div>
+          <div class="kpi-body">
+            <div class="kpi-value" id="ds-total">—</div>
+            <div class="kpi-label">Total Leads</div>
+            <div class="kpi-sub" id="kpi-new-leads"></div>
+          </div>
+        </div>
+        <div class="kpi-card" style="--kpi-accent:#a855f7;">
+          <div class="kpi-icon"><span class="material-icons">account_balance_wallet</span></div>
+          <div class="kpi-body">
+            <div class="kpi-value" id="ds-pipeline">—</div>
+            <div class="kpi-label">Pipeline Value</div>
+            <div class="kpi-sub" id="kpi-proposals"></div>
+          </div>
+        </div>
+        <div class="kpi-card" style="--kpi-accent:#10b981;">
+          <div class="kpi-icon"><span class="material-icons">paid</span></div>
+          <div class="kpi-body">
+            <div class="kpi-value" id="ds-closed">—</div>
+            <div class="kpi-label">Revenue Closed</div>
+            <div class="kpi-sub" id="kpi-winrate"></div>
+          </div>
+        </div>
+        <div class="kpi-card" style="--kpi-accent:#f59e0b;">
+          <div class="kpi-icon"><span class="material-icons">web</span></div>
+          <div class="kpi-body">
+            <div class="kpi-value" id="kpi-active-projects">—</div>
+            <div class="kpi-label">Active Projects</div>
+            <div class="kpi-sub" id="kpi-proj-sub"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ 3-SERVICE GRID ═══ -->
+      <div class="dash-3grid">
+
+        <!-- CRM PANEL -->
+        <div class="dash-card service-panel">
+          <div class="dash-card-header">
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <div class="svc-dot" style="background:#22d3ee;"></div>
+              <h2 class="dash-card-title">CRM Pipeline</h2>
+              <span id="new-leads-badge" style="display:none; background:#ef4444; color:#fff; font-size:0.65rem; font-weight:700; padding:0.15rem 0.45rem; border-radius:99px; animation:pulse-badge 2s infinite;">0 new</span>
+            </div>
+            <a href="/crm" class="service-open-btn">Open Full CRM →</a>
+          </div>
+
+          <!-- Quick add lead inline -->
+          <div class="quick-add-bar">
+            <button class="quick-add-btn" id="dash-add-lead-2">
+              <span class="material-icons" style="font-size:0.9rem;">add</span> Quick Add Lead
+            </button>
+            <button class="quick-add-btn" id="export-csv-btn-2" style="color:var(--text-dim);">
+              <span class="material-icons" style="font-size:0.9rem;">download</span> Export CSV
+            </button>
+          </div>
+
+          <div class="pipeline-stages" id="pipeline-stages"></div>
+
+          <div style="border-top:1px solid var(--glass-border); margin-top:1rem; padding-top:0.75rem;">
+            <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim);margin-bottom:0.6rem;">Recent Activity</div>
+            <div class="recent-leads" id="recent-leads"></div>
+          </div>
+        </div>
+
+        <!-- WEBSITE PANEL -->
+        <div class="dash-card service-panel">
+          <div class="dash-card-header">
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <div class="svc-dot" style="background:#10b981;"></div>
+              <h2 class="dash-card-title">Website Projects</h2>
+            </div>
+            <button class="service-open-btn" id="add-project-btn">+ New Project</button>
+          </div>
+
+          <!-- Project health bar -->
+          <div id="project-health-bar" style="display:flex;gap:0.4rem;margin-bottom:0.75rem;flex-wrap:wrap;"></div>
+
+          <div id="projects-list">
+            <div class="dash-empty">No projects yet. Click "+ New Project" to start tracking.</div>
+          </div>
+        </div>
+
+        <!-- CONTENT PANEL -->
+        <div class="dash-card service-panel">
+          <div class="dash-card-header">
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <div class="svc-dot" style="background:#f59e0b;"></div>
+              <h2 class="dash-card-title">Content Engine</h2>
+            </div>
+            <div style="display:flex;gap:0.4rem;">
+              <button class="service-open-btn" id="update-stats-btn">📊 Stats</button>
+              <button class="service-open-btn" style="color:var(--primary);" id="add-content-btn">+ Add</button>
+            </div>
+          </div>
+
+          <!-- Platform summary mini-cards -->
+          <div id="content-stats-summary" style="display:none; margin-bottom:0.75rem;"></div>
+
+          <!-- Pipeline counts -->
+          <div id="content-pipeline-counts" style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;"></div>
+
+          <div id="content-items-list">
+            <div class="dash-empty">No content yet. Click "+ Add" to track your first piece.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ═══ REVENUE + FORM EMBED (2-col) ═══ -->
+      <div class="dash-2col" style="margin-top:1.5rem;">
+
+        <!-- Revenue chart -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h2 class="dash-card-title">Revenue by Stage</h2>
+            <span id="overdue-alert" style="display:none;font-size:0.72rem;color:#fca5a5;"></span>
+          </div>
+          <div class="revenue-bars" id="revenue-bars"></div>
+        </div>
+
+        <!-- Lead form embed -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h2 class="dash-card-title">Lead Capture Form</h2>
+            <span style="font-size:0.7rem;color:#10b981;background:rgba(16,185,129,0.1);padding:0.15rem 0.5rem;border-radius:99px;border:1px solid rgba(16,185,129,0.2);">● Live</span>
+          </div>
+          <p style="color:var(--text-dim);font-size:0.82rem;margin-bottom:1rem;">Share your form link. Every submission lands in CRM automatically.</p>
+          <div style="margin-bottom:0.75rem;">
+            <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:0.35rem;">Shareable link</div>
+            <div style="display:flex;gap:0.5rem;">
+              <input type="text" id="form-link" readonly onclick="this.select()"
+                style="flex:1;padding:0.5rem 0.75rem;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:var(--radius-sm);color:var(--primary);font-family:var(--font-mono);font-size:0.75rem;outline:none;" />
+              <button class="btn btn-outline btn-sm" id="copy-link-btn">Copy</button>
+              <a id="open-form-btn" href="#" target="_blank" class="btn btn-blue btn-sm">Open →</a>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:0.35rem;">Embed code (iframe)</div>
+            <div style="display:flex;gap:0.5rem;align-items:flex-start;">
+              <textarea id="embed-code" readonly rows="3" onclick="this.select()"
+                style="flex:1;padding:0.5rem 0.75rem;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:var(--radius-sm);color:var(--text-dim);font-family:var(--font-mono);font-size:0.72rem;outline:none;resize:none;line-height:1.5;"></textarea>
+              <button class="btn btn-outline btn-sm" id="copy-embed-btn" style="flex-shrink:0;">Copy</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ═══ SERVICE PLANS (collapsed accordion) ═══ -->
+      <!-- IMPLEMENTATION PLANS -->
+      <div class="dash-card" style="margin-top:1.5rem;">
+        <div class="dash-card-header">
+          <h2 class="dash-card-title">Service Plans & Implementation</h2>
+          <span style="font-size:0.75rem; color:var(--text-dim);">Click a service to expand</span>
+        </div>
+
+        <!-- CRM -->
+        <div class="plan-row">
+          <button class="plan-toggle" data-target="plan-crm">
+            <span style="color:var(--crm-blue);">⬤</span> CRM Pipeline
+            <span class="plan-chevron">▾</span>
+          </button>
+          <div class="plan-body" id="plan-crm">
+            <div class="plan-tiers">
+              <div class="plan-tier">
+                <div class="plan-tier-name">Solo</div>
+                <div class="plan-tier-price">₹999<span>/mo</span></div>
+                <ul class="plan-features">
+                  <li>1 user</li><li>Unlimited leads</li><li>Kanban pipeline</li>
+                  <li>Lead notes</li><li>Embeddable form</li><li>Dashboard analytics</li>
+                </ul>
+              </div>
+              <div class="plan-tier plan-tier--featured">
+                <div class="plan-tier-badge">Popular</div>
+                <div class="plan-tier-name">Team</div>
+                <div class="plan-tier-price" style="color:var(--crm-blue);">₹2,999<span>/mo</span></div>
+                <ul class="plan-features">
+                  <li>Up to 5 users</li><li>Everything in Solo</li><li>Team lead assignment</li>
+                  <li>Activity log</li><li>Priority support</li><li>Custom stages</li>
+                </ul>
+              </div>
+              <div class="plan-tier">
+                <div class="plan-tier-name">Agency</div>
+                <div class="plan-tier-price" style="color:var(--secondary);">₹6,999<span>/mo</span></div>
+                <ul class="plan-features">
+                  <li>Unlimited users</li><li>White-label branding</li><li>API access</li>
+                  <li>Dedicated support</li><li>Custom integrations</li><li>SLA guarantee</li>
+                </ul>
+              </div>
+            </div>
+            <div class="plan-timeline">
+              <div class="plan-timeline-title">Implementation Timeline</div>
+              <div class="plan-steps">
+                <div class="plan-step"><span class="plan-step-day">Day 1</span><span>Account setup & pipeline customisation</span></div>
+                <div class="plan-step"><span class="plan-step-day">Day 2</span><span>Lead form embedded on your website</span></div>
+                <div class="plan-step"><span class="plan-step-day">Day 3</span><span>Team training & first leads imported</span></div>
+                <div class="plan-step"><span class="plan-step-day">Day 4</span><span>Go live — leads flowing automatically</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEBSITE -->
+        <div class="plan-row">
+          <button class="plan-toggle" data-target="plan-web">
+            <span style="color:var(--web-green);">⬤</span> Website Studio
+            <span class="plan-chevron">▾</span>
+          </button>
+          <div class="plan-body" id="plan-web" style="display:none;">
+            <div class="plan-tiers">
+              <div class="plan-tier">
+                <div class="plan-tier-name">Landing Page</div>
+                <div class="plan-tier-price">₹12,999<span> one-time</span></div>
+                <ul class="plan-features">
+                  <li>Single page design</li><li>Mobile responsive</li><li>SEO optimised</li>
+                  <li>Lead form embed</li><li>WhatsApp button</li><li>Delivered in 7 days</li>
+                </ul>
+              </div>
+              <div class="plan-tier plan-tier--featured">
+                <div class="plan-tier-badge">Most Chosen</div>
+                <div class="plan-tier-name">Business Site</div>
+                <div class="plan-tier-price" style="color:var(--web-green);">₹29,999<span> one-time</span></div>
+                <ul class="plan-features">
+                  <li>Up to 8 pages</li><li>CRM form integration</li><li>Google Analytics</li>
+                  <li>Blog setup</li><li>1 month support</li><li>Delivered in 21 days</li>
+                </ul>
+              </div>
+              <div class="plan-tier">
+                <div class="plan-tier-name">E-commerce</div>
+                <div class="plan-tier-price" style="color:var(--secondary);">₹64,999<span> one-time</span></div>
+                <ul class="plan-features">
+                  <li>Full online store</li><li>Razorpay / Stripe</li><li>Inventory management</li>
+                  <li>Admin dashboard</li><li>3 months support</li><li>Delivered in 45 days</li>
+                </ul>
+              </div>
+            </div>
+            <div class="plan-timeline">
+              <div class="plan-timeline-title">Implementation Timeline</div>
+              <div class="plan-steps">
+                <div class="plan-step"><span class="plan-step-day">Day 1–2</span><span>Discovery call & requirements gathering</span></div>
+                <div class="plan-step"><span class="plan-step-day">Day 3–5</span><span>Design mockup & approval</span></div>
+                <div class="plan-step"><span class="plan-step-day">Day 6–18</span><span>Development & content population</span></div>
+                <div class="plan-step"><span class="plan-step-day">Day 19–21</span><span>Review, revisions & launch</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="plan-row">
+          <button class="plan-toggle" data-target="plan-content">
+            <span style="color:var(--yt-red);">⬤</span> Content Engine
+            <span class="plan-chevron">▾</span>
+          </button>
+          <div class="plan-body" id="plan-content" style="display:none;">
+            <div class="plan-tiers">
+              <div class="plan-tier">
+                <div class="plan-tier-name">Starter</div>
+                <div class="plan-tier-price">₹7,999<span>/mo</span></div>
+                <ul class="plan-features">
+                  <li>8 Instagram Reels/posts</li><li>Captions + hashtags</li><li>Content calendar</li>
+                  <li>Basic analytics</li><li>1 revision per post</li><li>Monthly report</li>
+                </ul>
+              </div>
+              <div class="plan-tier plan-tier--featured">
+                <div class="plan-tier-badge">Growth</div>
+                <div class="plan-tier-name">Growth</div>
+                <div class="plan-tier-price" style="color:var(--yt-red);">₹15,999<span>/mo</span></div>
+                <ul class="plan-features">
+                  <li>16 Instagram posts</li><li>4 YouTube videos</li><li>Thumbnail design</li>
+                  <li>Monthly strategy call</li><li>Competitor analysis</li><li>Weekly report</li>
+                </ul>
+              </div>
+              <div class="plan-tier">
+                <div class="plan-tier-name">Viral</div>
+                <div class="plan-tier-price" style="color:var(--ig-pink);">₹29,999<span>/mo</span></div>
+                <ul class="plan-features">
+                  <li>Unlimited content</li><li>Paid ad creatives</li><li>Dedicated manager</li>
+                  <li>Weekly strategy calls</li><li>Influencer outreach</li><li>Real-time reports</li>
+                </ul>
+              </div>
+            </div>
+            <div class="plan-timeline">
+              <div class="plan-timeline-title">Implementation Timeline</div>
+              <div class="plan-steps">
+                <div class="plan-step"><span class="plan-step-day">Week 1</span><span>Brand audit, competitor research & content strategy</span></div>
+                <div class="plan-step"><span class="plan-step-day">Week 2</span><span>Content calendar creation & first batch scripting</span></div>
+                <div class="plan-step"><span class="plan-step-day">Week 3</span><span>Content creation, editing & client approval</span></div>
+                <div class="plan-step"><span class="plan-step-day">Week 4</span><span>Publishing, scheduling & performance review</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GROWTH BUNDLE -->
+        <div class="plan-row" style="border-bottom:none;">
+          <button class="plan-toggle" data-target="plan-bundle">
+            <span style="color:var(--secondary);">⬤</span> Growth Bundle
+            <span class="svc-badge svc-badge--hot" style="margin-left:0.5rem; font-size:0.68rem;">Best Value</span>
+            <span class="plan-chevron">▾</span>
+          </button>
+          <div class="plan-body" id="plan-bundle" style="display:none;">
+            <div class="plan-tiers">
+              <div class="plan-tier">
+                <div class="plan-tier-name">Starter Bundle</div>
+                <div class="plan-tier-price">₹9,999<span>/mo</span></div>
+                <div style="font-size:0.72rem; color:var(--text-dim); margin-bottom:0.75rem;">+ ₹12,999 one-time setup</div>
+                <ul class="plan-features">
+                  <li>Landing Page website</li><li>CRM Solo plan</li><li>8 Instagram posts/mo</li>
+                  <li>Lead form on website</li><li>Monthly strategy call</li><li>Email support</li>
+                </ul>
+              </div>
+              <div class="plan-tier plan-tier--featured">
+                <div class="plan-tier-badge">Recommended</div>
+                <div class="plan-tier-name">Pro Bundle</div>
+                <div class="plan-tier-price" style="background:linear-gradient(135deg,var(--primary),var(--secondary)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">₹19,999<span style="-webkit-text-fill-color:var(--text-dim)">/mo</span></div>
+                <div style="font-size:0.72rem; color:var(--text-dim); margin-bottom:0.75rem;">+ ₹29,999 one-time setup</div>
+                <ul class="plan-features">
+                  <li>Business website (8 pages)</li><li>CRM Team plan (5 users)</li><li>16 Instagram + 4 YouTube</li>
+                  <li>CRM form integration</li><li>Weekly strategy calls</li><li>Priority support</li>
+                </ul>
+              </div>
+              <div class="plan-tier">
+                <div class="plan-tier-name">Agency Bundle</div>
+                <div class="plan-tier-price" style="color:var(--secondary);">Custom</div>
+                <div style="font-size:0.72rem; color:var(--text-dim); margin-bottom:0.75rem;">contact for pricing</div>
+                <ul class="plan-features">
+                  <li>E-commerce website</li><li>CRM Agency plan</li><li>Unlimited content</li>
+                  <li>Dedicated account manager</li><li>White-label CRM</li><li>SLA + priority</li>
+                </ul>
+              </div>
+            </div>
+            <div class="plan-timeline">
+              <div class="plan-timeline-title">Onboarding Timeline</div>
+              <div class="plan-steps">
+                <div class="plan-step"><span class="plan-step-day">Day 1</span><span>Kickoff call — website brief, CRM setup & content strategy</span></div>
+                <div class="plan-step"><span class="plan-step-day">Week 1</span><span>CRM live + website design approved + first content batch</span></div>
+                <div class="plan-step"><span class="plan-step-day">Week 3</span><span>Website launched + content published + leads flowing in</span></div>
+                <div class="plan-step"><span class="plan-step-day">Month 2+</span><span>Monthly reviews, optimisation & scaling</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- ═══ LEAD DETAIL PANEL ═══ -->
+    <div class="lead-panel-overlay" id="lead-panel-overlay"></div>
+    <aside class="lead-panel" id="lead-panel" aria-label="Lead Details">
+
+      <!-- Panel Header -->
+      <div class="lead-panel-header">
+        <div>
+          <div class="lead-panel-label">Lead Detail</div>
+          <div class="lead-panel-name" id="lp-name">—</div>
+        </div>
+        <button class="lead-panel-close" id="lead-panel-close" aria-label="Close">✕</button>
+      </div>
+
+      <!-- Stage Quick-Change Pills -->
+      <div class="lp-section">
+        <div class="lp-section-label">Move to Stage</div>
+        <div class="lp-stage-pills" id="lp-stage-pills"></div>
+      </div>
+
+      <!-- Info Grid -->
+      <div class="lp-section">
+        <div class="lp-info-grid" id="lp-info-grid"></div>
+      </div>
+
+      <!-- Edit Form -->
+      <div class="lp-section">
+        <div class="lp-section-label">Edit Details</div>
+        <form id="lp-edit-form" autocomplete="off">
+          <input type="hidden" id="lp-lead-id" />
+          <div class="lp-form-row">
+            <div class="lp-form-group">
+              <label class="lp-label" for="lp-edit-name">Name</label>
+              <input id="lp-edit-name" class="lp-input" type="text" required />
+            </div>
+            <div class="lp-form-group">
+              <label class="lp-label" for="lp-edit-company">Company</label>
+              <input id="lp-edit-company" class="lp-input" type="text" />
+            </div>
+          </div>
+          <div class="lp-form-row">
+            <div class="lp-form-group">
+              <label class="lp-label" for="lp-edit-value">Value (₹)</label>
+              <input id="lp-edit-value" class="lp-input" type="number" min="0" />
+            </div>
+            <div class="lp-form-group">
+              <label class="lp-label" for="lp-edit-due">Follow-up Date</label>
+              <input id="lp-edit-due" class="lp-input" type="date" />
+            </div>
+          </div>
+          <div class="lp-form-group">
+            <label class="lp-label" for="lp-edit-phone">Phone</label>
+            <input id="lp-edit-phone" class="lp-input" type="tel" placeholder="Optional" />
+          </div>
+          <div class="lp-form-group">
+            <label class="lp-label" for="lp-edit-email">Email</label>
+            <input id="lp-edit-email" class="lp-input" type="email" placeholder="Optional" />
+          </div>
+          <div class="lp-form-group">
+            <label class="lp-label" for="lp-edit-source">Source</label>
+            <select id="lp-edit-source" class="lp-input">
+              <option value="">— Unknown —</option>
+              <option value="form">Website Form</option>
+              <option value="whatsapp">WhatsApp</option>
+              <option value="referral">Referral</option>
+              <option value="instagram">Instagram</option>
+              <option value="youtube">YouTube</option>
+              <option value="cold">Cold Outreach</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:0.6rem;margin-top:0.75rem;">
+            <button type="submit" class="btn btn-primary" style="flex:1;" id="lp-save-btn">Save Changes</button>
+            <button type="button" class="btn btn-outline" id="lp-delete-btn" style="color:#fca5a5;border-color:rgba(239,68,68,0.3);" title="Delete lead">🗑</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Notes -->
+      <div class="lp-section" style="flex:1; display:flex; flex-direction:column; min-height:0;">
+        <div class="lp-section-label">Notes</div>
+        <div class="lp-notes-list" id="lp-notes-list"></div>
+        <form id="lp-note-form" style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+          <input id="lp-note-input" class="lp-input" type="text" placeholder="Add a note…" style="flex:1;" />
+          <button type="submit" class="btn btn-blue btn-sm">Add</button>
+        </form>
+      </div>
+
+    </aside>
+
+    <!-- EDIT / ADD PROJECT MODAL -->
+    <div class="modal-overlay" id="project-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="project-modal-title">🌐 Add Project</h3>
+          <button class="modal-close" id="project-modal-close">✕</button>
+        </div>
+        <form id="project-form">
+          <input type="hidden" id="project-edit-id" />
+          <div class="form-group">
+            <label for="proj-name">Client / Project Name *</label>
+            <input type="text" id="proj-name" class="form-input" placeholder="e.g. Bloom Studio" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="proj-type">Project Type</label>
+              <select id="proj-type" class="form-input">
+                <option value="Landing Page">Landing Page</option>
+                <option value="Business Website">Business Website</option>
+                <option value="E-commerce Store">E-commerce Store</option>
+                <option value="Portfolio">Portfolio</option>
+                <option value="Redesign">Redesign</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="proj-status">Status</label>
+              <select id="proj-status" class="form-input">
+                <option value="pending">Pending</option>
+                <option value="in_progress">In Progress</option>
+                <option value="revision">Revision</option>
+                <option value="completed">Completed</option>
+                <option value="on_hold">On Hold</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="proj-progress">Progress: <span id="proj-progress-val">0</span>%</label>
+            <input type="range" id="proj-progress" min="0" max="100" value="0"
+              style="width:100%; accent-color:var(--web-green); height:6px; cursor:pointer;" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="proj-value">Project Value (₹)</label>
+              <input type="number" id="proj-value" class="form-input" placeholder="e.g. 29999" min="0" />
+            </div>
+            <div class="form-group">
+              <label for="proj-due">Due Date</label>
+              <input type="date" id="proj-due" class="form-input" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="proj-notes">Notes</label>
+            <textarea id="proj-notes" class="form-input" rows="2" placeholder="e.g. Client approved wireframes, waiting on content..."></textarea>
+          </div>
+          <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
+            <button type="submit" class="btn btn-primary" style="flex:1;" id="proj-save-btn">Save Project</button>
+            <button type="button" class="btn btn-outline" id="proj-cancel-btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ADD CONTENT MODAL -->
+    <div class="modal-overlay" id="add-content-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="content-modal-title">🎬 Add Content Piece</h3>
+          <button class="modal-close" id="content-modal-close">✕</button>
+        </div>
+        <form id="add-content-form">
+          <input type="hidden" id="content-edit-id" />
+          <div class="form-group">
+            <label for="c-title">Title *</label>
+            <input type="text" id="c-title" placeholder="e.g. 5 Tips to Grow on Instagram" required />
+          </div>
+          <div class="form-group">
+            <label for="c-platform">Platform</label>
+            <select id="c-platform">
+              <option value="instagram">Instagram</option>
+              <option value="youtube">YouTube</option>
+              <option value="both">Both</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="c-type">Content Type</label>
+            <select id="c-type">
+              <option value="reel">Reel / Short</option>
+              <option value="post">Post / Carousel</option>
+              <option value="video">YouTube Video</option>
+              <option value="story">Story</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="c-status">Status</label>
+            <select id="c-status">
+              <option value="planned">Planned</option>
+              <option value="scripting">Scripting</option>
+              <option value="production">In Production</option>
+              <option value="editing">Editing</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="c-date">Scheduled / Publish Date</label>
+            <input type="date" id="c-date" />
+          </div>
+          <div class="form-group">
+            <label for="c-notes">Notes</label>
+            <textarea id="c-notes" rows="2" placeholder="Hook idea, key points…"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-glow" style="width:100%;justify-content:center;margin-top:0.25rem;">Save Content</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- UPDATE PLATFORM STATS MODAL -->
+    <div class="modal-overlay" id="stats-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>📊 Update Platform Stats</h3>
+          <button class="modal-close" id="stats-modal-close">✕</button>
+        </div>
+        <form id="stats-form">
+          <p style="color:var(--text-dim);font-size:0.82rem;margin-bottom:1.25rem;">Enter your latest numbers — these show on your dashboard.</p>
+          <div style="font-size:0.8rem;font-weight:600;color:var(--ig-pink);margin-bottom:0.75rem;">📸 Instagram</div>
+          <div class="form-group">
+            <label for="s-ig-followers">Followers</label>
+            <input type="number" id="s-ig-followers" placeholder="e.g. 12400" min="0" />
+          </div>
+          <div class="form-group">
+            <label for="s-ig-posts">Posts This Month</label>
+            <input type="number" id="s-ig-posts" placeholder="e.g. 12" min="0" />
+          </div>
+          <div class="form-group">
+            <label for="s-ig-growth">Growth % (e.g. +8.3%)</label>
+            <input type="text" id="s-ig-growth" placeholder="+8.3%" />
+          </div>
+          <div style="font-size:0.8rem;font-weight:600;color:var(--yt-red);margin:1rem 0 0.75rem;">▶ YouTube</div>
+          <div class="form-group">
+            <label for="s-yt-subs">Subscribers</label>
+            <input type="number" id="s-yt-subs" placeholder="e.g. 3200" min="0" />
+          </div>
+          <div class="form-group">
+            <label for="s-yt-videos">Videos This Month</label>
+            <input type="number" id="s-yt-videos" placeholder="e.g. 4" min="0" />
+          </div>
+          <div class="form-group">
+            <label for="s-yt-views">Total Views This Month</label>
+            <input type="number" id="s-yt-views" placeholder="e.g. 48000" min="0" />
+          </div>
+          <div class="form-group">
+            <label for="s-yt-growth">Growth % (e.g. +12.1%)</label>
+            <input type="text" id="s-yt-growth" placeholder="+12.1%" />
+          </div>
+          <button type="submit" class="btn btn-primary btn-glow" style="width:100%;justify-content:center;margin-top:0.25rem;">Save Stats</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ADD LEAD MODAL -->
+    <div class="modal-overlay" id="add-lead-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>➕ Add New Lead</h3>
+          <button class="modal-close" id="modal-close">✕</button>
+        </div>
+        <form id="add-lead-form">
+          <div class="form-group">
+            <label for="lead-name">Contact Name *</label>
+            <input type="text" id="lead-name" placeholder="e.g. Rahul Sharma" required />
+          </div>
+          <div class="form-group">
+            <label for="lead-company">Company</label>
+            <input type="text" id="lead-company" placeholder="e.g. InnoTech Pvt Ltd" />
+          </div>
+          <div class="form-group">
+            <label for="lead-value">Deal Value (₹)</label>
+            <input type="number" id="lead-value" placeholder="e.g. 50000" min="0" />
+          </div>
+          <div class="form-group">
+            <label for="lead-stage">Stage</label>
+            <select id="lead-stage">
+              <option value="new">New Lead</option>
+              <option value="contacted">Contacted</option>
+              <option value="proposal">Proposal Sent</option>
+              <option value="won">Won</option>
+              <option value="lost">Lost</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-blue" style="width:100%; margin-top:0.5rem; justify-content:center;">Add to Pipeline</button>
+        </form>
+      </div>
+    </div>
+
+    <style>
+      /* ── App layout ── */
+      body.app-body {
+        display: flex;
+        min-height: 100vh;
+        background: var(--bg-dark);
+      }
+
+      /* SIDEBAR */
+      .sidebar {
+        width: 240px;
+        min-height: 100vh;
+        background: rgba(15,23,42,0.85);
+        border-right: 1px solid var(--glass-border);
+        backdrop-filter: blur(12px);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0; left: 0;
+        z-index: 100;
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 1.5rem 1.25rem;
+        border-bottom: 1px solid var(--glass-border);
+      }
+
+      .sidebar-nav {
+        flex: 1;
+        padding: 1rem 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.65rem 0.85rem;
+        border-radius: var(--radius-sm);
+        color: var(--text-dim);
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: var(--transition);
+        text-decoration: none;
+      }
+
+      .sidebar-link:hover, .sidebar-link.active {
+        background: rgba(255,255,255,0.06);
+        color: var(--text-main);
+      }
+
+      .sidebar-link.active {
+        background: rgba(34,211,238,0.08);
+        color: var(--primary);
+        border-left: 2px solid var(--primary);
+      }
+
+      .sidebar-link .material-icons { font-size: 1.1rem; }
+
+      .sidebar-footer {
+        padding: 1rem 1.25rem;
+        border-top: 1px solid var(--glass-border);
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .sidebar-user {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .sidebar-email {
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 160px;
+      }
+
+      .sidebar-logout {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: none;
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        color: var(--text-dim);
+        font-family: var(--font-body);
+        font-size: 0.825rem;
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+        transition: var(--transition);
+        width: 100%;
+      }
+
+      .sidebar-logout:hover {
+        background: rgba(239,68,68,0.08);
+        border-color: rgba(239,68,68,0.3);
+        color: #fca5a5;
+      }
+
+      .sidebar-logout .material-icons { font-size: 1rem; }
+
+      /* MOBILE TOPBAR */
+      .app-topbar {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        height: 60px;
+        background: rgba(15,23,42,0.9);
+        border-bottom: 1px solid var(--glass-border);
+        backdrop-filter: blur(12px);
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1rem;
+        z-index: 200;
+      }
+
+      .sidebar-toggle {
+        background: none;
+        border: none;
+        color: var(--text-main);
+        cursor: pointer;
+        display: flex;
+      }
+
+      /* MAIN */
+      .app-main {
+        margin-left: 240px;
+        flex: 1;
+        padding: 2rem;
+        min-height: 100vh;
+      }
+
+      /* DASHBOARD HEADER */
+      .dash-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .dash-title {
+        font-family: var(--font-heading);
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        font-weight: 700;
+        background: linear-gradient(135deg, #f8fafc, #94a3b8);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .dash-sub {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+        margin-top: 0.15rem;
+      }
+
+      /* STATS */
+      .dash-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .dash-stat-card {
+        background: var(--bg-card);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        padding: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: var(--transition);
+      }
+
+      .dash-stat-card:hover {
+        border-color: var(--glass-border-hover);
+        transform: translateY(-2px);
+      }
+
+      .dash-stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .dash-stat-value {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .dash-stat-label {
+        font-size: 0.78rem;
+        color: var(--text-dim);
+        margin-top: 0.3rem;
+      }
+
+      /* GRID */
+      .dash-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+
+      .dash-card {
+        background: var(--bg-card);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        padding: 1.5rem;
+      }
+
+      .dash-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.25rem;
+      }
+
+      .dash-card-title {
+        font-family: var(--font-heading);
+        font-size: 1rem;
+        font-weight: 600;
+      }
+
+      .dash-card-link {
+        font-size: 0.8rem;
+        color: var(--primary);
+        transition: var(--transition);
+      }
+
+      .dash-card-link:hover { opacity: 0.75; }
+
+      /* PIPELINE STAGES */
+      .pipeline-stage-row {
+        margin-bottom: 1rem;
+      }
+
+      .pipeline-stage-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        margin-bottom: 0.35rem;
+      }
+
+      .pipeline-stage-name { color: var(--text-dim); font-weight: 500; }
+      .pipeline-stage-count { color: var(--text-main); font-weight: 600; }
+
+      .pipeline-bar-track {
+        height: 8px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 99px;
+        overflow: hidden;
+      }
+
+      .pipeline-bar-fill {
+        height: 100%;
+        border-radius: 99px;
+        transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+      }
+
+      /* RECENT LEADS */
+      .recent-lead-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--glass-border);
+        gap: 0.5rem;
+      }
+
+      .recent-lead-row:last-child { border-bottom: none; }
+
+      .recent-lead-name {
+        font-weight: 600;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 130px;
+      }
+
+      .recent-lead-company {
+        font-size: 0.75rem;
+        color: var(--text-dim);
+      }
+
+      .recent-lead-value {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--web-green);
+        white-space: nowrap;
+      }
+
+      .stage-badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.55rem;
+        border-radius: 99px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      /* REVENUE BARS */
+      .revenue-bars {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 1rem;
+        align-items: flex-end;
+        height: 140px;
+      }
+
+      .rev-bar-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        height: 100%;
+        gap: 0.5rem;
+      }
+
+      .rev-bar-fill {
+        width: 100%;
+        border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+        transition: height 0.6s cubic-bezier(0.4,0,0.2,1);
+        min-height: 4px;
+      }
+
+      .rev-bar-label {
+        font-size: 0.7rem;
+        color: var(--text-dim);
+        text-align: center;
+      }
+
+      .rev-bar-value {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+
+      /* 3-SERVICE GRID */
+      .dash-3grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* EMPTY STATE */
+      .dash-empty {
+        color: var(--text-dim);
+        font-size: 0.82rem;
+        text-align: center;
+        padding: 2rem 1rem;
+        line-height: 1.8;
+      }
+
+      /* WEBSITE PROJECT CARD */
+      .project-item {
+        padding: 0.85rem 0;
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .project-item:last-child { border-bottom: none; }
+
+      .project-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+      }
+
+      .project-name { font-weight: 600; font-size: 0.875rem; }
+      .project-type { font-size: 0.72rem; color: var(--text-dim); }
+
+      .project-status {
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 0.18rem 0.55rem;
+        border-radius: 99px;
+        white-space: nowrap;
+      }
+
+      .status-completed { background: rgba(16,185,129,0.12); color: var(--web-green); }
+      .status-in_progress { background: rgba(59,130,246,0.12); color: var(--crm-blue); }
+      .status-revision { background: rgba(245,158,11,0.12); color: #f59e0b; }
+      .status-pending { background: rgba(148,163,184,0.12); color: var(--text-dim); }
+
+      .project-progress-track {
+        height: 5px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 99px;
+        overflow: hidden;
+        margin-top: 0.4rem;
+      }
+      .project-progress-fill {
+        height: 100%;
+        border-radius: 99px;
+        background: linear-gradient(90deg, var(--web-green), var(--primary));
+        transition: width 0.6s ease;
+      }
+
+      /* CONTENT OVERVIEW */
+      .content-platform {
+        padding: 0.85rem;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        margin-bottom: 0.75rem;
+      }
+
+      .content-platform-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+      }
+
+      .content-platform-name {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+
+      .content-growth {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--web-green);
+        background: rgba(16,185,129,0.1);
+        padding: 0.15rem 0.45rem;
+        border-radius: 99px;
+      }
+
+      .content-stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+      }
+
+      .content-stat {
+        text-align: center;
+      }
+
+      .content-stat-val {
+        font-family: var(--font-heading);
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .content-stat-lbl {
+        font-size: 0.65rem;
+        color: var(--text-dim);
+        margin-top: 0.1rem;
+      }
+
+      .content-month-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--glass-border);
+      }
+
+      .content-month-label { font-size: 0.75rem; color: var(--text-dim); }
+
+      .content-pill {
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 0.18rem 0.5rem;
+        border-radius: 99px;
+      }
+
+      /* CONTENT ITEMS */
+      .content-item-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid var(--glass-border);
+        gap: 0.5rem;
+      }
+      .content-item-row:last-child { border-bottom: none; }
+      .content-item-title {
+        font-size: 0.82rem;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 180px;
+      }
+      .content-item-meta { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.1rem; }
+
+      /* SIDEBAR SECTION LABEL */
+      .sidebar-section-label {
+        font-size: 0.68rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-dim);
+        padding: 0.75rem 0.85rem 0.25rem;
+        opacity: 0.6;
+      }
+
+      /* SERVICES OVERVIEW */
+      .services-overview {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .svc-card {
+        background: var(--bg-card);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        transition: var(--transition);
+        min-height: 180px;
+      }
+
+      .svc-card:hover { border-color: var(--glass-border-hover); transform: translateY(-2px); }
+
+      .svc-card.svc-active { border-color: rgba(59,130,246,0.3); }
+
+      .svc-card.svc-highlight { border-color: rgba(168,85,247,0.3); }
+
+      .svc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.25rem; }
+
+      .svc-icon {
+        width: 40px; height: 40px;
+        border-radius: var(--radius-sm);
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .svc-badge {
+        font-size: 0.68rem;
+        font-weight: 600;
+        padding: 0.2rem 0.5rem;
+        border-radius: 99px;
+        background: rgba(255,255,255,0.07);
+        color: var(--text-dim);
+        border: 1px solid var(--glass-border);
+        white-space: nowrap;
+      }
+
+      .svc-badge--active { background: rgba(59,130,246,0.12); color: var(--crm-blue); border-color: rgba(59,130,246,0.25); }
+      .svc-badge--hot    { background: rgba(168,85,247,0.12); color: var(--secondary);  border-color: rgba(168,85,247,0.25); }
+
+      .svc-name { font-family: var(--font-heading); font-weight: 600; font-size: 0.95rem; }
+      .svc-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; flex: 1; }
+
+      /* IMPLEMENTATION PLANS */
+      .plan-row {
+        border-bottom: 1px solid var(--glass-border);
+        padding-bottom: 0;
+      }
+
+      .plan-toggle {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 1rem 0;
+        background: none;
+        border: none;
+        color: var(--text-main);
+        font-family: var(--font-heading);
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+        transition: var(--transition);
+      }
+
+      .plan-toggle:hover { color: var(--primary); }
+      .plan-chevron { margin-left: auto; font-size: 0.8rem; transition: transform 0.2s; }
+      .plan-toggle.open .plan-chevron { transform: rotate(180deg); }
+
+      .plan-body { padding-bottom: 1.25rem; }
+
+      .plan-tiers {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .plan-tier {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        padding: 1rem;
+        position: relative;
+      }
+
+      .plan-tier--featured {
+        border-color: rgba(34,211,238,0.25);
+        background: rgba(34,211,238,0.04);
+      }
+
+      .plan-tier-badge {
+        position: absolute;
+        top: -10px; left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary);
+        color: var(--bg-dark);
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 0.15rem 0.6rem;
+        border-radius: 99px;
+        white-space: nowrap;
+      }
+
+      .plan-tier-name { font-weight: 700; font-size: 0.85rem; margin-bottom: 0.4rem; color: var(--text-dim); }
+
+      .plan-tier-price {
+        font-family: var(--font-heading);
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--text-main);
+        margin-bottom: 0.75rem;
+        line-height: 1;
+      }
+
+      .plan-tier-price span { font-size: 0.8rem; font-weight: 400; color: var(--text-dim); }
+
+      .plan-features {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+
+      .plan-features li {
+        font-size: 0.78rem;
+        color: var(--text-dim);
+        padding-left: 1rem;
+        position: relative;
+      }
+
+      .plan-features li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: var(--web-green);
+        font-weight: 700;
+      }
+
+      .plan-timeline { background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); padding: 1rem; }
+
+      .plan-timeline-title { font-size: 0.8rem; font-weight: 600; color: var(--text-dim); margin-bottom: 0.75rem; }
+
+      .plan-steps { display: flex; flex-direction: column; gap: 0.5rem; }
+
+      .plan-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        font-size: 0.82rem;
+      }
+
+      .plan-step-day {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        color: var(--primary);
+        font-weight: 600;
+        white-space: nowrap;
+        min-width: 70px;
+        padding-top: 0.05rem;
+      }
+
+      /* MOBILE RESPONSIVE */
+      @media (max-width: 1100px) {
+        .services-overview { grid-template-columns: repeat(2, 1fr); }
+        .dash-3grid { grid-template-columns: 1fr 1fr; }
+        .plan-tiers { grid-template-columns: 1fr; gap: 0.75rem; }
+      }
+
+      @media (max-width: 900px) {
+        .sidebar { transform: translateX(-100%); }
+        .sidebar.open { transform: translateX(0); }
+        .app-topbar { display: flex; }
+        .app-main { margin-left: 0; padding: 1rem; padding-top: 76px; }
+        .dash-stats { grid-template-columns: repeat(2, 1fr); }
+        .dash-3grid { grid-template-columns: 1fr; }
+        .revenue-bars { grid-template-columns: repeat(5,1fr); height: 100px; }
+      }
+
+      @media (max-width: 480px) {
+        .services-overview { grid-template-columns: 1fr 1fr; }
+        .dash-stats { grid-template-columns: 1fr 1fr; }
+        .revenue-bars { height: 80px; }
+      }
+    </style>
+
+    <script type="module" src="/src/pages/dashboard.js"></script>
+  </body>
+</html>

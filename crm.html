@@ -4,18 +4,11 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CRM Tools | Vivid Pulse — Sales Pipeline & Lead Management</title>
-    <meta name="description" content="Manage your entire sales pipeline in one beautiful dashboard. Track leads, close deals, and grow revenue with Vivid Pulse CRM tools." />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Leads | Vivid Pulse CRM</title>
   </head>
   <body>
 
     <div class="cursor-glow" id="cursor-glow"></div>
-    <div class="bg-blobs">
-      <div class="blob blob-1" style="background:var(--crm-blue);"></div>
-      <div class="blob blob-2" style="background:var(--secondary);"></div>
-      <div class="blob blob-3"></div>
-    </div>
 
     <!-- NAVBAR -->
     <header class="navbar">
@@ -27,258 +20,272 @@
         <nav class="nav-links" id="nav-links">
           <a href="/">Home</a>
           <a href="/websites">Websites</a>
-          <a href="/crm" class="active">CRM Tools</a>
+          <a href="/crm" class="active">CRM</a>
           <a href="/content">Content</a>
-          <a href="https://wa.me/917799934943?text=Hi%20Vivid%20Pulse!%20I%20need%20help%20setting%20up%20my%20CRM%20pipeline." class="btn btn-primary btn-sm btn-glow">Get Started →</a>
+          <a href="/login" class="btn btn-outline btn-sm" id="nav-signin">Sign In</a>
         </nav>
         <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
       </div>
     </header>
 
-    <!-- HERO -->
-    <section class="hero container">
-      <span class="hero-badge" style="background:rgba(59,130,246,0.08); border-color:rgba(59,130,246,0.2); color:var(--crm-blue);">📊 CRM Tools</span>
-      <h1>
-        <span class="text-white-grad">Your Sales Pipeline,</span><br />
-        <span style="background:linear-gradient(135deg,var(--crm-blue),var(--secondary)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">Finally Under Control</span>
-      </h1>
-      <p class="hero-sub">Drag, drop, close. Manage every lead from first contact to won deal inside one beautiful, intelligent CRM that your team will actually want to use.</p>
-      <div class="cta-group">
-        <a href="#crm-demo" class="btn btn-blue btn-glow" id="crm-cta-demo">Try Live Demo →</a>
-        <a href="#crm-pricing" class="btn btn-outline" id="crm-cta-pricing">View Pricing</a>
-      </div>
-    </section>
+    <!-- APP SHELL -->
+    <main class="crm-app">
 
-    <!-- CRM DEMO -->
-    <section id="crm-demo" class="container">
-      <div class="section-header reveal">
-        <span class="section-label label-blue">Interactive Demo</span>
-        <h2 class="section-title text-white-grad">Your Pipeline, Live</h2>
-        <p class="section-sub">Drag lead cards between stages. Click "Add Lead" to create new ones. This is the real thing.</p>
+      <!-- Header row -->
+      <div class="ca-topbar">
+        <div>
+          <h1 class="ca-title">Leads</h1>
+          <div class="ca-subtitle" id="ca-subtitle">Loading…</div>
+        </div>
+        <button class="ca-add-btn" id="add-lead-btn">+ New Lead</button>
       </div>
 
-      <!-- Stats Bar -->
-      <div class="crm-stats reveal">
-        <div class="crm-stat-card">
-          <div class="crm-stat-value" id="stat-total" style="color:var(--crm-blue);">0</div>
-          <div class="crm-stat-label">Total Leads</div>
+      <!-- 3 KPI pills -->
+      <div class="ca-kpis">
+        <div class="ca-kpi">
+          <span class="ca-kpi-val" id="kpi-total">0</span>
+          <span class="ca-kpi-label">Total</span>
         </div>
-        <div class="crm-stat-card">
-          <div class="crm-stat-value" id="stat-value" style="color:var(--web-green);">₹0</div>
-          <div class="crm-stat-label">Pipeline Value</div>
+        <div class="ca-kpi ca-kpi-danger">
+          <span class="ca-kpi-val" id="kpi-overdue">0</span>
+          <span class="ca-kpi-label">Overdue</span>
         </div>
-        <div class="crm-stat-card">
-          <div class="crm-stat-value" id="stat-won" style="color:var(--secondary);">0%</div>
-          <div class="crm-stat-label">Win Rate</div>
-        </div>
-        <div class="crm-stat-card">
-          <div class="crm-stat-value" id="stat-closed" style="color:var(--yt-red);">₹0</div>
-          <div class="crm-stat-label">Revenue Closed</div>
+        <div class="ca-kpi ca-kpi-success">
+          <span class="ca-kpi-val" id="kpi-won">0</span>
+          <span class="ca-kpi-label">Won</span>
         </div>
       </div>
 
-      <!-- Toolbar -->
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;" class="reveal">
-        <h3 style="font-family:var(--font-heading); font-size:1.1rem; color:var(--text-dim);">
-          <span id="total-leads">0</span> leads in pipeline
-        </h3>
-        <button class="btn btn-blue btn-sm" id="add-lead-btn">+ Add Lead</button>
+      <!-- Stage filter tabs -->
+      <div class="ca-tabs" id="ca-tabs">
+        <button class="ca-tab active" data-stage="">All</button>
+        <button class="ca-tab" data-stage="new">New</button>
+        <button class="ca-tab" data-stage="contacted">Contacted</button>
+        <button class="ca-tab" data-stage="proposal">Proposal</button>
+        <button class="ca-tab" data-stage="won">Won</button>
+        <button class="ca-tab" data-stage="lost">Lost</button>
       </div>
 
-      <!-- Kanban Board -->
-      <div class="kanban-board reveal" id="kanban-board">
-        <div class="kanban-col" data-col="new" id="col-new">
-          <div class="kanban-col-header">
-            <div class="col-title"><span style="color:#22d3ee">●</span> New Lead</div>
-            <span class="col-count" id="count-new">0</span>
+      <!-- Search -->
+      <div class="ca-search-wrap">
+        <span class="ca-search-icon">🔍</span>
+        <input type="text" id="ca-search" class="ca-search" placeholder="Search by name, company, phone…" />
+      </div>
+
+      <!-- Lead cards -->
+      <div id="leads-list" class="ca-leads-list"></div>
+      <div id="leads-empty" class="ca-empty" style="display:none;">No leads yet. Add your first one →</div>
+
+    </main>
+
+    <!-- LEAD DETAIL PANEL -->
+    <div class="lead-panel-overlay" id="lead-panel-overlay"></div>
+    <aside class="lead-panel" id="lead-panel">
+
+      <div class="lp-header">
+        <div style="min-width:0;">
+          <div class="lp-name" id="lp-name">—</div>
+          <div style="font-size:0.8rem;color:var(--text-dim);margin-top:0.1rem;" id="lp-company-sub"></div>
+        </div>
+        <button class="crm-modal-close" id="lead-panel-close">✕</button>
+      </div>
+
+      <!-- Stage pills -->
+      <div class="lp-stage-row">
+        <div class="lp-stage-pills" id="lp-stage-pills">
+          <button class="lp-stage-pill" data-stage="new">New</button>
+          <button class="lp-stage-pill" data-stage="contacted">Contacted</button>
+          <button class="lp-stage-pill" data-stage="proposal">Proposal</button>
+          <button class="lp-stage-pill" data-stage="won">Won ✓</button>
+          <button class="lp-stage-pill" data-stage="lost">Lost ✗</button>
+        </div>
+      </div>
+
+      <div class="lp-body">
+
+        <!-- Quick actions -->
+        <div class="lp-section" id="lp-quick-actions"></div>
+
+        <!-- Contact info -->
+        <div class="lp-section">
+          <div class="lp-section-label">Contact</div>
+          <div class="lp-info-grid">
+            <div class="lp-info-item">
+              <div class="lp-info-label">Phone</div>
+              <div class="lp-info-value" id="lp-phone">—</div>
+            </div>
+            <div class="lp-info-item">
+              <div class="lp-info-label">Email</div>
+              <div class="lp-info-value lp-info-ellipsis" id="lp-email">—</div>
+            </div>
+            <div class="lp-info-item">
+              <div class="lp-info-label">Value</div>
+              <div class="lp-info-value" id="lp-value">—</div>
+            </div>
+            <div class="lp-info-item">
+              <div class="lp-info-label">Source</div>
+              <div class="lp-info-value" id="lp-source">—</div>
+            </div>
           </div>
         </div>
-        <div class="kanban-col" data-col="contacted" id="col-contacted">
-          <div class="kanban-col-header">
-            <div class="col-title"><span style="color:#f59e0b">●</span> Contacted</div>
-            <span class="col-count" id="count-contacted">0</span>
+
+        <!-- Follow-up date -->
+        <div class="lp-section">
+          <div class="lp-section-label">Follow-up Date</div>
+          <input type="date" id="lp-due-input" class="lp-input" style="width:100%;" />
+          <button class="ca-save-due-btn" id="lp-save-due">Set Reminder</button>
+        </div>
+
+        <!-- Edit details (collapsed) -->
+        <div class="lp-section">
+          <div class="lp-section-label lp-toggle-row" id="lp-edit-toggle" style="cursor:pointer;">
+            Edit Details <span id="lp-edit-arrow" style="font-size:0.7rem;margin-left:0.3rem;">▶</span>
+          </div>
+          <form id="lp-edit-form" style="display:none;margin-top:0.75rem;">
+            <input type="hidden" id="lp-lead-id" />
+            <div class="lp-form-group">
+              <label class="lp-label">Name</label>
+              <input type="text" id="lp-edit-name" class="lp-input" required />
+            </div>
+            <div class="lp-form-group">
+              <label class="lp-label">Company</label>
+              <input type="text" id="lp-edit-company" class="lp-input" />
+            </div>
+            <div class="lp-form-group">
+              <label class="lp-label">Phone</label>
+              <input type="tel" id="lp-edit-phone" class="lp-input" />
+            </div>
+            <div class="lp-form-group">
+              <label class="lp-label">Email</label>
+              <input type="email" id="lp-edit-email" class="lp-input" />
+            </div>
+            <div class="lp-form-group">
+              <label class="lp-label">Deal Value (₹)</label>
+              <input type="number" id="lp-edit-value" class="lp-input" min="0" />
+            </div>
+            <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+              <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm" style="flex:1;">Save</button>
+              <button type="button" class="crm-btn crm-btn-danger crm-btn-sm" id="lp-delete-btn">Delete</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Notes -->
+        <div class="lp-section" style="flex:1;">
+          <div class="lp-section-label">Notes</div>
+          <div class="lp-timeline" id="lp-timeline"></div>
+          <form id="lp-note-form" class="lp-note-input-row" style="margin-top:0.6rem;">
+            <input type="text" id="lp-note-input" class="lp-input" placeholder="Add a note…" autocomplete="off" />
+            <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Add</button>
+          </form>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- ADD LEAD PANEL (slide-in, right side) -->
+    <div class="lead-panel-overlay" id="add-panel-overlay"></div>
+    <aside class="lead-panel lead-panel-wide" id="add-lead-panel" aria-label="Add New Lead">
+
+      <div class="lp-header">
+        <div>
+          <div class="lp-name" style="font-size:1.1rem;">Add New Lead</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-top:0.1rem;">Fill what you know — you can edit later</div>
+        </div>
+        <button class="crm-modal-close" id="add-panel-close">✕</button>
+      </div>
+
+      <form id="add-lead-form" class="lp-body" style="gap:0;" autocomplete="off">
+
+        <!-- Contact section -->
+        <div class="lp-section">
+          <div class="lp-section-label">Contact</div>
+
+          <div class="al-field al-field-name">
+            <span class="al-field-icon">👤</span>
+            <input type="text" id="lead-name" class="al-input al-input-big" placeholder="Full name *" required autofocus />
+          </div>
+
+          <div class="al-field">
+            <span class="al-field-icon">🏢</span>
+            <input type="text" id="lead-company" class="al-input" placeholder="Company / Business name" />
+          </div>
+
+          <div class="al-field">
+            <span class="al-field-icon">📞</span>
+            <input type="tel" id="lead-phone" class="al-input" placeholder="Phone number" />
+          </div>
+
+          <div class="al-field">
+            <span class="al-field-icon">✉</span>
+            <input type="email" id="lead-email" class="al-input" placeholder="Email address" />
           </div>
         </div>
-        <div class="kanban-col" data-col="proposal" id="col-proposal">
-          <div class="kanban-col-header">
-            <div class="col-title"><span style="color:#a855f7">●</span> Proposal Sent</div>
-            <span class="col-count" id="count-proposal">0</span>
+
+        <!-- Deal section -->
+        <div class="lp-section">
+          <div class="lp-section-label">Deal</div>
+
+          <div class="al-field">
+            <span class="al-field-icon">₹</span>
+            <input type="number" id="lead-value" class="al-input" placeholder="Deal value (e.g. 50000)" min="0" />
+          </div>
+
+          <!-- Stage picker — visual pills -->
+          <div style="margin-top:0.4rem;">
+            <div style="font-size:0.7rem;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Stage</div>
+            <div class="al-stage-picker" id="al-stage-picker">
+              <button type="button" class="al-stage-opt active" data-stage="new"       style="--sc:#22d3ee;">New</button>
+              <button type="button" class="al-stage-opt"        data-stage="contacted" style="--sc:#f59e0b;">Contacted</button>
+              <button type="button" class="al-stage-opt"        data-stage="proposal"  style="--sc:#a855f7;">Proposal</button>
+              <button type="button" class="al-stage-opt"        data-stage="won"       style="--sc:#10b981;">Won</button>
+            </div>
+            <input type="hidden" id="lead-stage" value="new" />
           </div>
         </div>
-        <div class="kanban-col" data-col="won" id="col-won">
-          <div class="kanban-col-header">
-            <div class="col-title"><span style="color:#10b981">●</span> Won ✓</div>
-            <span class="col-count" id="count-won">0</span>
+
+        <!-- Follow-up & Source -->
+        <div class="lp-section">
+          <div class="lp-section-label">Follow-up & Source</div>
+
+          <div class="al-two-col">
+            <div class="al-field" style="flex:1;">
+              <span class="al-field-icon">📅</span>
+              <input type="date" id="lead-due" class="al-input" />
+            </div>
+            <div class="al-field" style="flex:1;">
+              <span class="al-field-icon">📡</span>
+              <select id="lead-source" class="al-input">
+                <option value="">Source</option>
+                <option value="website">Website</option>
+                <option value="referral">Referral</option>
+                <option value="instagram">Instagram</option>
+                <option value="facebook">Facebook</option>
+                <option value="linkedin">LinkedIn</option>
+                <option value="cold-call">Cold Call</option>
+                <option value="event">Event</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
           </div>
         </div>
-        <div class="kanban-col" data-col="lost" id="col-lost">
-          <div class="kanban-col-header">
-            <div class="col-title"><span style="color:#ef4444">●</span> Lost ✗</div>
-            <span class="col-count" id="count-lost">0</span>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- FEATURES -->
-    <section class="container">
-      <div class="section-header reveal">
-        <span class="section-label label-blue">Features</span>
-        <h2 class="section-title text-white-grad">Everything Your Sales Team Needs</h2>
-      </div>
-
-      <div class="grid-2">
-        <div class="card reveal reveal-delay-1">
-          <div class="icon-box icon-blue">📥</div>
-          <h3>Smart Lead Capture</h3>
-          <p>Embed lead forms on any website. Leads flow directly into your Vivid Pulse CRM pipeline — no copy-paste required.</p>
-        </div>
-        <div class="card reveal reveal-delay-2">
-          <div class="icon-box icon-blue">📧</div>
-          <h3>Email Follow-up Tracker</h3>
-          <p>Set follow-up reminders, track open rates, and get notified when a lead goes cold. Never lose a deal to inaction again.</p>
-        </div>
-        <div class="card reveal reveal-delay-3">
-          <div class="icon-box icon-purple">📝</div>
-          <h3>Client Notes & History</h3>
-          <p>Every call, message, and meeting logged in one timeline. Your whole team stays aligned on every deal.</p>
-        </div>
-        <div class="card reveal reveal-delay-4">
-          <div class="icon-box icon-green">📊</div>
-          <h3>Revenue Reports</h3>
-          <p>See your pipeline value, win rate, and average deal size at a glance. Make data-driven decisions every week.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- INTEGRATIONS -->
-    <section class="container">
-      <div class="section-header reveal">
-        <span class="section-label label-blue">Integrations</span>
-        <h2 class="section-title text-white-grad">Works With Your Existing Tools</h2>
-      </div>
-      <div style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center;" class="reveal">
-        <div style="padding:1.25rem 2rem; background:var(--bg-surface); border:1px solid var(--glass-border); border-radius:var(--radius-sm); font-weight:600; display:flex; align-items:center; gap:0.75rem; transition:var(--transition);" onmouseover="this.style.borderColor='var(--crm-blue)'" onmouseout="this.style.borderColor='var(--glass-border)'">📧 Gmail</div>
-        <div style="padding:1.25rem 2rem; background:var(--bg-surface); border:1px solid var(--glass-border); border-radius:var(--radius-sm); font-weight:600; display:flex; align-items:center; gap:0.75rem; transition:var(--transition);" onmouseover="this.style.borderColor='var(--crm-blue)'" onmouseout="this.style.borderColor='var(--glass-border)'">💬 WhatsApp</div>
-        <div style="padding:1.25rem 2rem; background:var(--bg-surface); border:1px solid var(--glass-border); border-radius:var(--radius-sm); font-weight:600; display:flex; align-items:center; gap:0.75rem; transition:var(--transition);" onmouseover="this.style.borderColor='var(--crm-blue)'" onmouseout="this.style.borderColor='var(--glass-border)'">📅 Calendly</div>
-        <div style="padding:1.25rem 2rem; background:var(--bg-surface); border:1px solid var(--glass-border); border-radius:var(--radius-sm); font-weight:600; display:flex; align-items:center; gap:0.75rem; transition:var(--transition);" onmouseover="this.style.borderColor='var(--crm-blue)'" onmouseout="this.style.borderColor='var(--glass-border)'">💳 Stripe</div>
-        <div style="padding:1.25rem 2rem; background:var(--bg-surface); border:1px solid var(--glass-border); border-radius:var(--radius-sm); font-weight:600; display:flex; align-items:center; gap:0.75rem; transition:var(--transition);" onmouseover="this.style.borderColor='var(--crm-blue)'" onmouseout="this.style.borderColor='var(--glass-border)'">📊 Google Sheets</div>
-        <div style="padding:1.25rem 2rem; background:var(--bg-surface); border:1px solid var(--glass-border); border-radius:var(--radius-sm); font-weight:600; display:flex; align-items:center; gap:0.75rem; transition:var(--transition);" onmouseover="this.style.borderColor='var(--crm-blue)'" onmouseout="this.style.borderColor='var(--glass-border)'">🤖 Zapier</div>
-      </div>
-    </section>
-
-    <!-- PRICING -->
-    <section id="crm-pricing" class="container">
-      <div class="section-header reveal">
-        <span class="section-label label-blue">Pricing</span>
-        <h2 class="section-title text-white-grad">Simple Monthly Plans</h2>
-        <p class="section-sub">Cancel anytime. No long-term contracts. Your data is always exportable.</p>
-      </div>
-
-      <div class="pricing-grid">
-        <div class="pricing-card reveal reveal-delay-1">
-          <div class="pricing-tier">Solo</div>
-          <div class="pricing-price" style="color:var(--crm-blue);">₹999</div>
-          <div class="pricing-period">per month</div>
-          <ul class="pricing-features">
-            <li><span class="check">✓</span> 1 User</li>
-            <li><span class="check">✓</span> Up to 100 Leads</li>
-            <li><span class="check">✓</span> Kanban Pipeline</li>
-            <li><span class="check">✓</span> Email Reminders</li>
-            <li><span class="check">✓</span> CSV Export</li>
-          </ul>
-          <a href="/#contact" class="btn btn-outline" style="width:100%; justify-content:center;">Get Early Access</a>
+        <!-- Note -->
+        <div class="lp-section">
+          <div class="lp-section-label">First Note <span style="font-weight:400;opacity:0.5;">(optional)</span></div>
+          <textarea id="lead-note" class="al-input al-textarea" placeholder="What's the context? Where did you meet them? What do they need?"></textarea>
         </div>
 
-        <div class="pricing-card featured reveal reveal-delay-2">
-          <div class="pricing-badge">Best Value</div>
-          <div class="pricing-tier">Team</div>
-          <div class="pricing-price" style="background:linear-gradient(135deg,var(--crm-blue),var(--secondary)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">₹3,499</div>
-          <div class="pricing-period">per month</div>
-          <ul class="pricing-features">
-            <li><span class="check">✓</span> Up to 5 Users</li>
-            <li><span class="check">✓</span> Unlimited Leads</li>
-            <li><span class="check">✓</span> Email + WhatsApp Tracker</li>
-            <li><span class="check">✓</span> Revenue Dashboard</li>
-            <li><span class="check">✓</span> Custom Pipeline Stages</li>
-            <li><span class="check">✓</span> API Access</li>
-          </ul>
-          <a href="/#contact" class="btn btn-blue" style="width:100%; justify-content:center;">Get Early Access →</a>
+        <!-- Submit -->
+        <div style="padding:1rem 1.5rem 1.5rem;margin-top:auto;">
+          <button type="submit" class="al-submit-btn">
+            Add Lead to Pipeline
+          </button>
+          <div class="al-hint">Press <kbd>Esc</kbd> to cancel · <kbd>Enter</kbd> in last field to save</div>
         </div>
 
-        <div class="pricing-card reveal reveal-delay-3">
-          <div class="pricing-tier">Agency</div>
-          <div class="pricing-price" style="color:var(--secondary);">Custom</div>
-          <div class="pricing-period">contact for pricing</div>
-          <ul class="pricing-features">
-            <li><span class="check">✓</span> Unlimited Users</li>
-            <li><span class="check">✓</span> White-label Branding</li>
-            <li><span class="check">✓</span> Custom Integrations</li>
-            <li><span class="check">✓</span> Dedicated Support</li>
-            <li><span class="check">✓</span> On-Premise Option</li>
-            <li><span class="check">✓</span> SLA Guarantee</li>
-          </ul>
-          <a href="/#contact" class="btn btn-outline" style="width:100%; justify-content:center;">Talk to Sales</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="container">
-      <div class="cta-banner reveal" style="background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(168,85,247,0.05));">
-        <h2 class="text-white-grad">Stop Losing Deals to Disorganisation</h2>
-        <p>Join the waitlist and get 3 months free when we launch.</p>
-        <a href="/#contact" class="btn btn-blue" id="crm-bottom-cta">Join Early Access →</a>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-bottom">
-          <p>© 2026 Vivid Pulse Agency · <a href="/" style="color:var(--primary)">Home</a></p>
-          <div class="social-links">
-            <a href="#" class="social-link">▶</a>
-            <a href="#" class="social-link">📷</a>
-            <a href="#" class="social-link">in</a>
-          </div>
-        </div>
-      </div>
-    </footer>
-
-    <!-- ADD LEAD MODAL -->
-    <div class="modal-overlay" id="add-lead-modal">
-      <div class="modal">
-        <div class="modal-header">
-          <h3>➕ Add New Lead</h3>
-          <button class="modal-close" id="modal-close">✕</button>
-        </div>
-        <form id="add-lead-form">
-          <div class="form-group">
-            <label for="lead-name">Contact Name *</label>
-            <input type="text" id="lead-name" placeholder="e.g. Rahul Sharma" required />
-          </div>
-          <div class="form-group">
-            <label for="lead-company">Company</label>
-            <input type="text" id="lead-company" placeholder="e.g. InnoTech Pvt Ltd" />
-          </div>
-          <div class="form-group">
-            <label for="lead-value">Deal Value (₹)</label>
-            <input type="number" id="lead-value" placeholder="e.g. 50000" min="0" />
-          </div>
-          <div class="form-group">
-            <label for="lead-stage">Stage</label>
-            <select id="lead-stage">
-              <option value="new">New Lead</option>
-              <option value="contacted">Contacted</option>
-              <option value="proposal">Proposal Sent</option>
-              <option value="won">Won</option>
-              <option value="lost">Lost</option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-blue" style="width:100%; margin-top:0.5rem; justify-content:center;">Add to Pipeline</button>
-        </form>
-      </div>
-    </div>
+      </form>
+    </aside>
 
     <script type="module" src="/src/pages/crm.js"></script>
     <script type="module" src="/src/page-shared.js"></script>

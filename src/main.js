@@ -1,4 +1,6 @@
 import '/src/style.css';
+import { initNavAuth } from '/src/nav-auth.js';
+initNavAuth();
 
 // ============================
 // CURSOR GLOW
@@ -97,6 +99,18 @@ document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(
 
 // ============================
 // CONTACT FORM
+// ============================
+// PRICING TABS
+// ============================
+document.querySelectorAll('.pricing-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.pricing-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.pricing-tab-panel').forEach(p => p.style.display = 'none');
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).style.display = '';
+  });
+});
+
 // ============================
 const contactForm = document.querySelector('#contact-form');
 if (contactForm) {

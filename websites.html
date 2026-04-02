@@ -29,6 +29,7 @@
           <a href="/websites" class="active">Websites</a>
           <a href="/crm">CRM Tools</a>
           <a href="/content">Content</a>
+          <a href="/login" class="btn btn-outline btn-sm" id="nav-signin">Sign In</a>
           <a href="https://wa.me/917799934943?text=Hi%20Vivid%20Pulse!%20I'm%20interested%20in%20a%20new%20premium%20website." class="btn btn-primary btn-sm btn-glow">Get Started →</a>
         </nav>
         <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
@@ -44,87 +45,171 @@
       </h1>
       <p class="hero-sub">Custom, conversion-first websites built to rank on Google, load in under 2 seconds, and turn visitors into loyal paying customers.</p>
       <div class="cta-group">
-        <a href="/#contact" class="btn btn-green" id="web-cta-primary">Start Your Website →</a>
-        <a href="#portfolio" class="btn btn-outline" id="web-cta-portfolio">View Portfolio</a>
+        <a href="#pricing" class="btn btn-green" id="web-cta-primary">See Pricing →</a>
+        <a href="#portfolio" class="btn btn-outline" id="web-cta-portfolio">View Our Work</a>
       </div>
     </section>
 
-    <!-- PORTFOLIO -->
+    <!-- PRICING — shown first for max conversion -->
+    <section id="pricing" class="container">
+      <div class="section-header reveal">
+        <span class="section-label label-green">Pricing</span>
+        <h2 class="section-title text-white-grad">Pick Your Plan</h2>
+        <p class="section-sub">One-time payment. Hosting + SSL included. 30-day support on every plan.</p>
+      </div>
+
+      <div class="pricing-grid" id="pricing-grid">
+        <div class="pricing-card pricing-selectable reveal reveal-delay-1" data-plan="starter">
+          <div class="pricing-tier">Starter</div>
+          <div class="pricing-price" style="color:var(--web-green);">₹24,999</div>
+          <div class="pricing-period">one-time payment</div>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> Up to 5 Pages</li>
+            <li><span class="check">✓</span> Mobile Responsive</li>
+            <li><span class="check">✓</span> Contact Form</li>
+            <li><span class="check">✓</span> Google Analytics</li>
+            <li><span class="check">✓</span> SSL + Hosting (1 yr)</li>
+            <li><span class="check">✓</span> 14-day Turnaround</li>
+          </ul>
+          <a href="https://wa.me/917799934943?text=Hi!%20I'm%20interested%20in%20the%20Starter%20website%20package%20(₹24,999)." target="_blank" class="btn btn-outline pricing-cta-btn" style="width:100%; justify-content:center;">Get Started →</a>
+        </div>
+
+        <div class="pricing-card pricing-selectable featured reveal reveal-delay-2" data-plan="growth">
+          <div class="pricing-badge">Most Popular</div>
+          <div class="pricing-tier">Growth</div>
+          <div class="pricing-price pricing-price-gradient">₹59,999</div>
+          <div class="pricing-period">one-time payment</div>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> Up to 12 Pages</li>
+            <li><span class="check">✓</span> Custom Animations</li>
+            <li><span class="check">✓</span> Blog / CMS Integration</li>
+            <li><span class="check">✓</span> SEO Audit & Setup</li>
+            <li><span class="check">✓</span> Speed Optimisation</li>
+            <li><span class="check">✓</span> 10-day Turnaround</li>
+            <li><span class="check">✓</span> 30-day Support</li>
+          </ul>
+          <a href="https://wa.me/917799934943?text=Hi!%20I'm%20interested%20in%20the%20Growth%20website%20package%20(₹59,999)." target="_blank" class="btn btn-primary pricing-cta-btn" style="width:100%; justify-content:center;">Get Started →</a>
+        </div>
+
+        <div class="pricing-card pricing-selectable reveal reveal-delay-3" data-plan="premium">
+          <div class="pricing-tier">Premium</div>
+          <div class="pricing-price" style="color:var(--secondary);">₹1,19,999</div>
+          <div class="pricing-period">one-time payment</div>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> Unlimited Pages</li>
+            <li><span class="check">✓</span> E-Commerce / Booking</li>
+            <li><span class="check">✓</span> Custom Backend API</li>
+            <li><span class="check">✓</span> Advanced SEO Strategy</li>
+            <li><span class="check">✓</span> Dashboard / CMS Panel</li>
+            <li><span class="check">✓</span> 7-day Express Delivery</li>
+            <li><span class="check">✓</span> 90-day Priority Support</li>
+          </ul>
+          <a href="https://wa.me/917799934943?text=Hi!%20I'm%20interested%20in%20the%20Premium%20website%20package%20(₹1,19,999)." target="_blank" class="btn btn-outline pricing-cta-btn" style="width:100%; justify-content:center;">Contact Us →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIVE CLIENT SITES -->
     <section id="portfolio" class="container">
       <div class="section-header reveal">
         <span class="section-label label-green">Our Work</span>
-        <h2 class="section-title text-white-grad">Built for Every Industry</h2>
-        <p class="section-sub">We've shipped websites across 15+ niches. Here's a taste of what we build.</p>
+        <h2 class="section-title text-white-grad">Live Client Websites</h2>
+        <p class="section-sub">Real sites we built and launched — live and driving results for our clients.</p>
       </div>
 
-      <div class="portfolio-grid">
-        <div class="portfolio-item reveal reveal-delay-1" id="portfolio-ecom">
-          <div class="portfolio-thumb">
-            <img src="/projects/ecom.png" alt="E-Commerce Store Mockup" />
-            <div class="thumb-overlay">View Project</div>
+      <div class="live-sites-grid">
+
+        <!-- simplysip.in -->
+        <div class="live-site-card reveal reveal-delay-1">
+          <div class="live-site-preview">
+            <div class="live-site-browser-bar">
+              <span class="browser-dot" style="background:#ef4444;"></span>
+              <span class="browser-dot" style="background:#f59e0b;"></span>
+              <span class="browser-dot" style="background:#10b981;"></span>
+              <span class="browser-url">simplysip.in</span>
+            </div>
+            <iframe
+              src="https://simplysip.in"
+              class="live-site-iframe"
+              title="SimplySip website"
+              loading="lazy"
+              sandbox="allow-scripts allow-same-origin"
+            ></iframe>
+            <div class="live-site-iframe-fallback">
+              <div class="live-site-fallback-inner">
+                <div style="font-size:3rem;margin-bottom:0.75rem;">🍹</div>
+                <div style="font-weight:700;font-size:1.1rem;margin-bottom:0.25rem;">SimplySip</div>
+                <div style="color:var(--text-dim);font-size:0.85rem;">simplysip.in</div>
+              </div>
+            </div>
           </div>
-          <div class="portfolio-info">
-            <h4>E-Commerce Store</h4>
-            <p>Shopify / Custom cart with 3s load time & mobile checkout</p>
+          <div class="live-site-info">
+            <div class="live-site-header">
+              <div>
+                <h3 class="live-site-name">SimplySip</h3>
+                <div class="live-site-domain">simplysip.in</div>
+              </div>
+              <span class="live-badge">🟢 Live</span>
+            </div>
+            <p class="live-site-desc">A beautiful beverage brand website — product showcase, ordering flow, and brand storytelling built for conversions.</p>
+            <div class="live-site-tags">
+              <span class="live-tag">Beverage Brand</span>
+              <span class="live-tag">E-Commerce</span>
+              <span class="live-tag">Mobile-First</span>
+            </div>
+            <a href="https://simplysip.in" target="_blank" rel="noopener noreferrer" class="btn btn-green" style="margin-top:1rem;display:inline-flex;align-items:center;gap:0.4rem;">
+              Visit Live Site <span style="font-size:0.9rem;">↗</span>
+            </a>
           </div>
         </div>
 
-        <div class="portfolio-item reveal reveal-delay-2" id="portfolio-saas">
-          <div class="portfolio-thumb">
-            <img src="/projects/saas.png" alt="SaaS Landing Page Mockup" />
-            <div class="thumb-overlay">View Project</div>
+        <!-- jorabakes.in -->
+        <div class="live-site-card reveal reveal-delay-2">
+          <div class="live-site-preview">
+            <div class="live-site-browser-bar">
+              <span class="browser-dot" style="background:#ef4444;"></span>
+              <span class="browser-dot" style="background:#f59e0b;"></span>
+              <span class="browser-dot" style="background:#10b981;"></span>
+              <span class="browser-url">jorabakes.in</span>
+            </div>
+            <iframe
+              src="https://jorabakes.in"
+              class="live-site-iframe"
+              title="Jora Bakes website"
+              loading="lazy"
+              sandbox="allow-scripts allow-same-origin"
+            ></iframe>
+            <div class="live-site-iframe-fallback">
+              <div class="live-site-fallback-inner">
+                <div style="font-size:3rem;margin-bottom:0.75rem;">🎂</div>
+                <div style="font-weight:700;font-size:1.1rem;margin-bottom:0.25rem;">Jora Bakes</div>
+                <div style="color:var(--text-dim);font-size:0.85rem;">jorabakes.in</div>
+              </div>
+            </div>
           </div>
-          <div class="portfolio-info">
-            <h4>SaaS Landing Page</h4>
-            <p>Conversion-optimised with animated hero & pricing section</p>
+          <div class="live-site-info">
+            <div class="live-site-header">
+              <div>
+                <h3 class="live-site-name">Jora Bakes</h3>
+                <div class="live-site-domain">jorabakes.in</div>
+              </div>
+              <span class="live-badge">🟢 Live</span>
+            </div>
+            <p class="live-site-desc">An artisan bakery website with a stunning gallery, custom order inquiry flow, and a warm brand personality that converts browsers into buyers.</p>
+            <div class="live-site-tags">
+              <span class="live-tag">Bakery</span>
+              <span class="live-tag">Food & Hospitality</span>
+              <span class="live-tag">Lead Capture</span>
+            </div>
+            <a href="https://jorabakes.in" target="_blank" rel="noopener noreferrer" class="btn btn-green" style="margin-top:1rem;display:inline-flex;align-items:center;gap:0.4rem;">
+              Visit Live Site <span style="font-size:0.9rem;">↗</span>
+            </a>
           </div>
         </div>
 
-        <div class="portfolio-item reveal reveal-delay-3" id="portfolio-restaurant">
-          <div class="portfolio-thumb">
-            <img src="/projects/restaurant.png" alt="Restaurant Site Mockup" />
-            <div class="thumb-overlay">View Project</div>
-          </div>
-          <div class="portfolio-info">
-            <h4>Restaurant Site</h4>
-            <p>Menu, booking system, Google Maps & review integration</p>
-          </div>
-        </div>
-
-        <div class="portfolio-item reveal reveal-delay-1" id="portfolio-portfolio">
-          <div class="portfolio-thumb">
-            <img src="/projects/creative.png" alt="Creative Portfolio Mockup" />
-            <div class="thumb-overlay">View Project</div>
-          </div>
-          <div class="portfolio-info">
-            <h4>Portfolio / Creative</h4>
-            <p>Stunning case study showcase with smooth parallax animations</p>
-          </div>
-        </div>
-
-        <div class="portfolio-item reveal reveal-delay-2" id="portfolio-realestate">
-          <div class="portfolio-thumb">
-            <img src="/projects/realestate.png" alt="Real Estate Platform Mockup" />
-            <div class="thumb-overlay">View Project</div>
-          </div>
-          <div class="portfolio-info">
-            <h4>Real Estate Platform</h4>
-            <p>Property listings, map search & lead capture forms</p>
-          </div>
-        </div>
-
-        <div class="portfolio-item reveal reveal-delay-3" id="portfolio-coaching">
-          <div class="portfolio-thumb">
-            <img src="/projects/coaching.png" alt="Coaching Site Mockup" />
-            <div class="thumb-overlay">View Project</div>
-          </div>
-          <div class="portfolio-info">
-            <h4>Coaching / Course Site</h4>
-            <p>Sales page, membership portal, and email funnel integration</p>
-          </div>
-        </div>
       </div>
     </section>
+
 
     <!-- FEATURES -->
     <section class="container">
@@ -165,65 +250,6 @@
       </div>
     </section>
 
-    <!-- PRICING -->
-    <section id="pricing" class="container">
-      <div class="section-header reveal">
-        <span class="section-label label-green">Pricing</span>
-        <h2 class="section-title text-white-grad">Transparent. Simple. Powerful.</h2>
-        <p class="section-sub">All plans include hosting, SSL, and 30 days of free support.</p>
-      </div>
-
-      <div class="pricing-grid">
-        <div class="pricing-card reveal reveal-delay-1">
-          <div class="pricing-tier">Starter</div>
-          <div class="pricing-price" style="color:var(--web-green);">₹24,999</div>
-          <div class="pricing-period">one-time payment</div>
-          <ul class="pricing-features">
-            <li><span class="check">✓</span> Up to 5 Pages</li>
-            <li><span class="check">✓</span> Mobile Responsive</li>
-            <li><span class="check">✓</span> Contact Form</li>
-            <li><span class="check">✓</span> Google Analytics</li>
-            <li><span class="check">✓</span> SSL + Hosting (1 yr)</li>
-            <li><span class="check">✓</span> 14-day Turnaround</li>
-          </ul>
-          <a href="/#contact" class="btn btn-outline" style="width:100%; justify-content:center;">Get Started</a>
-        </div>
-
-        <div class="pricing-card featured reveal reveal-delay-2">
-          <div class="pricing-badge">Most Popular</div>
-          <div class="pricing-tier">Growth</div>
-          <div class="pricing-price" style="background:linear-gradient(135deg,var(--primary),var(--secondary)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">₹59,999</div>
-          <div class="pricing-period">one-time payment</div>
-          <ul class="pricing-features">
-            <li><span class="check">✓</span> Up to 12 Pages</li>
-            <li><span class="check">✓</span> Custom Animations</li>
-            <li><span class="check">✓</span> Blog / CMS Integration</li>
-            <li><span class="check">✓</span> SEO Audit & Setup</li>
-            <li><span class="check">✓</span> Speed Optimisation</li>
-            <li><span class="check">✓</span> 10-day Turnaround</li>
-            <li><span class="check">✓</span> 30-day Support</li>
-          </ul>
-          <a href="/#contact" class="btn btn-primary" style="width:100%; justify-content:center;">Get Started →</a>
-        </div>
-
-        <div class="pricing-card reveal reveal-delay-3">
-          <div class="pricing-tier">Premium</div>
-          <div class="pricing-price" style="color:var(--secondary);">₹1,19,999</div>
-          <div class="pricing-period">one-time payment</div>
-          <ul class="pricing-features">
-            <li><span class="check">✓</span> Unlimited Pages</li>
-            <li><span class="check">✓</span> E-Commerce / Booking</li>
-            <li><span class="check">✓</span> Custom Backend API</li>
-            <li><span class="check">✓</span> Advanced SEO Strategy</li>
-            <li><span class="check">✓</span> Dashboard / CMS Panel</li>
-            <li><span class="check">✓</span> 7-day Express Delivery</li>
-            <li><span class="check">✓</span> 90-day Priority Support</li>
-          </ul>
-          <a href="/#contact" class="btn btn-outline" style="width:100%; justify-content:center;">Contact Us</a>
-        </div>
-      </div>
-    </section>
-
     <!-- CTA -->
     <section class="container">
       <div class="cta-banner reveal" style="background:linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.05));">
@@ -248,5 +274,29 @@
     </footer>
 
     <script type="module" src="/src/page-shared.js"></script>
+    <script>
+      // ── Pricing card click-to-select glow ──────────────────────────────────
+      document.querySelectorAll('.pricing-selectable').forEach(card => {
+        card.addEventListener('click', (e) => {
+          // Don't hijack the CTA button click
+          if (e.target.closest('a')) return;
+          document.querySelectorAll('.pricing-selectable').forEach(c => {
+            c.classList.remove('featured', 'selected');
+          });
+          card.classList.add('featured', 'selected');
+        });
+      });
+
+      // ── Iframe fallback for blocked embeds ─────────────────────────────────
+      document.querySelectorAll('.live-site-iframe').forEach(iframe => {
+        iframe.addEventListener('error', () => iframe.classList.add('errored'));
+        setTimeout(() => {
+          try {
+            const d = iframe.contentDocument || iframe.contentWindow?.document;
+            if (!d || d.body?.innerHTML === '') iframe.classList.add('errored');
+          } catch (_) { /* cross-origin = loaded fine */ }
+        }, 4000);
+      });
+    </script>
   </body>
 </html>
