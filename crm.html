@@ -4,18 +4,11 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CRM | Vivid Pulse — Sales Pipeline & Lead Management</title>
-    <meta name="description" content="Professional CRM: manage contacts, track deals, run your entire sales pipeline." />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Leads | Vivid Pulse CRM</title>
   </head>
   <body>
 
     <div class="cursor-glow" id="cursor-glow"></div>
-    <div class="bg-blobs">
-      <div class="blob blob-1" style="background:var(--crm-blue);"></div>
-      <div class="blob blob-2" style="background:var(--secondary);"></div>
-      <div class="blob blob-3"></div>
-    </div>
 
     <!-- NAVBAR -->
     <header class="navbar">
@@ -26,253 +19,185 @@
         </a>
         <nav class="nav-links" id="nav-links">
           <a href="/">Home</a>
-          <a href="/dashboard">Dashboard</a>
+          <a href="/websites">Websites</a>
           <a href="/crm" class="active">CRM</a>
           <a href="/content">Content</a>
-          <a href="/content-studio">✨ Studio</a>
           <a href="/login" class="btn btn-outline btn-sm" id="nav-signin">Sign In</a>
         </nav>
         <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
       </div>
     </header>
 
-    <!-- MAIN CONTENT -->
-    <main class="crm-workspace" id="crm-workspace">
+    <!-- APP SHELL -->
+    <main class="crm-app">
 
-      <!-- TOP BAR -->
-      <div class="crm-topbar">
-        <div class="crm-topbar-left">
-          <h1 class="crm-title">Sales CRM</h1>
-          <div id="new-leads-pulse" style="display:none;" class="new-leads-pulse">
-            <span id="new-leads-count">0</span> new
-          </div>
+      <!-- Header row -->
+      <div class="ca-topbar">
+        <div>
+          <h1 class="ca-title">Leads</h1>
+          <div class="ca-subtitle" id="ca-subtitle">Loading…</div>
         </div>
-        <div class="crm-topbar-right">
-          <button class="crm-btn crm-btn-ghost" id="import-csv-btn" title="Import CSV">
-            <span class="material-icons" style="font-size:1rem;vertical-align:middle;">upload</span> Import
-          </button>
-          <button class="crm-btn crm-btn-ghost" id="export-csv-btn" title="Export CSV">
-            <span class="material-icons" style="font-size:1rem;vertical-align:middle;">download</span> Export
-          </button>
-          <button class="crm-btn crm-btn-primary" id="add-lead-btn">+ Add Lead</button>
+        <button class="ca-add-btn" id="add-lead-btn">+ New Lead</button>
+      </div>
+
+      <!-- 3 KPI pills -->
+      <div class="ca-kpis">
+        <div class="ca-kpi">
+          <span class="ca-kpi-val" id="kpi-total">0</span>
+          <span class="ca-kpi-label">Total</span>
+        </div>
+        <div class="ca-kpi ca-kpi-danger">
+          <span class="ca-kpi-val" id="kpi-overdue">0</span>
+          <span class="ca-kpi-label">Overdue</span>
+        </div>
+        <div class="ca-kpi ca-kpi-success">
+          <span class="ca-kpi-val" id="kpi-won">0</span>
+          <span class="ca-kpi-label">Won</span>
         </div>
       </div>
 
-      <!-- KPI STRIP -->
-      <div class="crm-kpi-strip">
-        <div class="crm-kpi">
-          <div class="crm-kpi-value" id="kpi-total">0</div>
-          <div class="crm-kpi-label">Total Leads</div>
-        </div>
-        <div class="crm-kpi">
-          <div class="crm-kpi-value" id="kpi-pipeline" style="color:#3b82f6;">₹0</div>
-          <div class="crm-kpi-label">Pipeline Value</div>
-        </div>
-        <div class="crm-kpi">
-          <div class="crm-kpi-value" id="kpi-won" style="color:#10b981;">₹0</div>
-          <div class="crm-kpi-label">Revenue Won</div>
-        </div>
-        <div class="crm-kpi">
-          <div class="crm-kpi-value" id="kpi-winrate" style="color:#a855f7;">0%</div>
-          <div class="crm-kpi-label">Win Rate</div>
-        </div>
-        <div class="crm-kpi">
-          <div class="crm-kpi-value" id="kpi-overdue" style="color:#ef4444;">0</div>
-          <div class="crm-kpi-label">Overdue</div>
-        </div>
-        <div class="crm-kpi crm-kpi-clickable" id="open-analytics-btn" role="button" tabindex="0">
-          <div class="crm-kpi-value" id="kpi-avg-deal" style="color:#f59e0b;">₹0</div>
-          <div class="crm-kpi-label">Avg Deal ↗</div>
-        </div>
+      <!-- Stage filter tabs -->
+      <div class="ca-tabs" id="ca-tabs">
+        <button class="ca-tab active" data-stage="">All</button>
+        <button class="ca-tab" data-stage="new">New</button>
+        <button class="ca-tab" data-stage="contacted">Contacted</button>
+        <button class="ca-tab" data-stage="proposal">Proposal</button>
+        <button class="ca-tab" data-stage="won">Won</button>
+        <button class="ca-tab" data-stage="lost">Lost</button>
       </div>
 
-      <!-- ANALYTICS PANEL (expandable) -->
-      <div id="analytics-panel" class="crm-analytics-panel" style="display:none;">
-        <div class="crm-analytics-inner">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-            <h3 style="font-size:1rem;font-weight:700;">Pipeline Analytics</h3>
-            <button class="crm-btn crm-btn-ghost crm-btn-sm" id="close-analytics-btn">✕ Close</button>
-          </div>
-          <div class="crm-analytics-grid">
-            <div class="crm-analytics-card">
-              <div class="crm-analytics-label">Avg Days in Pipeline</div>
-              <div class="crm-analytics-val" id="ana-avg-days">—</div>
-            </div>
-            <div class="crm-analytics-card">
-              <div class="crm-analytics-label">Conversion Rate</div>
-              <div class="crm-analytics-val" id="ana-conversion">0%</div>
-            </div>
-            <div class="crm-analytics-card">
-              <div class="crm-analytics-label">Proposals Sent</div>
-              <div class="crm-analytics-val" id="ana-proposals">0</div>
-            </div>
-            <div class="crm-analytics-card">
-              <div class="crm-analytics-label">Stale (7d no activity)</div>
-              <div class="crm-analytics-val" id="ana-stale" style="color:#f59e0b;">0</div>
-            </div>
-          </div>
-          <div style="margin-top:1.25rem;">
-            <div class="crm-analytics-section-label">Stage Funnel</div>
-            <div id="ana-funnel" class="crm-funnel"></div>
-          </div>
-          <div style="margin-top:1.25rem;">
-            <div class="crm-analytics-section-label">Lead Sources</div>
-            <div id="ana-sources" class="crm-sources-list"></div>
-          </div>
-        </div>
+      <!-- Search -->
+      <div class="ca-search-wrap">
+        <span class="ca-search-icon">🔍</span>
+        <input type="text" id="ca-search" class="ca-search" placeholder="Search by name, company, phone…" />
       </div>
 
-      <!-- FILTER + SEARCH BAR -->
-      <div class="crm-filterbar">
-        <div class="crm-search-wrap">
-          <span class="material-icons crm-search-icon">search</span>
-          <input type="text" id="crm-search" placeholder="Search name, company, email, phone…" class="crm-search-input" />
-          <button id="crm-search-clear" class="crm-search-clear" style="display:none;">✕</button>
-        </div>
-        <div class="crm-filters">
-          <select id="filter-stage" class="crm-filter-select">
-            <option value="">All Stages</option>
-            <option value="new">New</option>
-            <option value="contacted">Contacted</option>
-            <option value="proposal">Proposal</option>
-            <option value="won">Won</option>
-            <option value="lost">Lost</option>
-          </select>
-          <select id="filter-source" class="crm-filter-select">
-            <option value="">All Sources</option>
-            <option value="website">Website</option>
-            <option value="referral">Referral</option>
-            <option value="instagram">Instagram</option>
-            <option value="facebook">Facebook</option>
-            <option value="linkedin">LinkedIn</option>
-            <option value="cold-call">Cold Call</option>
-            <option value="event">Event</option>
-            <option value="other">Other</option>
-          </select>
-          <select id="filter-tag" class="crm-filter-select">
-            <option value="">All Tags</option>
-          </select>
-          <select id="filter-sort" class="crm-filter-select">
-            <option value="date-desc">Newest First</option>
-            <option value="date-asc">Oldest First</option>
-            <option value="value-desc">Value: High→Low</option>
-            <option value="value-asc">Value: Low→High</option>
-            <option value="name-asc">Name A→Z</option>
-          </select>
-          <button class="crm-btn crm-btn-ghost crm-btn-sm" id="clear-filters-btn" style="display:none;">Clear</button>
-        </div>
-        <div class="crm-view-toggle">
-          <button class="crm-view-btn active" id="view-kanban" title="Kanban View">
-            <span class="material-icons" style="font-size:1.1rem;">view_column</span>
-          </button>
-          <button class="crm-view-btn" id="view-list" title="List View">
-            <span class="material-icons" style="font-size:1.1rem;">view_list</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- BULK ACTION BAR -->
-      <div id="bulk-bar" class="crm-bulk-bar" style="display:none;">
-        <span id="bulk-count">0 selected</span>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
-          <select id="bulk-move-stage" class="crm-filter-select crm-filter-select-sm">
-            <option value="">Move to stage…</option>
-            <option value="new">New</option>
-            <option value="contacted">Contacted</option>
-            <option value="proposal">Proposal</option>
-            <option value="won">Won</option>
-            <option value="lost">Lost</option>
-          </select>
-          <button class="crm-btn crm-btn-danger crm-btn-sm" id="bulk-delete-btn">🗑 Delete Selected</button>
-          <button class="crm-btn crm-btn-ghost crm-btn-sm" id="bulk-clear-btn">✕ Clear</button>
-        </div>
-      </div>
-
-      <!-- KANBAN VIEW -->
-      <div id="kanban-view" class="crm-kanban-wrapper">
-        <div class="kanban-board" id="kanban-board">
-          <div class="kanban-col" data-col="new" id="col-new">
-            <div class="kanban-col-header">
-              <div class="col-title"><span style="color:#22d3ee">●</span> New Lead</div>
-              <span class="col-count" id="count-new">0</span>
-            </div>
-          </div>
-          <div class="kanban-col" data-col="contacted" id="col-contacted">
-            <div class="kanban-col-header">
-              <div class="col-title"><span style="color:#f59e0b">●</span> Contacted</div>
-              <span class="col-count" id="count-contacted">0</span>
-            </div>
-          </div>
-          <div class="kanban-col" data-col="proposal" id="col-proposal">
-            <div class="kanban-col-header">
-              <div class="col-title"><span style="color:#a855f7">●</span> Proposal Sent</div>
-              <span class="col-count" id="count-proposal">0</span>
-            </div>
-          </div>
-          <div class="kanban-col" data-col="won" id="col-won">
-            <div class="kanban-col-header">
-              <div class="col-title"><span style="color:#10b981">●</span> Won ✓</div>
-              <span class="col-count" id="count-won">0</span>
-            </div>
-          </div>
-          <div class="kanban-col" data-col="lost" id="col-lost">
-            <div class="kanban-col-header">
-              <div class="col-title"><span style="color:#ef4444">●</span> Lost ✗</div>
-              <span class="col-count" id="count-lost">0</span>
-            </div>
-          </div>
-        </div>
-        <div id="kanban-empty" class="crm-empty-state" style="display:none;">
-          <span class="material-icons" style="font-size:2.5rem;color:var(--text-dim);margin-bottom:0.75rem;display:block;">search_off</span>
-          No leads match your filters.
-        </div>
-      </div>
-
-      <!-- LIST VIEW -->
-      <div id="list-view" class="crm-list-wrapper" style="display:none;">
-        <div class="crm-table-wrap">
-          <table class="crm-table">
-            <thead>
-              <tr>
-                <th style="width:2.5rem;"><input type="checkbox" id="select-all-cb" /></th>
-                <th>Contact</th>
-                <th>Company</th>
-                <th>Stage</th>
-                <th>Value</th>
-                <th>Source</th>
-                <th>Follow-up</th>
-                <th>Tags</th>
-                <th style="width:2.5rem;"></th>
-              </tr>
-            </thead>
-            <tbody id="list-tbody"></tbody>
-          </table>
-        </div>
-        <div id="list-empty" class="crm-empty-state" style="display:none;">
-          <span class="material-icons" style="font-size:2.5rem;color:var(--text-dim);margin-bottom:0.75rem;display:block;">search_off</span>
-          No leads match your filters.
-        </div>
-      </div>
+      <!-- Lead cards -->
+      <div id="leads-list" class="ca-leads-list"></div>
+      <div id="leads-empty" class="ca-empty" style="display:none;">No leads yet. Add your first one →</div>
 
     </main>
+
+    <!-- LEAD DETAIL PANEL -->
+    <div class="lead-panel-overlay" id="lead-panel-overlay"></div>
+    <aside class="lead-panel" id="lead-panel">
+
+      <div class="lp-header">
+        <div style="min-width:0;">
+          <div class="lp-name" id="lp-name">—</div>
+          <div style="font-size:0.8rem;color:var(--text-dim);margin-top:0.1rem;" id="lp-company-sub"></div>
+        </div>
+        <button class="crm-modal-close" id="lead-panel-close">✕</button>
+      </div>
+
+      <!-- Stage pills -->
+      <div class="lp-stage-row">
+        <div class="lp-stage-pills" id="lp-stage-pills">
+          <button class="lp-stage-pill" data-stage="new">New</button>
+          <button class="lp-stage-pill" data-stage="contacted">Contacted</button>
+          <button class="lp-stage-pill" data-stage="proposal">Proposal</button>
+          <button class="lp-stage-pill" data-stage="won">Won ✓</button>
+          <button class="lp-stage-pill" data-stage="lost">Lost ✗</button>
+        </div>
+      </div>
+
+      <div class="lp-body">
+
+        <!-- Quick actions -->
+        <div class="lp-section" id="lp-quick-actions"></div>
+
+        <!-- Contact info -->
+        <div class="lp-section">
+          <div class="lp-section-label">Contact</div>
+          <div class="lp-info-grid">
+            <div class="lp-info-item">
+              <div class="lp-info-label">Phone</div>
+              <div class="lp-info-value" id="lp-phone">—</div>
+            </div>
+            <div class="lp-info-item">
+              <div class="lp-info-label">Email</div>
+              <div class="lp-info-value lp-info-ellipsis" id="lp-email">—</div>
+            </div>
+            <div class="lp-info-item">
+              <div class="lp-info-label">Value</div>
+              <div class="lp-info-value" id="lp-value">—</div>
+            </div>
+            <div class="lp-info-item">
+              <div class="lp-info-label">Source</div>
+              <div class="lp-info-value" id="lp-source">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Follow-up date -->
+        <div class="lp-section">
+          <div class="lp-section-label">Follow-up Date</div>
+          <input type="date" id="lp-due-input" class="lp-input" style="width:100%;" />
+          <button class="ca-save-due-btn" id="lp-save-due">Set Reminder</button>
+        </div>
+
+        <!-- Edit details (collapsed) -->
+        <div class="lp-section">
+          <div class="lp-section-label lp-toggle-row" id="lp-edit-toggle" style="cursor:pointer;">
+            Edit Details <span id="lp-edit-arrow" style="font-size:0.7rem;margin-left:0.3rem;">▶</span>
+          </div>
+          <form id="lp-edit-form" style="display:none;margin-top:0.75rem;">
+            <input type="hidden" id="lp-lead-id" />
+            <div class="lp-form-group">
+              <label class="lp-label">Name</label>
+              <input type="text" id="lp-edit-name" class="lp-input" required />
+            </div>
+            <div class="lp-form-group">
+              <label class="lp-label">Company</label>
+              <input type="text" id="lp-edit-company" class="lp-input" />
+            </div>
+            <div class="lp-form-group">
+              <label class="lp-label">Phone</label>
+              <input type="tel" id="lp-edit-phone" class="lp-input" />
+            </div>
+            <div class="lp-form-group">
+              <label class="lp-label">Email</label>
+              <input type="email" id="lp-edit-email" class="lp-input" />
+            </div>
+            <div class="lp-form-group">
+              <label class="lp-label">Deal Value (₹)</label>
+              <input type="number" id="lp-edit-value" class="lp-input" min="0" />
+            </div>
+            <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+              <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm" style="flex:1;">Save</button>
+              <button type="button" class="crm-btn crm-btn-danger crm-btn-sm" id="lp-delete-btn">Delete</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Notes -->
+        <div class="lp-section" style="flex:1;">
+          <div class="lp-section-label">Notes</div>
+          <div class="lp-timeline" id="lp-timeline"></div>
+          <form id="lp-note-form" class="lp-note-input-row" style="margin-top:0.6rem;">
+            <input type="text" id="lp-note-input" class="lp-input" placeholder="Add a note…" autocomplete="off" />
+            <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Add</button>
+          </form>
+        </div>
+
+      </div>
+    </aside>
 
     <!-- ADD LEAD MODAL -->
     <div class="crm-modal-overlay" id="add-lead-modal">
       <div class="crm-modal">
         <div class="crm-modal-header">
-          <h3>➕ Add New Lead</h3>
+          <h3>New Lead</h3>
           <button class="crm-modal-close" id="modal-close">✕</button>
         </div>
         <form id="add-lead-form" class="crm-modal-body crm-form">
-          <div class="crm-form-row">
-            <div class="crm-form-group">
-              <label>Contact Name *</label>
-              <input type="text" id="lead-name" placeholder="Rahul Sharma" required />
-            </div>
-            <div class="crm-form-group">
-              <label>Company</label>
-              <input type="text" id="lead-company" placeholder="InnoTech Pvt Ltd" />
-            </div>
+          <div class="crm-form-group">
+            <label>Name *</label>
+            <input type="text" id="lead-name" placeholder="Rahul Sharma" required />
+          </div>
+          <div class="crm-form-group">
+            <label>Company</label>
+            <input type="text" id="lead-company" placeholder="InnoTech Pvt Ltd" />
           </div>
           <div class="crm-form-row">
             <div class="crm-form-group">
@@ -290,18 +215,6 @@
               <input type="number" id="lead-value" placeholder="50000" min="0" />
             </div>
             <div class="crm-form-group">
-              <label>Stage</label>
-              <select id="lead-stage">
-                <option value="new">New Lead</option>
-                <option value="contacted">Contacted</option>
-                <option value="proposal">Proposal Sent</option>
-                <option value="won">Won</option>
-                <option value="lost">Lost</option>
-              </select>
-            </div>
-          </div>
-          <div class="crm-form-row">
-            <div class="crm-form-group">
               <label>Source</label>
               <select id="lead-source">
                 <option value="">Unknown</option>
@@ -312,191 +225,19 @@
                 <option value="linkedin">LinkedIn</option>
                 <option value="cold-call">Cold Call</option>
                 <option value="event">Event</option>
-                <option value="other">Other</option>
               </select>
             </div>
-            <div class="crm-form-group">
-              <label>Follow-up Due Date</label>
-              <input type="date" id="lead-due" />
-            </div>
           </div>
           <div class="crm-form-group">
-            <label>Tags (comma separated)</label>
-            <input type="text" id="lead-tags" placeholder="hot-lead, enterprise, q2" />
+            <label>Follow-up Date</label>
+            <input type="date" id="lead-due" />
           </div>
           <div class="crm-form-group">
-            <label>Initial Note</label>
-            <textarea id="lead-note" rows="2" placeholder="First contact details, requirements…" style="resize:vertical;"></textarea>
+            <label>Note</label>
+            <input type="text" id="lead-note" placeholder="Quick note about this lead…" />
           </div>
-          <button type="submit" class="crm-btn crm-btn-primary" style="width:100%;justify-content:center;margin-top:0.25rem;">Add to Pipeline</button>
+          <button type="submit" class="crm-btn crm-btn-primary" style="width:100%;justify-content:center;margin-top:0.25rem;">Add Lead</button>
         </form>
-      </div>
-    </div>
-
-    <!-- LEAD DETAIL PANEL -->
-    <div class="lead-panel-overlay" id="lead-panel-overlay"></div>
-    <aside class="lead-panel lead-panel-wide" id="lead-panel" aria-label="Lead Details">
-
-      <div class="lp-header">
-        <div style="min-width:0;">
-          <div class="lp-name" id="lp-name">Lead</div>
-          <div style="font-size:0.82rem;color:var(--text-dim);margin-top:0.1rem;" id="lp-company-sub"></div>
-        </div>
-        <button class="crm-modal-close" id="lead-panel-close">✕</button>
-      </div>
-
-      <!-- Quick Actions -->
-      <div class="lp-quick-actions" id="lp-quick-actions"></div>
-
-      <!-- Stage Pills -->
-      <div class="lp-stage-row">
-        <div class="lp-stage-pills" id="lp-stage-pills">
-          <button class="lp-stage-pill" data-stage="new">New</button>
-          <button class="lp-stage-pill" data-stage="contacted">Contacted</button>
-          <button class="lp-stage-pill" data-stage="proposal">Proposal</button>
-          <button class="lp-stage-pill" data-stage="won">Won ✓</button>
-          <button class="lp-stage-pill" data-stage="lost">Lost ✗</button>
-        </div>
-      </div>
-
-      <div class="lp-body">
-
-        <!-- Tags -->
-        <div class="lp-section">
-          <div class="lp-section-label">Tags</div>
-          <div class="lp-tags-wrap" id="lp-tags-wrap"></div>
-          <div style="display:flex;gap:0.4rem;margin-top:0.5rem;">
-            <input type="text" id="lp-tag-input" class="lp-input" placeholder="Add tag and press Enter…" style="flex:1;" />
-          </div>
-        </div>
-
-        <!-- Info Grid -->
-        <div class="lp-section">
-          <div class="lp-section-label">Contact Info</div>
-          <div class="lp-info-grid">
-            <div class="lp-info-item">
-              <div class="lp-info-label">Phone</div>
-              <div class="lp-info-value" id="lp-phone">—</div>
-            </div>
-            <div class="lp-info-item">
-              <div class="lp-info-label">Email</div>
-              <div class="lp-info-value lp-info-ellipsis" id="lp-email">—</div>
-            </div>
-            <div class="lp-info-item">
-              <div class="lp-info-label">Deal Value</div>
-              <div class="lp-info-value" id="lp-value">—</div>
-            </div>
-            <div class="lp-info-item">
-              <div class="lp-info-label">Source</div>
-              <div class="lp-info-value" id="lp-source">—</div>
-            </div>
-            <div class="lp-info-item">
-              <div class="lp-info-label">Added</div>
-              <div class="lp-info-value" id="lp-date">—</div>
-            </div>
-            <div class="lp-info-item">
-              <div class="lp-info-label">Follow-up</div>
-              <div class="lp-info-value" id="lp-due">—</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Edit Form (collapsible) -->
-        <div class="lp-section">
-          <div class="lp-section-label lp-toggle-row" id="lp-edit-toggle" style="cursor:pointer;user-select:none;">
-            Edit Details <span id="lp-edit-arrow" style="font-size:0.75rem;margin-left:0.3rem;">▶</span>
-          </div>
-          <form id="lp-edit-form" style="display:none;margin-top:0.75rem;">
-            <input type="hidden" id="lp-lead-id" />
-            <div class="lp-form-row">
-              <div class="lp-form-group">
-                <label class="lp-label">Name</label>
-                <input type="text" id="lp-edit-name" class="lp-input" required />
-              </div>
-              <div class="lp-form-group">
-                <label class="lp-label">Company</label>
-                <input type="text" id="lp-edit-company" class="lp-input" />
-              </div>
-            </div>
-            <div class="lp-form-row">
-              <div class="lp-form-group">
-                <label class="lp-label">Phone</label>
-                <input type="tel" id="lp-edit-phone" class="lp-input" />
-              </div>
-              <div class="lp-form-group">
-                <label class="lp-label">Email</label>
-                <input type="email" id="lp-edit-email" class="lp-input" />
-              </div>
-            </div>
-            <div class="lp-form-row">
-              <div class="lp-form-group">
-                <label class="lp-label">Deal Value (₹)</label>
-                <input type="number" id="lp-edit-value" class="lp-input" min="0" />
-              </div>
-              <div class="lp-form-group">
-                <label class="lp-label">Source</label>
-                <select id="lp-edit-source" class="lp-input">
-                  <option value="">Unknown</option>
-                  <option value="website">Website</option>
-                  <option value="referral">Referral</option>
-                  <option value="instagram">Instagram</option>
-                  <option value="facebook">Facebook</option>
-                  <option value="linkedin">LinkedIn</option>
-                  <option value="cold-call">Cold Call</option>
-                  <option value="event">Event</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-            </div>
-            <div class="lp-form-group">
-              <label class="lp-label">Follow-up Due Date</label>
-              <input type="date" id="lp-edit-due" class="lp-input" />
-            </div>
-            <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
-              <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm" id="lp-save-btn" style="flex:1;">Save Changes</button>
-              <button type="button" class="crm-btn crm-btn-danger crm-btn-sm" id="lp-delete-btn">🗑</button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Activity Timeline -->
-        <div class="lp-section" style="flex:1;">
-          <div class="lp-section-label">Activity Timeline</div>
-          <div class="lp-timeline" id="lp-timeline"></div>
-          <form id="lp-note-form" class="lp-note-input-row" style="margin-top:0.75rem;">
-            <input type="text" id="lp-note-input" class="lp-input" placeholder="Log a note or activity…" autocomplete="off" />
-            <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Log</button>
-          </form>
-        </div>
-
-      </div>
-    </aside>
-
-    <!-- IMPORT CSV MODAL -->
-    <div class="crm-modal-overlay" id="import-modal">
-      <div class="crm-modal">
-        <div class="crm-modal-header">
-          <h3>📥 Import Leads (CSV)</h3>
-          <button class="crm-modal-close" id="import-close">✕</button>
-        </div>
-        <div class="crm-modal-body">
-          <p style="font-size:0.83rem;color:var(--text-dim);margin-bottom:1rem;line-height:1.6;">
-            Required columns: <code style="background:rgba(255,255,255,0.07);padding:0.15rem 0.4rem;border-radius:4px;font-size:0.78rem;">name</code>
-            &nbsp;Optional: <code style="background:rgba(255,255,255,0.07);padding:0.15rem 0.4rem;border-radius:4px;font-size:0.78rem;">company, phone, email, value, stage, source, dueDate, tags</code>
-          </p>
-          <input type="file" id="import-file" accept=".csv" style="display:none;" />
-          <div class="crm-dropzone" id="import-dropzone" tabindex="0">
-            <span class="material-icons" style="font-size:2rem;color:var(--text-dim);display:block;margin-bottom:0.5rem;">upload_file</span>
-            <p style="margin:0;font-size:0.88rem;">Drop CSV here or <strong style="color:var(--primary);cursor:pointer;" id="import-browse-btn">browse file</strong></p>
-          </div>
-          <div id="import-preview" style="display:none;margin-top:1rem;">
-            <div id="import-preview-info" style="font-size:0.83rem;color:var(--text-dim);margin-bottom:0.75rem;"></div>
-            <div style="max-height:200px;overflow-y:auto;border-radius:8px;border:1px solid var(--glass-border);">
-              <table class="crm-table" id="import-preview-table" style="font-size:0.78rem;"></table>
-            </div>
-            <button class="crm-btn crm-btn-primary" id="import-confirm-btn" style="width:100%;justify-content:center;margin-top:1rem;">Import All Leads</button>
-          </div>
-        </div>
       </div>
     </div>
 
