@@ -371,9 +371,7 @@ function initAddModal() {
   function open() {
     panel?.classList.add('open');
     overlay?.classList.add('open');
-    // Close detail panel if open
-    closePanel();
-    // Auto-focus name
+    closePanel(); // close detail panel if open
     setTimeout(() => document.getElementById('lead-name')?.focus(), 80);
   }
 
@@ -381,11 +379,14 @@ function initAddModal() {
     panel?.classList.remove('open');
     overlay?.classList.remove('open');
     form?.reset();
-    // Reset stage picker to "new"
+    // Reset stage picker
     document.querySelectorAll('.al-stage-opt').forEach(b => b.classList.remove('active'));
     document.querySelector('.al-stage-opt[data-stage="new"]')?.classList.add('active');
     const stageInput = document.getElementById('lead-stage');
     if (stageInput) stageInput.value = 'new';
+    // Always reset submit button
+    const submitBtn = form?.querySelector('.al-submit-btn');
+    if (submitBtn) { submitBtn.textContent = 'Add Lead to Pipeline'; submitBtn.disabled = false; }
   }
 
   btn?.addEventListener('click', open);
@@ -418,19 +419,24 @@ function initAddModal() {
     if (submitBtn) { submitBtn.textContent = 'Adding…'; submitBtn.disabled = true; }
 
     const noteText = document.getElementById('lead-note')?.value.trim();
-    await setDoc(doc(_col, 'l' + Date.now()), {
-      name,
-      company:   document.getElementById('lead-company')?.value.trim() || '',
-      phone:     document.getElementById('lead-phone')?.value.trim()   || '',
-      email:     document.getElementById('lead-email')?.value.trim()   || '',
-      value:     parseInt(document.getElementById('lead-value')?.value) || 0,
-      source:    document.getElementById('lead-source')?.value || '',
-      dueDate:   document.getElementById('lead-due')?.value || null,
-      stage:     document.getElementById('lead-stage')?.value || 'new',
-      notes:     noteText ? [{ text: noteText, at: new Date().toISOString() }] : [],
-      createdAt: new Date().toISOString(),
-    });
-    shut();
+    try {
+      await setDoc(doc(_col, 'l' + Date.now()), {
+        name,
+        company:   document.getElementById('lead-company')?.value.trim() || '',
+        phone:     document.getElementById('lead-phone')?.value.trim()   || '',
+        email:     document.getElementById('lead-email')?.value.trim()   || '',
+        value:     parseInt(document.getElementById('lead-value')?.value) || 0,
+        source:    document.getElementById('lead-source')?.value || '',
+        dueDate:   document.getElementById('lead-due')?.value || null,
+        stage:     document.getElementById('lead-stage')?.value || 'new',
+        notes:     noteText ? [{ text: noteText, at: new Date().toISOString() }] : [],
+        createdAt: new Date().toISOString(),
+      });
+      shut();
+    } catch (err) {
+      console.error('Failed to add lead:', err);
+      if (submitBtn) { submitBtn.textContent = 'Add Lead to Pipeline'; submitBtn.disabled = false; }
+    }
   });
 }
 
