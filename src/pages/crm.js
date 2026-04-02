@@ -360,24 +360,63 @@ function initPanel() {
   window._openLeadPanel = (lead) => openPanel(lead.id || lead);
 }
 
-// ── Add modal ─────────────────────────────────────────────────────────────────
+// ── Add Lead Panel ────────────────────────────────────────────────────────────
 function initAddModal() {
-  const btn   = document.getElementById('add-lead-btn');
-  const modal = document.getElementById('add-lead-modal');
-  const close = document.getElementById('modal-close');
-  const form  = document.getElementById('add-lead-form');
+  const btn     = document.getElementById('add-lead-btn');
+  const panel   = document.getElementById('add-lead-panel');
+  const overlay = document.getElementById('add-panel-overlay');
+  const close   = document.getElementById('add-panel-close');
+  const form    = document.getElementById('add-lead-form');
 
-  const open  = () => modal?.classList.add('open');
-  const shut  = () => { modal?.classList.remove('open'); form?.reset(); };
+  function open() {
+    panel?.classList.add('open');
+    overlay?.classList.add('open');
+    // Close detail panel if open
+    closePanel();
+    // Auto-focus name
+    setTimeout(() => document.getElementById('lead-name')?.focus(), 80);
+  }
+
+  function shut() {
+    panel?.classList.remove('open');
+    overlay?.classList.remove('open');
+    form?.reset();
+    // Reset stage picker to "new"
+    document.querySelectorAll('.al-stage-opt').forEach(b => b.classList.remove('active'));
+    document.querySelector('.al-stage-opt[data-stage="new"]')?.classList.add('active');
+    const stageInput = document.getElementById('lead-stage');
+    if (stageInput) stageInput.value = 'new';
+  }
 
   btn?.addEventListener('click', open);
   close?.addEventListener('click', shut);
-  modal?.addEventListener('click', e => { if (e.target === modal) shut(); });
+  overlay?.addEventListener('click', shut);
+
+  // Keyboard: Escape closes
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && panel?.classList.contains('open')) shut();
+  });
+
+  // Stage picker
+  document.querySelectorAll('.al-stage-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.al-stage-opt').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const stageInput = document.getElementById('lead-stage');
+      if (stageInput) stageInput.value = btn.dataset.stage;
+    });
+  });
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('lead-name')?.value.trim();
-    if (!name) return;
+    if (!name) {
+      document.getElementById('lead-name')?.focus();
+      return;
+    }
+    const submitBtn = form.querySelector('.al-submit-btn');
+    if (submitBtn) { submitBtn.textContent = 'Adding…'; submitBtn.disabled = true; }
+
     const noteText = document.getElementById('lead-note')?.value.trim();
     await setDoc(doc(_col, 'l' + Date.now()), {
       name,
@@ -387,7 +426,7 @@ function initAddModal() {
       value:     parseInt(document.getElementById('lead-value')?.value) || 0,
       source:    document.getElementById('lead-source')?.value || '',
       dueDate:   document.getElementById('lead-due')?.value || null,
-      stage:     'new',
+      stage:     document.getElementById('lead-stage')?.value || 'new',
       notes:     noteText ? [{ text: noteText, at: new Date().toISOString() }] : [],
       createdAt: new Date().toISOString(),
     });

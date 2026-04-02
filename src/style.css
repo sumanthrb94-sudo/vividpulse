@@ -2637,3 +2637,137 @@ textarea { resize: vertical; min-height: 120px; }
   .lc-actions { display: none; }
   .lead-panel-wide { width: 100vw; }
 }
+
+/* ── Add Lead Panel ──────────────────────────────────────────────────────────── */
+.al-field {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  margin-bottom: 0.55rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+}
+.al-field:focus-within {
+  border-color: rgba(34,211,238,0.45);
+  box-shadow: 0 0 0 3px rgba(34,211,238,0.08);
+}
+
+.al-field-icon {
+  padding: 0 0.75rem;
+  font-size: 1rem;
+  flex-shrink: 0;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.al-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 0.72rem 0.75rem 0.72rem 0;
+  width: 100%;
+}
+
+.al-input::placeholder { color: var(--text-dim); opacity: 0.7; }
+
+.al-input-big {
+  font-size: 1rem;
+  font-weight: 600;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+}
+
+.al-input-big::placeholder { font-weight: 400; }
+
+.al-textarea {
+  resize: none;
+  min-height: 80px;
+  padding: 0.72rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+/* Stage picker */
+.al-stage-picker {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.al-stage-opt {
+  padding: 0.38rem 0.85rem;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1.5px solid var(--glass-border);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.18s;
+  font-family: var(--font-body);
+}
+.al-stage-opt:hover {
+  border-color: var(--sc);
+  color: var(--sc);
+}
+.al-stage-opt.active {
+  background: color-mix(in srgb, var(--sc) 15%, transparent);
+  border-color: var(--sc);
+  color: var(--sc);
+}
+
+/* Two-col row */
+.al-two-col {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* select inside .al-field */
+.al-field select.al-input {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Submit button */
+.al-submit-btn {
+  width: 100%;
+  padding: 0.88rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #000;
+  font-size: 0.95rem;
+  font-weight: 800;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  font-family: var(--font-body);
+  letter-spacing: 0.01em;
+}
+.al-submit-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+.al-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.al-hint {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: 0.65rem;
+}
+.al-hint kbd {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--glass-border);
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.68rem;
+  font-family: var(--font-body);
+}
+
+@media (max-width: 480px) {
+  .al-two-col { flex-direction: column; }
+}

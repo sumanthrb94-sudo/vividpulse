@@ -183,41 +183,80 @@
       </div>
     </aside>
 
-    <!-- ADD LEAD MODAL -->
-    <div class="crm-modal-overlay" id="add-lead-modal">
-      <div class="crm-modal">
-        <div class="crm-modal-header">
-          <h3>New Lead</h3>
-          <button class="crm-modal-close" id="modal-close">✕</button>
+    <!-- ADD LEAD PANEL (slide-in, right side) -->
+    <div class="lead-panel-overlay" id="add-panel-overlay"></div>
+    <aside class="lead-panel lead-panel-wide" id="add-lead-panel" aria-label="Add New Lead">
+
+      <div class="lp-header">
+        <div>
+          <div class="lp-name" style="font-size:1.1rem;">Add New Lead</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-top:0.1rem;">Fill what you know — you can edit later</div>
         </div>
-        <form id="add-lead-form" class="crm-modal-body crm-form">
-          <div class="crm-form-group">
-            <label>Name *</label>
-            <input type="text" id="lead-name" placeholder="Rahul Sharma" required />
+        <button class="crm-modal-close" id="add-panel-close">✕</button>
+      </div>
+
+      <form id="add-lead-form" class="lp-body" style="gap:0;" autocomplete="off">
+
+        <!-- Contact section -->
+        <div class="lp-section">
+          <div class="lp-section-label">Contact</div>
+
+          <div class="al-field al-field-name">
+            <span class="al-field-icon">👤</span>
+            <input type="text" id="lead-name" class="al-input al-input-big" placeholder="Full name *" required autofocus />
           </div>
-          <div class="crm-form-group">
-            <label>Company</label>
-            <input type="text" id="lead-company" placeholder="InnoTech Pvt Ltd" />
+
+          <div class="al-field">
+            <span class="al-field-icon">🏢</span>
+            <input type="text" id="lead-company" class="al-input" placeholder="Company / Business name" />
           </div>
-          <div class="crm-form-row">
-            <div class="crm-form-group">
-              <label>Phone</label>
-              <input type="tel" id="lead-phone" placeholder="+91 98765 43210" />
-            </div>
-            <div class="crm-form-group">
-              <label>Email</label>
-              <input type="email" id="lead-email" placeholder="rahul@company.com" />
-            </div>
+
+          <div class="al-field">
+            <span class="al-field-icon">📞</span>
+            <input type="tel" id="lead-phone" class="al-input" placeholder="Phone number" />
           </div>
-          <div class="crm-form-row">
-            <div class="crm-form-group">
-              <label>Deal Value (₹)</label>
-              <input type="number" id="lead-value" placeholder="50000" min="0" />
+
+          <div class="al-field">
+            <span class="al-field-icon">✉</span>
+            <input type="email" id="lead-email" class="al-input" placeholder="Email address" />
+          </div>
+        </div>
+
+        <!-- Deal section -->
+        <div class="lp-section">
+          <div class="lp-section-label">Deal</div>
+
+          <div class="al-field">
+            <span class="al-field-icon">₹</span>
+            <input type="number" id="lead-value" class="al-input" placeholder="Deal value (e.g. 50000)" min="0" />
+          </div>
+
+          <!-- Stage picker — visual pills -->
+          <div style="margin-top:0.4rem;">
+            <div style="font-size:0.7rem;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Stage</div>
+            <div class="al-stage-picker" id="al-stage-picker">
+              <button type="button" class="al-stage-opt active" data-stage="new"       style="--sc:#22d3ee;">New</button>
+              <button type="button" class="al-stage-opt"        data-stage="contacted" style="--sc:#f59e0b;">Contacted</button>
+              <button type="button" class="al-stage-opt"        data-stage="proposal"  style="--sc:#a855f7;">Proposal</button>
+              <button type="button" class="al-stage-opt"        data-stage="won"       style="--sc:#10b981;">Won</button>
             </div>
-            <div class="crm-form-group">
-              <label>Source</label>
-              <select id="lead-source">
-                <option value="">Unknown</option>
+            <input type="hidden" id="lead-stage" value="new" />
+          </div>
+        </div>
+
+        <!-- Follow-up & Source -->
+        <div class="lp-section">
+          <div class="lp-section-label">Follow-up & Source</div>
+
+          <div class="al-two-col">
+            <div class="al-field" style="flex:1;">
+              <span class="al-field-icon">📅</span>
+              <input type="date" id="lead-due" class="al-input" />
+            </div>
+            <div class="al-field" style="flex:1;">
+              <span class="al-field-icon">📡</span>
+              <select id="lead-source" class="al-input">
+                <option value="">Source</option>
                 <option value="website">Website</option>
                 <option value="referral">Referral</option>
                 <option value="instagram">Instagram</option>
@@ -225,21 +264,28 @@
                 <option value="linkedin">LinkedIn</option>
                 <option value="cold-call">Cold Call</option>
                 <option value="event">Event</option>
+                <option value="other">Other</option>
               </select>
             </div>
           </div>
-          <div class="crm-form-group">
-            <label>Follow-up Date</label>
-            <input type="date" id="lead-due" />
-          </div>
-          <div class="crm-form-group">
-            <label>Note</label>
-            <input type="text" id="lead-note" placeholder="Quick note about this lead…" />
-          </div>
-          <button type="submit" class="crm-btn crm-btn-primary" style="width:100%;justify-content:center;margin-top:0.25rem;">Add Lead</button>
-        </form>
-      </div>
-    </div>
+        </div>
+
+        <!-- Note -->
+        <div class="lp-section">
+          <div class="lp-section-label">First Note <span style="font-weight:400;opacity:0.5;">(optional)</span></div>
+          <textarea id="lead-note" class="al-input al-textarea" placeholder="What's the context? Where did you meet them? What do they need?"></textarea>
+        </div>
+
+        <!-- Submit -->
+        <div style="padding:1rem 1.5rem 1.5rem;margin-top:auto;">
+          <button type="submit" class="al-submit-btn">
+            Add Lead to Pipeline
+          </button>
+          <div class="al-hint">Press <kbd>Esc</kbd> to cancel · <kbd>Enter</kbd> in last field to save</div>
+        </div>
+
+      </form>
+    </aside>
 
     <script type="module" src="/src/pages/crm.js"></script>
     <script type="module" src="/src/page-shared.js"></script>
