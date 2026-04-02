@@ -3,10 +3,10 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Authenticated owner: full access to all user data
+    // Authenticated owner: full access to all their own data
     match /users/{userId}/{document=**} {
-      allow read, update, delete: if request.auth != null
-                                  && request.auth.uid == userId;
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
     }
 
     // Public lead capture form: unauthenticated CREATE only on leads

@@ -436,6 +436,9 @@ function initAddModal() {
     } catch (err) {
       console.error('Failed to add lead:', err);
       if (submitBtn) { submitBtn.textContent = 'Add Lead to Pipeline'; submitBtn.disabled = false; }
+      if (err?.code === 'permission-denied') {
+        alert('Permission error — Firestore rules need updating. Check console.');
+      }
     }
   });
 }
